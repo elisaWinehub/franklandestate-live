@@ -1,0 +1,1002 @@
+{%- liquid
+  assign sid = section.id
+  assign maxw = section.settings.container_width | default: 1110
+  assign team_enable_read_more = section.settings.enable_read_more
+  assign team_rm_visible = ''
+  assign team_rm_hidden = ''
+  assign team_rm_toggle = false
+  if team_enable_read_more and section.settings.body != blank
+    assign team_rm_parts = section.settings.body | split: '</p>'
+    assign team_rm_idx = 0
+    for team_rm_part in team_rm_parts
+      assign team_rm_chunk = team_rm_part | strip
+      if team_rm_chunk == blank
+        continue
+      endif
+      assign team_rm_idx = team_rm_idx | plus: 1
+      assign team_rm_piece = team_rm_chunk | append: '</p>'
+      if team_rm_idx <= 2
+        assign team_rm_visible = team_rm_visible | append: team_rm_piece
+      else
+        assign team_rm_hidden = team_rm_hidden | append: team_rm_piece
+      endif
+    endfor
+    if team_rm_hidden != blank
+      assign team_rm_toggle = true
+    endif
+  endif
+-%}
+
+<section
+  id="{{ section.settings.section_id | default: 'who-we-are' | handleize }}"
+  class="fe-about-team fe-about-team--{{ sid }}"
+  data-fe-about-team="{{ sid }}"
+  style="
+    background-color: {{ section.settings.background_color }};
+    padding-top: {{ section.settings.padding_top }}px;
+    padding-bottom: {{ section.settings.padding_bottom }}px;
+  "
+>
+  <div class="fe-about-team__inner" style="max-width: {{ maxw }}px;">
+    <div class="fe-about-team__intro-grid">
+      <div class="fe-about-team__intro-copy">
+        {%- if section.settings.section_number != blank -%}
+          <p class="fe-about-team__eyebrow">{{ section.settings.section_number | escape }}</p>
+        {%- endif -%}
+        {%- if section.settings.heading != blank -%}
+          <h2 class="fe-about-team__heading">{{ section.settings.heading | escape }}</h2>
+        {%- endif -%}
+        {%- if section.settings.body != blank -%}
+          {%- if team_rm_toggle -%}
+            <div
+              class="fe-about-team__body fe-about-team__body--readmore"
+              data-fe-readmore-root
+              data-expanded="false"
+            >
+              <div class="fe-about-team__readmore-viewport" data-fe-readmore-viewport>
+                <div class="fe-about-team__readmore-inner" data-fe-readmore-inner>
+                  <div class="fe-about-team__readmore-visible rte" data-fe-readmore-visible>{{ team_rm_visible }}</div>
+                  <div
+                    class="fe-about-team__readmore-extra rte"
+                    data-fe-readmore-extra
+                    hidden
+                    aria-hidden="true"
+                  >
+                    {{ team_rm_hidden }}
+                  </div>
+                </div>
+              </div>
+              <button
+                type="button"
+                class="fe-about-team__readmore-toggle"
+                data-fe-readmore-toggle
+                aria-expanded="false"
+                data-label-more="{{ section.settings.read_more_label | escape }}"
+                data-label-less="{{ section.settings.read_less_label | escape }}"
+              >
+                {{ section.settings.read_more_label | escape }}
+              </button>
+            </div>
+          {%- else -%}
+            <div class="fe-about-team__body rte">{{ section.settings.body }}</div>
+          {%- endif -%}
+        {%- endif -%}
+        {%- if section.settings.button_label != blank and section.settings.button_link != blank -%}
+          <a class="fe-about-team__btn" href="{{ section.settings.button_link }}">{{ section.settings.button_label | escape }}</a>
+        {%- endif -%}
+      </div>
+      <div class="fe-about-team__intro-media">
+        {%- if section.settings.feature_image != blank -%}
+          <img
+            class="fe-about-team__feature-img"
+            src="{{ section.settings.feature_image | image_url: width: 1200 }}"
+            srcset="
+              {{ section.settings.feature_image | image_url: width: 600 }} 600w,
+              {{ section.settings.feature_image | image_url: width: 900 }} 900w,
+              {{ section.settings.feature_image | image_url: width: 1200 }} 1200w
+            "
+            sizes="(max-width: 989px) 100vw, 50vw"
+            alt="{{ section.settings.feature_image.alt | escape | default: section.settings.heading }}"
+            loading="lazy"
+          >
+        {%- else -%}
+          <div class="fe-about-team__feature-img fe-about-team__feature-img--placeholder" aria-hidden="true"></div>
+        {%- endif -%}
+      </div>
+    </div>
+
+    <div class="fe-about-team__profiles" role="list">
+      {%- for block in section.blocks -%}
+        {%- if block.type == 'member' -%}
+          {%- liquid
+            assign modal_id = 'fe-about-team-modal-' | append: sid | append: '-' | append: block.id
+            assign title_id = modal_id | append: '-title'
+            assign bio_id = modal_id | append: '-bio'
+            assign profile_name = block.settings.name | default: 'Team Member'
+            assign open_label = 'Open profile for ' | append: profile_name
+            assign image_alt = block.settings.image_alt | default: profile_name
+          -%}
+          <div class="fe-about-team__profile" role="listitem" {{ block.shopify_attributes }}>
+            <button
+              type="button"
+              class="fe-about-team__profile-btn"
+              aria-label="{{ open_label | escape }}"
+              aria-controls="{{ modal_id }}"
+              data-about-team-open="{{ modal_id }}"
+            >
+              <span class="fe-about-team__avatar-wrap">
+                {%- if block.settings.profile_image != blank -%}
+                  <img
+                    class="fe-about-team__avatar"
+                    src="{{ block.settings.profile_image | image_url: width: 500 }}"
+                    srcset="
+                      {{ block.settings.profile_image | image_url: width: 220 }} 220w,
+                      {{ block.settings.profile_image | image_url: width: 360 }} 360w,
+                      {{ block.settings.profile_image | image_url: width: 500 }} 500w
+                    "
+                    sizes="(max-width: 749px) 38vw, 200px"
+                    alt="{{ image_alt | escape }}"
+                    loading="lazy"
+                  >
+                {%- else -%}
+                  <span class="fe-about-team__avatar fe-about-team__avatar--placeholder" aria-hidden="true">Photo</span>
+                {%- endif -%}
+              </span>
+              <span class="fe-about-team__name">{{ profile_name | escape }}</span>
+              {%- if block.settings.role != blank -%}
+                <span class="fe-about-team__role">{{ block.settings.role | escape }}</span>
+              {%- endif -%}
+            </button>
+          </div>
+
+          <div
+            id="{{ modal_id }}"
+            class="fe-about-team__modal"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="{{ title_id }}"
+            aria-describedby="{{ bio_id }}"
+            hidden
+          >
+            <div class="fe-about-team__modal-overlay" data-about-team-close="{{ modal_id }}"></div>
+            <div class="fe-about-team__modal-card" tabindex="-1">
+              <div class="fe-about-team__modal-strip">
+                <button
+                  type="button"
+                  class="fe-about-team__modal-close"
+                  aria-label="Close profile"
+                  data-about-team-close="{{ modal_id }}"
+                >
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
+                    <path d="M18 6L6 18M6 6l12 12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                  </svg>
+                </button>
+              </div>
+
+              <div class="fe-about-team__modal-avatar-row">
+                <div class="fe-about-team__modal-avatar-inner">
+                  {%- if block.settings.profile_image != blank -%}
+                    <img
+                      class="fe-about-team__modal-avatar"
+                      src="{{ block.settings.profile_image | image_url: width: 500 }}"
+                      alt="{{ image_alt | escape }}"
+                      loading="lazy"
+                    >
+                  {%- else -%}
+                    <span class="fe-about-team__modal-avatar fe-about-team__modal-avatar--placeholder" aria-hidden="true">Photo</span>
+                  {%- endif -%}
+                </div>
+              </div>
+
+              <div class="fe-about-team__modal-body">
+                <h3 id="{{ title_id }}" class="fe-about-team__modal-name">{{ profile_name | escape }}</h3>
+                {%- if block.settings.role != blank -%}
+                  <p class="fe-about-team__modal-role">{{ block.settings.role | escape }}</p>
+                {%- endif -%}
+                <hr class="fe-about-team__modal-divider">
+                <div id="{{ bio_id }}" class="fe-about-team__modal-bio rte">
+                  {%- if block.settings.bio != blank -%}
+                    {{ block.settings.bio }}
+                  {%- else -%}
+                    <p>Add a bio for this team member in the theme editor.</p>
+                  {%- endif -%}
+                </div>
+              </div>
+            </div>
+          </div>
+        {%- endif -%}
+      {%- endfor -%}
+    </div>
+  </div>
+</section>
+
+<style>
+  .fe-about-team--{{ sid }} {
+    color: {{ section.settings.text_color }};
+    box-sizing: border-box;
+  }
+
+  .fe-about-team--{{ sid }} .fe-about-team__inner {
+    margin: 0 auto;
+    padding: 0 20px;
+    box-sizing: border-box;
+  }
+
+  .fe-about-team--{{ sid }} .fe-about-team__intro-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: clamp(28px, 5vw, 56px);
+    align-items: center;
+  }
+
+  .fe-about-team--{{ sid }} .fe-about-team__eyebrow {
+    margin: 0 0 10px;
+    font-family: "Plus Jakarta Sans", sans-serif;
+    font-size: 12px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    opacity: 0.65;
+  }
+
+  .fe-about-team--{{ sid }} .fe-about-team__heading {
+    margin: 0;
+    font-family: eidetic-neo, Georgia, "Times New Roman", serif;
+    font-size: clamp(28px, 3.2vw, 42px);
+    font-weight: 400;
+    line-height: 1.12;
+    color: {{ section.settings.text_color }};
+  }
+
+  .fe-about-team--{{ sid }} .fe-about-team__body {
+    margin: 18px 0 0;
+    font-family: "Plus Jakarta Sans", sans-serif;
+    font-size: {{ section.settings.body_font_size }}px;
+    line-height: 1.65;
+    color: {{ section.settings.text_color }};
+    opacity: 0.92;
+    max-width: 520px;
+  }
+
+  .fe-about-team--{{ sid }} .fe-about-team__body p {
+    margin: 0;
+  }
+
+  .fe-about-team--{{ sid }} .fe-about-team__body p + p {
+    margin-top: 14px;
+  }
+
+  .fe-about-team--{{ sid }} .fe-about-team__body--readmore {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    width: 100%;
+    max-width: 520px;
+    min-width: 0;
+  }
+
+  .fe-about-team--{{ sid }} .fe-about-team__readmore-viewport {
+    overflow: hidden;
+    width: 100%;
+    transition: height 0.45s ease;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .fe-about-team--{{ sid }} .fe-about-team__readmore-viewport {
+      transition: none;
+    }
+  }
+
+  .fe-about-team--{{ sid }} .fe-about-team__readmore-inner {
+    width: 100%;
+  }
+
+  .fe-about-team--{{ sid }} .fe-about-team__readmore-visible p,
+  .fe-about-team--{{ sid }} .fe-about-team__readmore-extra p {
+    margin: 0;
+  }
+
+  .fe-about-team--{{ sid }} .fe-about-team__readmore-visible p + p,
+  .fe-about-team--{{ sid }} .fe-about-team__readmore-extra p + p {
+    margin-top: 14px;
+  }
+
+  .fe-about-team--{{ sid }} .fe-about-team__readmore-extra:not([hidden]) {
+    margin-top: 14px;
+  }
+
+  .fe-about-team--{{ sid }} .fe-about-team__readmore-toggle {
+    margin-top: 16px;
+    align-self: flex-start;
+    padding: 0;
+    border: 0;
+    background: none;
+    cursor: pointer;
+    font-family: "Plus Jakarta Sans", sans-serif;
+    font-size: {{ section.settings.body_font_size }}px;
+    line-height: 1.55;
+    color: {{ section.settings.text_color }};
+    opacity: 0.92;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    text-decoration-thickness: 1px;
+    letter-spacing: 0.02em;
+    transition: opacity 0.2s ease;
+  }
+
+  .fe-about-team--{{ sid }} .fe-about-team__readmore-toggle:hover {
+    opacity: 0.65;
+  }
+
+  .fe-about-team--{{ sid }} .fe-about-team__readmore-toggle:focus-visible {
+    outline: 2px solid rgba(48, 35, 19, 0.35);
+    outline-offset: 3px;
+  }
+
+  .fe-about-team--{{ sid }} .fe-about-team__btn {
+    margin-top: 22px;
+    display: inline-block;
+    border: 1px solid {{ section.settings.text_color }};
+    color: {{ section.settings.text_color }};
+    text-decoration: none;
+    font-family: Arial, sans-serif;
+    font-size: 12px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 11px 22px;
+    transition: background 0.2s ease, color 0.2s ease;
+  }
+
+  .fe-about-team--{{ sid }} .fe-about-team__btn:hover {
+    background: {{ section.settings.text_color }};
+    color: {{ section.settings.background_color }};
+  }
+
+  .fe-about-team--{{ sid }} .fe-about-team__feature-img {
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+    display: block;
+    background: rgba(48, 35, 19, 0.08);
+  }
+
+  .fe-about-team--{{ sid }} .fe-about-team__feature-img--placeholder {
+    min-height: 260px;
+    background: rgba(48, 35, 19, 0.1);
+  }
+
+  .fe-about-team--{{ sid }} .fe-about-team__profiles {
+    margin-top: clamp(40px, 6vw, 72px);
+    display: grid;
+    grid-template-columns: repeat({{ section.settings.profiles_per_row }}, minmax(0, 1fr));
+    gap: 28px 22px;
+    justify-items: center;
+    text-align: center;
+  }
+
+  .fe-about-team--{{ sid }} .fe-about-team__profile {
+    width: 100%;
+    max-width: 220px;
+    display: flex;
+    justify-content: center;
+  }
+
+  .fe-about-team--{{ sid }} .fe-about-team__profile-btn {
+    background: none;
+    border: 0;
+    padding: 0;
+    cursor: pointer;
+    color: inherit;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    text-align: center;
+  }
+
+  .fe-about-team--{{ sid }} .fe-about-team__profile-btn:focus-visible {
+    outline: 2px solid rgba(48, 35, 19, 0.45);
+    outline-offset: 6px;
+  }
+
+  .fe-about-team--{{ sid }} .fe-about-team__avatar-wrap {
+    width: {{ section.settings.avatar_size }}px;
+    height: {{ section.settings.avatar_size }}px;
+    border-radius: 50%;
+    overflow: hidden;
+    background: rgba(48, 35, 19, 0.06);
+  }
+
+  .fe-about-team--{{ sid }} .fe-about-team__avatar {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  .fe-about-team--{{ sid }} .fe-about-team__avatar--placeholder {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-family: "Plus Jakarta Sans", sans-serif;
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: rgba(48, 35, 19, 0.45);
+  }
+
+  .fe-about-team--{{ sid }} .fe-about-team__name {
+    font-family: eidetic-neo, Georgia, "Times New Roman", serif;
+    font-size: clamp(17px, 1.8vw, 20px);
+    line-height: 1.25;
+  }
+
+  .fe-about-team--{{ sid }} .fe-about-team__role {
+    font-family: "Plus Jakarta Sans", sans-serif;
+    font-size: 12px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    opacity: 0.72;
+    margin-top: -4px;
+  }
+
+  .fe-about-team--{{ sid }} .fe-about-team__modal {
+    position: fixed;
+    inset: 0;
+    z-index: 999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    box-sizing: border-box;
+  }
+
+  .fe-about-team--{{ sid }} .fe-about-team__modal[hidden] {
+    display: none;
+  }
+
+  .fe-about-team--{{ sid }} .fe-about-team__modal-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.62);
+  }
+
+  .fe-about-team--{{ sid }} .fe-about-team__modal-card {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    max-width: 970px;
+    margin: 0;
+    box-shadow: 0 24px 56px rgba(0, 0, 0, 0.22);
+    border-radius: 6px;
+    overflow-x: hidden;
+    overflow-y: auto;
+    background: #ffffff;
+    max-height: calc(100vh - 40px);
+    box-sizing: border-box;
+    color: {{ section.settings.text_color }};
+    --fe-about-team-modal-photo: 170px;
+  }
+
+  .fe-about-team--{{ sid }} .fe-about-team__modal-strip {
+    height: 158px;
+    background: {{ section.settings.modal_strip_color }};
+    position: relative;
+  }
+
+  .fe-about-team--{{ sid }} .fe-about-team__modal-close {
+    position: absolute;
+    top: 22px;
+    right: 22px;
+    width: 44px;
+    height: 44px;
+    border: 0;
+    border-radius: 6px;
+    background: transparent;
+    color: {{ section.settings.text_color }};
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    z-index: 5;
+    transition: opacity 0.2s ease;
+  }
+
+  .fe-about-team--{{ sid }} .fe-about-team__modal-close:hover {
+    opacity: 0.72;
+  }
+
+  .fe-about-team--{{ sid }} .fe-about-team__modal-avatar-row {
+    display: flex;
+    justify-content: center;
+    margin-top: calc(var(--fe-about-team-modal-photo) / -2);
+    margin-bottom: 10px;
+    position: relative;
+    z-index: 2;
+    pointer-events: none;
+  }
+
+  .fe-about-team--{{ sid }} .fe-about-team__modal-avatar-inner {
+    pointer-events: auto;
+    border-radius: 50%;
+    box-shadow: 0 0 0 5px #ffffff;
+    background: #ffffff;
+    line-height: 0;
+  }
+
+  .fe-about-team--{{ sid }} .fe-about-team__modal-avatar {
+    width: var(--fe-about-team-modal-photo);
+    height: var(--fe-about-team-modal-photo);
+    object-fit: cover;
+    border-radius: 50%;
+    display: block;
+  }
+
+  .fe-about-team--{{ sid }} .fe-about-team__modal-avatar--placeholder {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(48, 35, 19, 0.1);
+    font-family: "Plus Jakarta Sans", sans-serif;
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: rgba(48, 35, 19, 0.55);
+  }
+
+  .fe-about-team--{{ sid }} .fe-about-team__modal-body {
+    background: #ffffff;
+    padding: 8px clamp(24px, 5vw, 56px) clamp(36px, 5vw, 56px);
+    text-align: center;
+  }
+
+  .fe-about-team--{{ sid }} .fe-about-team__modal-name {
+    margin: 0;
+    font-family: eidetic-neo, Georgia, "Times New Roman", serif;
+    font-size: clamp(26px, 3vw, 34px);
+    font-weight: 400;
+    line-height: 1.2;
+    color: {{ section.settings.text_color }};
+  }
+
+  .fe-about-team--{{ sid }} .fe-about-team__modal-role {
+    margin: 12px 0 0;
+    font-family: "Plus Jakarta Sans", sans-serif;
+    font-size: 12px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: {{ section.settings.text_color }};
+    opacity: 0.72;
+  }
+
+  .fe-about-team--{{ sid }} .fe-about-team__modal-divider {
+    width: 100%;
+    max-width: 720px;
+    height: 1px;
+    margin: 22px auto 24px;
+    border: 0;
+    background: {{ section.settings.divider_color }};
+  }
+
+  .fe-about-team--{{ sid }} .fe-about-team__modal-bio {
+    font-family: "Plus Jakarta Sans", sans-serif;
+    font-size: 16px;
+    line-height: 1.7;
+    color: {{ section.settings.text_color }};
+    max-width: 720px;
+    margin: 0 auto;
+    text-align: left;
+  }
+
+  .fe-about-team--{{ sid }} .fe-about-team__modal-bio p {
+    margin: 0;
+  }
+
+  .fe-about-team--{{ sid }} .fe-about-team__modal-bio p + p {
+    margin-top: 12px;
+  }
+
+  body.fe-about-team-modal-open {
+    overflow: hidden;
+  }
+
+  @media (max-width: 989px) {
+    .fe-about-team--{{ sid }} .fe-about-team__intro-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .fe-about-team--{{ sid }} .fe-about-team__profiles {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+
+  @media (max-width: 749px) {
+    .fe-about-team--{{ sid }} .fe-about-team__modal-card {
+      --fe-about-team-modal-photo: 148px;
+      border-radius: 4px;
+    }
+
+    .fe-about-team--{{ sid }} .fe-about-team__modal-strip {
+      height: 140px;
+    }
+
+    .fe-about-team--{{ sid }} .fe-about-team__profiles {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (max-width: 420px) {
+    .fe-about-team--{{ sid }} .fe-about-team__profiles {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
+
+<script>
+  (function () {
+    var root = document.querySelector('[data-fe-about-team="{{ sid }}"]');
+    if (!root || root.dataset.aboutTeamModalInit === 'true') return;
+    root.dataset.aboutTeamModalInit = 'true';
+
+    var body = document.body;
+    var activeModal = null;
+
+    function closeModal() {
+      if (!activeModal) return;
+      activeModal.setAttribute('hidden', '');
+      body.classList.remove('fe-about-team-modal-open');
+      activeModal = null;
+    }
+
+    function openModal(modalId) {
+      var modal = root.querySelector('#' + CSS.escape(modalId));
+      if (!modal) return;
+      if (activeModal && activeModal !== modal) {
+        activeModal.setAttribute('hidden', '');
+      }
+      modal.removeAttribute('hidden');
+      body.classList.add('fe-about-team-modal-open');
+      activeModal = modal;
+      var focusTarget = modal.querySelector('.fe-about-team__modal-close');
+      if (focusTarget) focusTarget.focus();
+    }
+
+    root.querySelectorAll('[data-about-team-open]').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        var id = btn.getAttribute('data-about-team-open');
+        if (id) openModal(id);
+      });
+    });
+
+    root.querySelectorAll('[data-about-team-close]').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        closeModal();
+      });
+    });
+
+    document.addEventListener('keydown', function (event) {
+      if (event.key === 'Escape' && activeModal && root.contains(activeModal)) {
+        closeModal();
+      }
+    });
+  })();
+</script>
+
+{%- if team_rm_toggle -%}
+<script>
+  (function () {
+    var sectionEl = document.querySelector('[data-fe-about-team="{{ sid }}"]');
+    if (!sectionEl) return;
+    var root = sectionEl.querySelector('.fe-about-team__intro-copy [data-fe-readmore-root]');
+    if (!root || root.dataset.feReadmoreInit === '1') return;
+    root.dataset.feReadmoreInit = '1';
+
+    var viewport = root.querySelector('[data-fe-readmore-viewport]');
+    var inner = root.querySelector('[data-fe-readmore-inner]');
+    var visible = root.querySelector('[data-fe-readmore-visible]');
+    var extra = root.querySelector('[data-fe-readmore-extra]');
+    var btn = root.querySelector('[data-fe-readmore-toggle]');
+    if (!viewport || !inner || !visible || !extra || !btn) return;
+
+    var moreLabel = btn.getAttribute('data-label-more') || 'Read More';
+    var lessLabel = btn.getAttribute('data-label-less') || 'Read Less';
+    var expanded = false;
+    var reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    function syncHeight() {
+      var h = expanded ? inner.scrollHeight : visible.scrollHeight;
+      viewport.style.height = Math.ceil(h) + 'px';
+    }
+
+    function applyExpanded(next) {
+      expanded = next;
+      root.dataset.expanded = expanded ? 'true' : 'false';
+      btn.setAttribute('aria-expanded', expanded ? 'true' : 'false');
+      btn.textContent = expanded ? lessLabel : moreLabel;
+
+      if (expanded) {
+        extra.removeAttribute('hidden');
+        extra.setAttribute('aria-hidden', 'false');
+        requestAnimationFrame(syncHeight);
+        return;
+      }
+
+      extra.setAttribute('aria-hidden', 'true');
+
+      function finishHide() {
+        extra.setAttribute('hidden', '');
+      }
+
+      requestAnimationFrame(function () {
+        syncHeight();
+        if (reduceMotion) {
+          finishHide();
+          return;
+        }
+        var done = false;
+        function onHeightDone(e) {
+          if (e.target !== viewport || e.propertyName !== 'height') return;
+          done = true;
+          viewport.removeEventListener('transitionend', onHeightDone);
+          finishHide();
+        }
+        viewport.addEventListener('transitionend', onHeightDone);
+        window.setTimeout(function () {
+          if (!done) {
+            viewport.removeEventListener('transitionend', onHeightDone);
+            finishHide();
+          }
+        }, 600);
+      });
+    }
+
+    extra.setAttribute('hidden', '');
+    syncHeight();
+
+    btn.addEventListener('click', function () {
+      applyExpanded(!expanded);
+    });
+
+    window.addEventListener(
+      'resize',
+      function () {
+        syncHeight();
+      },
+      { passive: true }
+    );
+  })();
+</script>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "About Us Team",
+  "tag": "section",
+  "class": "fe-about-us-team-section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "section_id",
+      "label": "Section HTML id",
+      "default": "who-we-are",
+      "info": "For in-page anchor links."
+    },
+    {
+      "type": "text",
+      "id": "section_number",
+      "label": "Section number",
+      "default": "01"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Who We Are"
+    },
+    {
+      "type": "richtext",
+      "id": "body",
+      "label": "Intro copy"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_read_more",
+      "label": "Enable Read More",
+      "default": false
+    },
+    {
+      "type": "text",
+      "id": "read_more_label",
+      "label": "Read More Label",
+      "default": "Read More"
+    },
+    {
+      "type": "text",
+      "id": "read_less_label",
+      "label": "Read Less Label",
+      "default": "Read Less"
+    },
+    {
+      "type": "range",
+      "id": "body_font_size",
+      "min": 14,
+      "max": 22,
+      "step": 1,
+      "unit": "px",
+      "label": "Intro body font size",
+      "default": 16
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "Button label",
+      "default": "Meet The Family"
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "Button link"
+    },
+    {
+      "type": "image_picker",
+      "id": "feature_image",
+      "label": "Feature image"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background color",
+      "default": "#efeee9"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color",
+      "default": "#302313"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 200,
+      "step": 4,
+      "unit": "px",
+      "label": "Padding top",
+      "default": 88
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 200,
+      "step": 4,
+      "unit": "px",
+      "label": "Padding bottom",
+      "default": 88
+    },
+    {
+      "type": "range",
+      "id": "container_width",
+      "min": 900,
+      "max": 1400,
+      "step": 10,
+      "unit": "px",
+      "label": "Container max width",
+      "default": 1110
+    },
+    {
+      "type": "range",
+      "id": "profiles_per_row",
+      "min": 3,
+      "max": 6,
+      "step": 1,
+      "label": "Team circles per row (desktop)",
+      "default": 5
+    },
+    {
+      "type": "range",
+      "id": "avatar_size",
+      "min": 120,
+      "max": 220,
+      "step": 4,
+      "unit": "px",
+      "label": "Profile circle size",
+      "default": 168
+    },
+    {
+      "type": "color",
+      "id": "modal_strip_color",
+      "label": "Modal top grey area",
+      "default": "#e8e8e8"
+    },
+    {
+      "type": "color",
+      "id": "divider_color",
+      "label": "Modal divider color",
+      "default": "#d8d2c8"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "member",
+      "name": "Team member",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "profile_image",
+          "label": "Profile image"
+        },
+        {
+          "type": "text",
+          "id": "name",
+          "label": "Name"
+        },
+        {
+          "type": "text",
+          "id": "role",
+          "label": "Role"
+        },
+        {
+          "type": "richtext",
+          "id": "bio",
+          "label": "Bio"
+        },
+        {
+          "type": "text",
+          "id": "image_alt",
+          "label": "Image alt text"
+        }
+      ]
+    }
+  ],
+  "max_blocks": 16,
+  "presets": [
+    {
+      "name": "About Us Team",
+      "blocks": [
+        {
+          "type": "member",
+          "settings": {
+            "name": "Hunter Smith",
+            "role": "Viticulture",
+            "bio": "<p>Add bio text in the theme editor.</p>"
+          }
+        },
+        {
+          "type": "member",
+          "settings": {
+            "name": "Elizabeth Smith",
+            "role": "Operations",
+            "bio": "<p>Add bio text in the theme editor.</p>"
+          }
+        },
+        {
+          "type": "member",
+          "settings": {
+            "name": "Brian Kent",
+            "role": "Winemaker",
+            "bio": "<p>Add bio text in the theme editor.</p>"
+          }
+        },
+        {
+          "type": "member",
+          "settings": {
+            "name": "Judi & Barrie Smith",
+            "role": "Founders",
+            "bio": "<p>Add bio text in the theme editor.</p>"
+          }
+        },
+        {
+          "type": "member",
+          "settings": {
+            "name": "Gladys",
+            "role": "Chief of Security",
+            "bio": "<p>Add bio text in the theme editor.</p>"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,385 @@
+
+
+{%- liquid
+  assign sid = section.id
+  assign overlay_o = section.settings.overlay_opacity | divided_by: 100.0
+  assign hero_h = section.settings.hero_desktop | default: 580
+  assign hero_h_m = section.settings.hero_mobile | default: 340
+  assign bg = section.settings.background_color | default: '#E9E8E2'
+  assign max_w = section.settings.content_max_width | default: 900
+  assign img_alt = article.image.alt | default: article.title
+-%}
+
+<div
+  class="fe-article-template fe-article-template--{{ sid }}"
+  style="
+    --fe-article-hero-h: {{ hero_h }}px;
+    --fe-article-hero-h-mobile: {{ hero_h_m }}px;
+    --fe-article-overlay-opacity: {{ overlay_o }};
+    --fe-article-bg: {{ bg }};
+    --fe-article-content-max: {{ max_w }}px;
+  "
+>
+  <header class="fe-article-template__hero" aria-label="{{ article.title | escape }}">
+    <div class="fe-article-template__hero-media">
+      {%- if article.image != blank -%}
+        {{
+          article.image
+          | image_url: width: 2400
+          | image_tag:
+            alt: img_alt,
+            class: 'fe-article-template__hero-img',
+            loading: 'eager',
+            fetchpriority: 'high',
+            sizes: '100vw',
+            widths: '750,1100,1400,1800,2200,2400'
+        }}
+      {%- endif -%}
+      <div class="fe-article-template__hero-overlay"></div>
+    </div>
+
+    <div class="fe-article-template__hero-inner">
+      <h1 class="fe-article-template__hero-title">{{ article.title | escape }}</h1>
+      <div class="fe-article-template__hero-meta">
+        <span class="fe-article-template__hero-meta-icon" aria-hidden="true">
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" focusable="false">
+            <rect x="3" y="4" width="18" height="18" rx="2"></rect>
+            <path d="M16 2v4M8 2v4M3 10h18"></path>
+          </svg>
+        </span>
+        <time class="fe-article-template__hero-date" datetime="{{ article.published_at | date: '%Y-%m-%d' }}">
+          {{- article.published_at | date: '%B %e, %Y' -}}
+        </time>
+      </div>
+    </div>
+  </header>
+
+  <div class="fe-article-template__body">
+    <div class="fe-article-template__container">
+      <div class="fe-article-template__content rte">
+        {{ article.content }}
+      </div>
+    </div>
+  </div>
+</div>
+
+{% stylesheet %}
+  /* Scoped: .fe-article-template — mirrors page-hero stacking (media / overlay / centered content) */
+  .fe-article-template {
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .fe-article-template__hero {
+    position: relative;
+    width: 100%;
+    height: var(--fe-article-hero-h, 580px);
+    min-height: 240px;
+    overflow: hidden;
+    background-color: #32291a;
+    color: #ffffff;
+  }
+
+  .fe-article-template__hero-media {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+  }
+
+  .fe-article-template__hero-img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center center;
+    display: block;
+  }
+
+  .fe-article-template__hero-overlay {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    background: #000;
+    opacity: var(--fe-article-overlay-opacity, 0.35);
+    pointer-events: none;
+  }
+
+  .fe-article-template__hero-inner {
+    position: relative;
+    z-index: 2;
+    width: 100%;
+    height: 100%;
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: clamp(20px, 4vw, 36px);
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    gap: clamp(12px, 2vw, 20px);
+  }
+
+  .fe-article-template__hero-title {
+    margin: 0;
+    max-width: 22ch;
+    font-family: eidetic-neo, serif;
+    font-weight: 400;
+    line-height: 1.1;
+    font-size: clamp(34px, 5vw, 56px);
+    color: #ffffff;
+    text-wrap: balance;
+  }
+
+  .fe-article-template__hero-meta {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 400;
+    color: rgb(255 255 255 / 92%);
+  }
+
+  .fe-article-template__hero-meta-icon {
+    display: inline-flex;
+    flex-shrink: 0;
+    opacity: 0.85;
+    color: #ffffff;
+  }
+
+  .fe-article-template__hero-date {
+    font-weight: 400;
+  }
+
+  .fe-article-template__body {
+    background-color: var(--fe-article-bg, #e9e8e2);
+    padding-top: clamp(40px, 7vw, 72px);
+    padding-bottom: clamp(56px, 10vw, 96px);
+    box-sizing: border-box;
+  }
+
+  .fe-article-template__container {
+    width: 100%;
+    max-width: var(--fe-article-content-max, 900px);
+    margin-inline: auto;
+    padding-inline: clamp(18px, 4vw, 28px);
+    box-sizing: border-box;
+  }
+
+  .fe-article-template .fe-article-template__content.rte {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: clamp(16px, 1.2vw, 18px);
+    line-height: 1.9;
+    color: #2e261d;
+    word-break: break-word;
+    overflow-wrap: anywhere;
+  }
+
+  .fe-article-template .fe-article-template__content.rte > *:first-child {
+    margin-top: 0;
+  }
+
+  .fe-article-template .fe-article-template__content.rte > *:last-child {
+    margin-bottom: 0;
+  }
+
+  .fe-article-template .fe-article-template__content.rte p {
+    margin: 0 0 1.25em;
+  }
+
+  .fe-article-template .fe-article-template__content.rte h1,
+  .fe-article-template .fe-article-template__content.rte h2,
+  .fe-article-template .fe-article-template__content.rte h3,
+  .fe-article-template .fe-article-template__content.rte h4,
+  .fe-article-template .fe-article-template__content.rte h5,
+  .fe-article-template .fe-article-template__content.rte h6 {
+    font-family: eidetic-neo, serif;
+    font-weight: 400;
+    color: #32291a;
+    line-height: 1.22;
+    margin: 1.6em 0 0.65em;
+  }
+
+  .fe-article-template .fe-article-template__content.rte h1 {
+    font-size: clamp(1.75rem, 3vw, 2.25rem);
+  }
+
+  .fe-article-template .fe-article-template__content.rte h2 {
+    font-size: clamp(1.55rem, 2.6vw, 2rem);
+  }
+
+  .fe-article-template .fe-article-template__content.rte h3 {
+    font-size: clamp(1.35rem, 2.2vw, 1.65rem);
+  }
+
+  .fe-article-template .fe-article-template__content.rte h4 {
+    font-size: clamp(1.2rem, 1.8vw, 1.35rem);
+  }
+
+  .fe-article-template .fe-article-template__content.rte a {
+    color: #32291a;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  .fe-article-template .fe-article-template__content.rte a:hover {
+    color: #1a1510;
+  }
+
+  .fe-article-template .fe-article-template__content.rte ul,
+  .fe-article-template .fe-article-template__content.rte ol {
+    margin: 0 0 1.25em;
+    padding-left: 1.35em;
+  }
+
+  .fe-article-template .fe-article-template__content.rte li {
+    margin-bottom: 0.45em;
+  }
+
+  .fe-article-template .fe-article-template__content.rte blockquote {
+    margin: 1.5em 0;
+    padding: 1em 1.25em;
+    border-left: 3px solid rgb(50 41 26 / 35%);
+    background: rgb(255 255 255 / 35%);
+    font-style: italic;
+  }
+
+  .fe-article-template .fe-article-template__content.rte img,
+  .fe-article-template .fe-article-template__content.rte video {
+    max-width: 100%;
+    height: auto;
+    display: block;
+    margin-block: clamp(24px, 4vw, 40px);
+    border-radius: 2px;
+  }
+
+  .fe-article-template .fe-article-template__content.rte iframe {
+    max-width: 100%;
+    width: 100%;
+    margin-block: clamp(24px, 4vw, 40px);
+    border: 0;
+  }
+
+  .fe-article-template .fe-article-template__content.rte figure {
+    margin: clamp(24px, 4vw, 40px) 0;
+    max-width: 100%;
+  }
+
+  .fe-article-template .fe-article-template__content.rte figcaption {
+    font-size: 0.9em;
+    color: rgb(46 38 29 / 72%);
+    margin-top: 0.6em;
+    line-height: 1.5;
+  }
+
+  .fe-article-template .fe-article-template__content.rte table {
+    width: 100%;
+    max-width: 100%;
+    border-collapse: collapse;
+    margin: 1.5em 0;
+    font-size: 0.95em;
+  }
+
+  .fe-article-template .fe-article-template__content.rte th,
+  .fe-article-template .fe-article-template__content.rte td {
+    border: 1px solid rgb(50 41 26 / 18%);
+    padding: 0.5em 0.65em;
+    text-align: left;
+  }
+
+  @media screen and (max-width: 749px) {
+    .fe-article-template__hero {
+      height: var(--fe-article-hero-h-mobile, 340px);
+    }
+
+    .fe-article-template__hero-title {
+      font-size: clamp(28px, 7vw, 40px);
+      max-width: none;
+    }
+
+    .fe-article-template__hero-meta {
+      font-size: 12px;
+    }
+
+    .fe-article-template__body {
+      padding-top: clamp(28px, 8vw, 44px);
+      padding-bottom: clamp(44px, 10vw, 72px);
+    }
+
+    .fe-article-template .fe-article-template__content.rte {
+      font-size: 16px;
+      line-height: 1.85;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Article (Frankland)",
+  "tag": "section",
+  "class": "fe-article-main-section",
+  "enabled_on": {
+    "templates": ["article"]
+  },
+  "settings": [
+    {
+      "type": "header",
+      "content": "Hero"
+    },
+    {
+      "type": "range",
+      "id": "hero_desktop",
+      "label": "Hero height (desktop)",
+      "min": 500,
+      "max": 650,
+      "step": 10,
+      "unit": "px",
+      "default": 580
+    },
+    {
+      "type": "range",
+      "id": "hero_mobile",
+      "label": "Hero height (mobile)",
+      "min": 240,
+      "max": 480,
+      "step": 10,
+      "unit": "px",
+      "default": 340
+    },
+    {
+      "type": "range",
+      "id": "overlay_opacity",
+      "label": "Hero overlay darkness",
+      "min": 0,
+      "max": 80,
+      "step": 5,
+      "unit": "%",
+      "default": 35
+    },
+    {
+      "type": "header",
+      "content": "Article body"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background color",
+      "default": "#E9E8E2"
+    },
+    {
+      "type": "range",
+      "id": "content_max_width",
+      "label": "Content max width",
+      "min": 680,
+      "max": 1100,
+      "step": 10,
+      "unit": "px",
+      "default": 900
+    }
+  ]
+}
+{% endschema %}

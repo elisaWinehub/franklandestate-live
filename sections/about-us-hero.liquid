@@ -1,0 +1,522 @@
+{%- liquid
+  assign sid = section.id
+  assign op = section.settings.overlay_opacity | times: 1.0 | divided_by: 100.0
+  assign hero_body_mt = section.settings.body_margin_top | default: 0
+  assign hero_body_mr = section.settings.body_margin_right | default: 0
+  assign hero_body_mb = section.settings.body_margin_bottom | default: 0
+  assign hero_body_ml = section.settings.body_margin_left | default: 0
+-%}
+
+<section
+  id="{{ section.settings.section_id | default: 'our-place-hero' | handleize }}"
+  class="fe-about-hero fe-about-hero--{{ sid }}"
+  style="
+    --fe-about-hero-h-desktop: {{ section.settings.hero_height_desktop }}px;
+    --fe-about-hero-h-mobile: {{ section.settings.hero_height_mobile }}px;
+  "
+  aria-labelledby="fe-about-hero-title-{{ sid }}"
+>
+  <div class="fe-about-hero__media">
+    {%- if section.settings.desktop_image != blank -%}
+      <img
+        class="fe-about-hero__img fe-about-hero__img--desktop"
+        src="{{ section.settings.desktop_image | image_url: width: 2400 }}"
+        srcset="
+          {{ section.settings.desktop_image | image_url: width: 900 }} 900w,
+          {{ section.settings.desktop_image | image_url: width: 1400 }} 1400w,
+          {{ section.settings.desktop_image | image_url: width: 2000 }} 2000w,
+          {{ section.settings.desktop_image | image_url: width: 2400 }} 2400w
+        "
+        sizes="100vw"
+        alt="{{ section.settings.desktop_image.alt | escape | default: section.settings.heading }}"
+        loading="eager"
+        fetchpriority="high"
+      >
+    {%- endif -%}
+
+    {%- if section.settings.mobile_image != blank -%}
+      <img
+        class="fe-about-hero__img fe-about-hero__img--mobile"
+        src="{{ section.settings.mobile_image | image_url: width: 1200 }}"
+        srcset="
+          {{ section.settings.mobile_image | image_url: width: 600 }} 600w,
+          {{ section.settings.mobile_image | image_url: width: 900 }} 900w,
+          {{ section.settings.mobile_image | image_url: width: 1200 }} 1200w
+        "
+        sizes="100vw"
+        alt="{{ section.settings.mobile_image.alt | escape | default: section.settings.heading }}"
+        loading="eager"
+        fetchpriority="high"
+      >
+    {%- endif -%}
+
+    <div
+      class="fe-about-hero__overlay"
+      style="background-color: {{ section.settings.overlay_color }}; opacity: {{ op }};"
+    ></div>
+  </div>
+
+  <div class="fe-about-hero__inner">
+    <div
+      class="fe-about-hero__content"
+      style="
+        max-width: {{ section.settings.content_max_width }}px;
+        color: {{ section.settings.text_color }};
+        padding-top: {{ section.settings.padding_top }}px;
+        padding-bottom: {{ section.settings.padding_bottom }}px;
+      "
+    >
+      {%- if section.settings.heading != blank -%}
+        <h1 id="fe-about-hero-title-{{ sid }}" class="fe-about-hero__title" style="color: {{ section.settings.heading_color }};">{{ section.settings.heading | escape }}</h1>
+      {%- endif -%}
+
+      {%- if section.settings.body != blank -%}
+        <div
+          class="fe-about-hero__body rte{% if hero_body_ml == 0 and hero_body_mr == 0 %} fe-about-hero__body--center{% endif %}"
+          style="
+            margin-top: {{ hero_body_mt }}px;
+            margin-bottom: {{ hero_body_mb }}px;
+            {% if hero_body_ml != 0 %}margin-left: {{ hero_body_ml }}px;{% endif %}
+            {% if hero_body_mr != 0 %}margin-right: {{ hero_body_mr }}px;{% endif %}
+          "
+        >
+          {{ section.settings.body }}
+        </div>
+      {%- endif -%}
+
+      <nav class="fe-about-hero__nav" aria-label="Section shortcuts">
+        <ul class="fe-about-hero__nav-list">
+          {%- if section.settings.link_1_label != blank -%}
+            <li class="fe-about-hero__nav-item">
+              <a class="fe-about-hero__nav-link" href="{{ section.settings.link_1_url }}">{{ section.settings.link_1_label | escape }}</a>
+            </li>
+          {%- endif -%}
+          {%- if section.settings.link_2_label != blank -%}
+            <li class="fe-about-hero__nav-sep" aria-hidden="true"><span>|</span></li>
+            <li class="fe-about-hero__nav-item">
+              <a class="fe-about-hero__nav-link" href="{{ section.settings.link_2_url }}">{{ section.settings.link_2_label | escape }}</a>
+            </li>
+          {%- endif -%}
+          {%- if section.settings.link_3_label != blank -%}
+            <li class="fe-about-hero__nav-sep" aria-hidden="true"><span>|</span></li>
+            <li class="fe-about-hero__nav-item">
+              <a class="fe-about-hero__nav-link" href="{{ section.settings.link_3_url }}">{{ section.settings.link_3_label | escape }}</a>
+            </li>
+          {%- endif -%}
+          {%- if section.settings.link_4_label != blank -%}
+            <li class="fe-about-hero__nav-sep" aria-hidden="true"><span>|</span></li>
+            <li class="fe-about-hero__nav-item">
+              <a class="fe-about-hero__nav-link" href="{{ section.settings.link_4_url }}">{{ section.settings.link_4_label | escape }}</a>
+            </li>
+          {%- endif -%}
+        </ul>
+      </nav>
+
+      {%- if section.settings.show_arrow -%}
+        <div class="fe-about-hero__arrow-wrap">
+          <a
+            class="fe-about-hero__arrow"
+            href="{{ section.settings.arrow_link | default: '#' }}"
+            aria-label="{{ section.settings.arrow_label | escape }}"
+          >
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" aria-hidden="true" focusable="false">
+              <path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </a>
+        </div>
+      {%- endif -%}
+    </div>
+  </div>
+</section>
+
+<style>
+  .fe-about-hero--{{ sid }} {
+    position: relative;
+    width: 100%;
+    min-height: var(--fe-about-hero-h-desktop);
+    overflow: hidden;
+    background-color: {{ section.settings.fallback_background_color }};
+  }
+
+  .fe-about-hero--{{ sid }} .fe-about-hero__media {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+  }
+
+  .fe-about-hero--{{ sid }} .fe-about-hero__img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    display: block;
+  }
+
+  .fe-about-hero--{{ sid }} .fe-about-hero__img--mobile {
+    display: none;
+  }
+
+  .fe-about-hero--{{ sid }} .fe-about-hero__overlay {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+  }
+
+  .fe-about-hero--{{ sid }} .fe-about-hero__inner {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: inherit;
+    padding: 0 24px;
+    box-sizing: border-box;
+  }
+
+  .fe-about-hero--{{ sid }} .fe-about-hero__content {
+    width: 100%;
+    margin: 0 auto;
+    text-align: center;
+    box-sizing: border-box;
+  }
+
+  .fe-about-hero--{{ sid }} .fe-about-hero__title {
+    margin: 0;
+    font-family: eidetic-neo, Georgia, "Times New Roman", serif;
+    font-size: clamp(36px, 5vw, 56px);
+    font-weight: 400;
+    line-height: 1.08;
+    letter-spacing: 0.02em;
+  }
+
+  .fe-about-hero--{{ sid }} .fe-about-hero__body {
+    margin: 18px auto 0;
+    max-width: 700px;
+    font-family: "Plus Jakarta Sans", sans-serif;
+    font-size: clamp(15px, 1.55vw, 18px);
+    line-height: 1.65;
+    opacity: 0.95;
+  }
+
+  .fe-about-hero--{{ sid }} .fe-about-hero__body p {
+    margin: 0;
+  }
+
+  .fe-about-hero--{{ sid }} .fe-about-hero__nav {
+    margin-top: 28px;
+  }
+
+  .fe-about-hero--{{ sid }} .fe-about-hero__nav-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 10px 14px;
+    font-family: "Plus Jakarta Sans", sans-serif;
+    font-size: 13px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  .fe-about-hero--{{ sid }} .fe-about-hero__nav-sep {
+    color: inherit;
+    opacity: 0.45;
+    user-select: none;
+  }
+
+  .fe-about-hero--{{ sid }} .fe-about-hero__nav-link {
+    color: inherit;
+    text-decoration: none;
+    border-bottom: 1px solid transparent;
+    transition: border-color 0.2s ease, opacity 0.2s ease;
+    opacity: 0.92;
+  }
+
+  .fe-about-hero--{{ sid }} .fe-about-hero__nav-link:hover {
+    border-bottom-color: currentColor;
+    opacity: 1;
+  }
+
+  .fe-about-hero--{{ sid }} .fe-about-hero__arrow-wrap {
+    margin-top: 36px;
+    display: flex;
+    justify-content: center;
+  }
+
+  .fe-about-hero--{{ sid }} .fe-about-hero__arrow {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: inherit;
+    opacity: 0.88;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+  }
+
+  .fe-about-hero--{{ sid }} .fe-about-hero__arrow:hover {
+    opacity: 1;
+    transform: translateY(3px);
+  }
+
+  @media (max-width: 749px) {
+    .fe-about-hero--{{ sid }} {
+      min-height: var(--fe-about-hero-h-mobile);
+    }
+
+    .fe-about-hero--{{ sid }} .fe-about-hero__img--desktop {
+      {% if section.settings.mobile_image != blank %}display: none;{% endif %}
+    }
+
+    .fe-about-hero--{{ sid }} .fe-about-hero__img--mobile {
+      {% if section.settings.mobile_image != blank %}display: block;{% endif %}
+    }
+
+    .fe-about-hero--{{ sid }} .fe-about-hero__nav-list {
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .fe-about-hero--{{ sid }} .fe-about-hero__nav-sep {
+      display: none;
+    }
+  }
+</style>
+
+{% schema %}
+{
+  "name": "About Us Hero",
+  "tag": "section",
+  "class": "fe-about-us-hero-section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "section_id",
+      "label": "Section HTML id",
+      "default": "our-place-hero",
+      "info": "For anchor links (no spaces)."
+    },
+    {
+      "type": "image_picker",
+      "id": "desktop_image",
+      "label": "Desktop background image"
+    },
+    {
+      "type": "image_picker",
+      "id": "mobile_image",
+      "label": "Mobile background image"
+    },
+    {
+      "type": "color",
+      "id": "fallback_background_color",
+      "label": "Background fallback color",
+      "default": "#2a241c"
+    },
+    {
+      "type": "color",
+      "id": "overlay_color",
+      "label": "Overlay color",
+      "default": "#000000"
+    },
+    {
+      "type": "range",
+      "id": "overlay_opacity",
+      "min": 0,
+      "max": 90,
+      "step": 5,
+      "unit": "%",
+      "label": "Overlay opacity",
+      "default": 35
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Our Place"
+    },
+    {
+      "type": "richtext",
+      "id": "body",
+      "label": "Body text",
+      "default": "<p>A family winery shaped by land, people, and organic farming in Frankland River.</p>"
+    },
+    {
+      "type": "range",
+      "id": "body_margin_top",
+      "min": 0,
+      "max": 160,
+      "step": 4,
+      "unit": "px",
+      "label": "Body text margin top",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "body_margin_right",
+      "min": 0,
+      "max": 160,
+      "step": 4,
+      "unit": "px",
+      "label": "Body text margin right",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "body_margin_bottom",
+      "min": 0,
+      "max": 160,
+      "step": 4,
+      "unit": "px",
+      "label": "Body text margin bottom",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "body_margin_left",
+      "min": 0,
+      "max": 160,
+      "step": 4,
+      "unit": "px",
+      "label": "Body text margin left",
+      "default": 0
+    },
+    {
+      "type": "header",
+      "content": "Anchor links"
+    },
+    {
+      "type": "text",
+      "id": "link_1_label",
+      "label": "Link 1 label",
+      "default": "Who We Are"
+    },
+    {
+      "type": "url",
+      "id": "link_1_url",
+      "label": "Link 1 URL"
+    },
+    {
+      "type": "text",
+      "id": "link_2_label",
+      "label": "Link 2 label",
+      "default": "Where We Live"
+    },
+    {
+      "type": "url",
+      "id": "link_2_url",
+      "label": "Link 2 URL"
+    },
+    {
+      "type": "text",
+      "id": "link_3_label",
+      "label": "Link 3 label",
+      "default": "Olmo’s Reward"
+    },
+    {
+      "type": "url",
+      "id": "link_3_url",
+      "label": "Link 3 URL"
+    },
+    {
+      "type": "text",
+      "id": "link_4_label",
+      "label": "Link 4 label",
+      "default": "Visit"
+    },
+    {
+      "type": "url",
+      "id": "link_4_url",
+      "label": "Link 4 URL"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_arrow",
+      "label": "Show arrow down",
+      "default": true
+    },
+    {
+      "type": "url",
+      "id": "arrow_link",
+      "label": "Arrow link",
+      "info": "Optional in-page anchor below the hero."
+    },
+    {
+      "type": "text",
+      "id": "arrow_label",
+      "label": "Arrow accessibility label",
+      "default": "Scroll to content"
+    },
+    {
+      "type": "range",
+      "id": "hero_height_desktop",
+      "min": 320,
+      "max": 900,
+      "step": 10,
+      "unit": "px",
+      "label": "Hero height (desktop)",
+      "default": 560
+    },
+    {
+      "type": "range",
+      "id": "hero_height_mobile",
+      "min": 280,
+      "max": 700,
+      "step": 10,
+      "unit": "px",
+      "label": "Hero height (mobile)",
+      "default": 420
+    },
+    {
+      "type": "range",
+      "id": "content_max_width",
+      "min": 520,
+      "max": 1100,
+      "step": 10,
+      "unit": "px",
+      "label": "Content max width",
+      "default": 820
+    },
+    {
+      "type": "color",
+      "id": "heading_color",
+      "label": "Heading color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Body & navigation color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 160,
+      "step": 4,
+      "unit": "px",
+      "label": "Content padding top",
+      "default": 56
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 160,
+      "step": 4,
+      "unit": "px",
+      "label": "Content padding bottom",
+      "default": 56
+    }
+  ],
+  "presets": [
+    {
+      "name": "About Us Hero"
+    }
+  ]
+}
+{% endschema %}

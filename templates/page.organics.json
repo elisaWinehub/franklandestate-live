@@ -1,0 +1,173 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "hero": {
+      "type": "page-hero-banner",
+      "settings": {
+        "heading": "",
+        "text_vertical_position": "lower-center",
+        "text_color": "#ffffff",
+        "image": "shopify://shop_images/Organics_and_You_Banner.jpg",
+        "background_position": "center center",
+        "background_color": "#efeee9",
+        "desktop_height": 560,
+        "mobile_height": 360,
+        "overlay_opacity": 25
+      }
+    },
+    "main": {
+      "type": "main-page",
+      "settings": {}
+    },
+    "text_image_column_GUVWaw": {
+      "type": "text-image-column",
+      "name": "Text + Image",
+      "settings": {
+        "heading": "Organic grape-growing is at the heart of Frankland Estate - not as a trend, but as a long-held philosophy.",
+        "body": "",
+        "button_label": "",
+        "button_link": "",
+        "image_url": "",
+        "text_alignment": "center",
+        "text_container_width": "normal",
+        "background_color": "#efeee9",
+        "padding_top": 80,
+        "padding_bottom": 80
+      }
+    },
+    "alt_1": {
+      "type": "alternating-content",
+      "settings": {
+        "image": "shopify://shop_images/Screenshot_2026-05-04_144815.png",
+        "heading": "",
+        "body": "<p>From the beginning, the family has worked to maintain the ecological balance of the land: nurturing soil microbiology, encouraging biodiversity, and supporting the long-term health of the region’s flora and fauna. This commitment led to the conversion of Isolation Ridge to organic viticulture in 2005, with full certification achieved for the 2009 harvest. Today, all wines from the vineyard are certified organic, with ongoing independent audits and testing ensuring that integrity.</p>",
+        "button_label": "",
+        "button_link": "",
+        "image_position": "image_right",
+        "background_color": "#efeee9",
+        "padding_top": 80,
+        "padding_bottom": 80,
+        "divider_position": "none"
+      }
+    },
+    "alt_2": {
+      "type": "alternating-content",
+      "settings": {
+        "image": "shopify://shop_images/Harvest.jpg",
+        "heading": "",
+        "body": "<p>Organic farming excludes synthetic fertilisers, pesticides, fungicides and growth hormones. Instead, we focus on building soil health through composting, mulching, and careful cultivation - creating a living system that supports the vine naturally.</p><p>This was not a dramatic shift, but a natural progression from low-intervention farming. The goal has always been the same: to grow better fruit by working in balance with the environment.</p>",
+        "button_label": "",
+        "button_link": "",
+        "image_position": "image_left",
+        "background_color": "#efeee9",
+        "padding_top": 80,
+        "padding_bottom": 80,
+        "divider_position": "none"
+      }
+    },
+    "alternating_content_AJb6Bk": {
+      "type": "alternating-content",
+      "name": "Alternating Content",
+      "settings": {
+        "image": "shopify://shop_images/FE_GRAPES_1.jpg",
+        "heading": "",
+        "body": "<p>The results are clear in the vineyard and the glass. Healthier soils produce more resilient vines, better able to adapt to seasonal variation. This leads to improved balance between canopy and crop, and ultimately, more expressive fruit. With steadier sugar and acid levels, grapes can remain on the vine longer, developing greater depth of flavour while retaining freshness and energy.</p><p>Better fruit allows us to take a lighter touch in the winery - capturing purity, texture and site expression in every wine.</p>",
+        "button_label": "",
+        "button_link": "",
+        "image_position": "image_right",
+        "background_color": "#efeee9",
+        "padding_top": 80,
+        "padding_bottom": 80,
+        "divider_position": "none"
+      }
+    },
+    "quote_section_Bij9JB": {
+      "type": "quote-section",
+      "settings": {
+        "quote_text": "<p><em>Frankland Estate has been front of mind for their continuing quest to raise their already high bar. Not often talked about is the shift to organic farming... the vineyards have never been healthier or producing higher quality fruit. Frankland Estate is to be revered and celebrated in equal measure. Quietly going about its work, it continues to delight and surprise.</em></p>",
+        "author": "Mike Bennie, Gourmet Traveller Wine",
+        "quote_font_family": "serif",
+        "quote_font_size": 24,
+        "quote_font_weight": "400",
+        "author_font_family": "sans",
+        "author_font_size": 12,
+        "author_font_weight": "400",
+        "background_color": "#efeee9",
+        "text_color": "#302313",
+        "author_color": "#6e6256",
+        "padding_top": 84,
+        "padding_bottom": 84,
+        "show_top_divider": false,
+        "show_bottom_divider": true,
+        "divider_color": "#d2cbc2",
+        "max_width": 1080,
+        "show_quote_marks": true
+      }
+    },
+    "quote_section_LABHVC": {
+      "type": "quote-section",
+      "settings": {
+        "quote_text": "<p><em>It’s the little things… like noticing hot days can fatigue a vine, just like they do us, and asking ‘what can we do to give the vine additional energy to thrive?’ The cool breeze that rolls in over the landscape on a warm summer’s day brings relief to both the vineyard and vineyard worker alike. To share these moments with the vine is what makes a truly great viticulturalist.</em></p>",
+        "author": "Hunter Smith",
+        "quote_font_family": "serif",
+        "quote_font_size": 24,
+        "quote_font_weight": "400",
+        "author_font_family": "sans",
+        "author_font_size": 12,
+        "author_font_weight": "400",
+        "background_color": "#efeee9",
+        "text_color": "#302313",
+        "author_color": "#6e6256",
+        "padding_top": 84,
+        "padding_bottom": 84,
+        "show_top_divider": false,
+        "show_bottom_divider": true,
+        "divider_color": "#d2cbc2",
+        "max_width": 1080,
+        "show_quote_marks": true
+      }
+    },
+    "banner_1": {
+      "type": "fullwidth-image-banner",
+      "settings": {
+        "image": "shopify://shop_images/Frankland_Estate_Shop_Our_Wines.jpg",
+        "image_url": "",
+        "mobile_image_url": "",
+        "title": "Shop Our Wines",
+        "subtitle": "Explore our range of certified organic, award-winning wines",
+        "button_label": "Shop Now",
+        "button_link": "#",
+        "text_alignment": "left",
+        "button_bg_color": "#ffffff",
+        "button_text_color": "#302313",
+        "button_hover_bg_color": "#302313",
+        "button_hover_text_color": "#ffffff",
+        "background_color": "#efeee9",
+        "padding_top": 80,
+        "padding_bottom": 80,
+        "section_height": 55,
+        "mobile_height": 40,
+        "overlay_opacity": 20
+      }
+    }
+  },
+  "order": [
+    "hero",
+    "main",
+    "text_image_column_GUVWaw",
+    "alt_1",
+    "alt_2",
+    "alternating_content_AJb6Bk",
+    "quote_section_Bij9JB",
+    "quote_section_LABHVC",
+    "banner_1"
+  ]
+}

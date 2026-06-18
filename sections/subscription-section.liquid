@@ -1,0 +1,558 @@
+{% liquid
+  assign sid = section.id
+  assign cw = section.settings.container_width | default: 1200
+  assign section_heading = section.settings.section_heading | default: 'Join our Mailing list'
+  assign form_heading = section.settings.form_heading | default: 'Create an Account'
+  assign button_label = section.settings.button_label | default: 'Submit'
+%}
+
+<section
+  id="fe-subscription-{{ sid }}"
+  class="fe-subscription-section fe-subscription-section--{{ sid }}"
+  style="
+    --fe-sub-bg: {{ section.settings.background_color }};
+    --fe-sub-text: {{ section.settings.text_color }};
+    --fe-sub-btn-bg: {{ section.settings.button_background_color }};
+    --fe-sub-btn-text: {{ section.settings.button_text_color }};
+    --fe-sub-container: {{ cw }}px;
+    padding-top: {{ section.settings.padding_top }}px;
+    padding-bottom: {{ section.settings.padding_bottom }}px;
+  "
+>
+  <div class="fe-subscription-section__inner">
+    <div class="fe-subscription-section__col fe-subscription-section__col--intro">
+      {% if section_heading != blank %}
+        <h2 class="fe-subscription-section__heading">{{ section_heading | escape }}</h2>
+      {% endif %}
+      {% if section.settings.section_text != blank %}
+        <div class="fe-subscription-section__intro rte">{{ section.settings.section_text }}</div>
+      {% endif %}
+    </div>
+
+    <div class="fe-subscription-section__col fe-subscription-section__col--form">
+      {% if form_heading != blank %}
+        <h3 class="fe-subscription-section__form-title">{{ form_heading | escape }}</h3>
+      {% endif %}
+
+      <div
+        class="fe-subscription-section__success"
+        id="fe-sub-success-{{ sid }}"
+        role="status"
+        aria-live="polite"
+        hidden
+      >
+        Thank you for signing up.
+      </div>
+
+      <form
+        class="fe-subscription-section__form"
+        id="fe-sub-form-{{ sid }}"
+      >
+        <div class="fe-subscription-section__row fe-subscription-section__row--split">
+          <div class="fe-subscription-section__field">
+            <label class="fe-subscription-section__label" for="fe-sub-fn-{{ sid }}">
+              First Name <abbr class="fe-subscription-section__req" title="Required">*</abbr>
+            </label>
+            <input
+              id="fe-sub-fn-{{ sid }}"
+              class="fe-subscription-section__input"
+              type="text"
+              name="first_name"
+              autocomplete="given-name"
+              placeholder="First Name"
+              required
+              aria-required="true"
+            >
+          </div>
+          <div class="fe-subscription-section__field">
+            <label class="fe-subscription-section__label" for="fe-sub-ln-{{ sid }}">
+              Last Name <abbr class="fe-subscription-section__req" title="Required">*</abbr>
+            </label>
+            <input
+              id="fe-sub-ln-{{ sid }}"
+              class="fe-subscription-section__input"
+              type="text"
+              name="last_name"
+              autocomplete="family-name"
+              placeholder="Last Name"
+              required
+              aria-required="true"
+            >
+          </div>
+        </div>
+
+        <div class="fe-subscription-section__field">
+          <label class="fe-subscription-section__label" for="fe-sub-email-{{ sid }}">Email</label>
+          <input
+            id="fe-sub-email-{{ sid }}"
+            class="fe-subscription-section__input"
+            type="email"
+            name="email"
+            autocomplete="email"
+            placeholder="Email Address"
+          >
+        </div>
+
+        <div class="fe-subscription-section__field">
+          <label class="fe-subscription-section__label" for="fe-sub-phone-{{ sid }}">Mobile</label>
+          <div class="fe-subscription-section__phone-row">
+            <label class="visually-hidden" for="fe-sub-cc-{{ sid }}">Country code</label>
+            <select
+              id="fe-sub-cc-{{ sid }}"
+              class="fe-subscription-section__select fe-subscription-section__select--code"
+              name="country_code"
+              aria-label="Country calling code"
+            >
+              <option value="+61" selected>Australia (+61)</option>
+              <option value="+64">New Zealand (+64)</option>
+              <option value="+1">United States (+1)</option>
+              <option value="+44">United Kingdom (+44)</option>
+            </select>
+            <input
+              id="fe-sub-phone-{{ sid }}"
+              class="fe-subscription-section__input fe-subscription-section__input--phone"
+              type="tel"
+              name="phone"
+              autocomplete="tel"
+              placeholder="Phone number"
+            >
+          </div>
+        </div>
+
+        <label class="fe-subscription-section__toggle">
+          <input
+            class="fe-subscription-section__toggle-input"
+            type="checkbox"
+            name="consent_email"
+            checked
+          >
+          <span class="fe-subscription-section__toggle-track" aria-hidden="true"></span>
+          <span class="fe-subscription-section__toggle-label">Allow us to contact you via email</span>
+        </label>
+
+        <label class="fe-subscription-section__toggle">
+          <input
+            class="fe-subscription-section__toggle-input"
+            type="checkbox"
+            name="consent_phone"
+            checked
+          >
+          <span class="fe-subscription-section__toggle-track" aria-hidden="true"></span>
+          <span class="fe-subscription-section__toggle-label">Allow us to contact you via phone</span>
+        </label>
+
+        <button type="submit" class="fe-subscription-section__submit">
+          {{ button_label | escape }}
+        </button>
+      </form>
+    </div>
+  </div>
+</section>
+
+<script>
+  (function () {
+    var root = document.getElementById('fe-subscription-{{ sid }}');
+    if (!root || root.dataset.feSubInit === 'true') return;
+    root.dataset.feSubInit = 'true';
+
+    var form = root.querySelector('#fe-sub-form-{{ sid }}');
+    var success = root.querySelector('#fe-sub-success-{{ sid }}');
+    if (!form || !success) return;
+
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+      form.setAttribute('hidden', '');
+      success.removeAttribute('hidden');
+    });
+  })();
+</script>
+
+{% stylesheet %}
+  .fe-subscription-section {
+    background-color: var(--fe-sub-bg, #efeee9);
+    color: var(--fe-sub-text, #302313);
+    box-sizing: border-box;
+  }
+
+  .fe-subscription-section *,
+  .fe-subscription-section *::before,
+  .fe-subscription-section *::after {
+    box-sizing: border-box;
+  }
+
+  .fe-subscription-section__inner {
+    max-width: var(--fe-sub-container, 1200px);
+    margin: 0 auto;
+    padding-inline: clamp(20px, 4vw, 32px);
+    display: grid;
+    grid-template-columns: minmax(0, 40fr) minmax(0, 55fr);
+    gap: clamp(32px, 6vw, 72px);
+    align-items: start;
+  }
+
+  .fe-subscription-section__heading {
+    margin: 0 0 clamp(14px, 2vw, 22px);
+    font-family: eidetic-neo, Georgia, 'Times New Roman', serif;
+    font-weight: 400;
+    font-size: clamp(28px, 3.2vw, 40px);
+    line-height: 1.15;
+    color: var(--fe-sub-text, #302313);
+  }
+
+  .fe-subscription-section__intro {
+    margin: 0;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: clamp(15px, 1.35vw, 17px);
+    line-height: 1.65;
+    color: var(--fe-sub-text, #302313);
+    opacity: 0.92;
+    max-width: 42ch;
+  }
+
+  .fe-subscription-section__intro p {
+    margin: 0;
+  }
+
+  .fe-subscription-section__intro p + p {
+    margin-top: 0.75em;
+  }
+
+  .fe-subscription-section__form-title {
+    margin: 0 0 clamp(20px, 3vw, 28px);
+    font-family: eidetic-neo, Georgia, 'Times New Roman', serif;
+    font-weight: 400;
+    font-size: clamp(26px, 2.8vw, 34px);
+    line-height: 1.15;
+    color: var(--fe-sub-text, #302313);
+  }
+
+  .fe-subscription-section__success {
+    padding: clamp(20px, 4vw, 28px);
+    margin-bottom: 24px;
+    border-radius: 8px;
+    border: 1px solid color-mix(in srgb, var(--fe-sub-text, #302313) 22%, transparent);
+    background: rgb(255 255 255 / 72%);
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 17px;
+    line-height: 1.5;
+    color: var(--fe-sub-text, #302313);
+  }
+
+  .fe-subscription-section__success[hidden] {
+    display: none !important;
+  }
+
+  .fe-subscription-section__form[hidden] {
+    display: none !important;
+  }
+
+  .fe-subscription-section__row--split {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: clamp(14px, 2vw, 22px);
+  }
+
+  .fe-subscription-section__field {
+    margin-bottom: clamp(18px, 2.5vw, 22px);
+  }
+
+  .fe-subscription-section__row--split .fe-subscription-section__field {
+    margin-bottom: 0;
+  }
+
+  .fe-subscription-section__row--split + .fe-subscription-section__field {
+    margin-top: clamp(18px, 2.5vw, 22px);
+  }
+
+  .fe-subscription-section__label {
+    display: block;
+    margin-bottom: 8px;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 0.02em;
+    color: color-mix(in srgb, var(--fe-sub-text, #302313) 58%, #ffffff);
+  }
+
+  .fe-subscription-section__req {
+    text-decoration: none;
+    font-weight: 600;
+    margin-inline-start: 2px;
+    color: var(--fe-sub-text, #302313);
+    opacity: 0.85;
+  }
+
+  .fe-subscription-section__input,
+  .fe-subscription-section__select {
+    width: 100%;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 15px;
+    line-height: 1.4;
+    color: var(--fe-sub-text, #302313);
+    background: #ffffff;
+    border: 1px solid color-mix(in srgb, var(--fe-sub-text, #302313) 22%, transparent);
+    border-radius: 6px;
+    padding: 12px 14px;
+    margin: 0;
+    transition: border-color 0.15s ease;
+    min-height: 46px;
+  }
+
+  .fe-subscription-section__input::placeholder {
+    color: var(--fe-sub-text, #302313);
+    opacity: 0.45;
+  }
+
+  .fe-subscription-section__input:focus,
+  .fe-subscription-section__select:focus {
+    outline: none;
+    border-color: color-mix(in srgb, var(--fe-sub-text, #302313) 42%, transparent);
+  }
+
+  .fe-subscription-section__phone-row {
+    display: flex;
+    gap: 0;
+    align-items: stretch;
+    border-radius: 6px;
+    border: 1px solid color-mix(in srgb, var(--fe-sub-text, #302313) 22%, transparent);
+    background: #ffffff;
+    overflow: hidden;
+    min-height: 46px;
+  }
+
+  .fe-subscription-section__phone-row:focus-within {
+    border-color: color-mix(in srgb, var(--fe-sub-text, #302313) 42%, transparent);
+  }
+
+  .fe-subscription-section__select--code {
+    flex: 0 0 min(42%, 200px);
+    border: 0;
+    border-radius: 0;
+    border-right: 1px solid color-mix(in srgb, var(--fe-sub-text, #302313) 18%, transparent);
+    padding: 12px 10px;
+    font-size: 14px;
+    background-color: #fafaf9;
+    cursor: pointer;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23504540' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    padding-right: 28px;
+  }
+
+  .fe-subscription-section__input--phone {
+    flex: 1;
+    border: 0;
+    border-radius: 0;
+    min-height: unset;
+  }
+
+  .fe-subscription-section__toggle {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 18px;
+    cursor: pointer;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 14px;
+    line-height: 1.45;
+    color: var(--fe-sub-text, #302313);
+  }
+
+  .fe-subscription-section__toggle-input {
+    position: absolute;
+    opacity: 0;
+    width: 1px;
+    height: 1px;
+    pointer-events: none;
+  }
+
+  .fe-subscription-section__toggle-track {
+    flex-shrink: 0;
+    width: 48px;
+    height: 28px;
+    border-radius: 999px;
+    background: rgb(48 41 26 / 28%);
+    position: relative;
+    transition: background-color 0.2s ease;
+  }
+
+  .fe-subscription-section__toggle-track::after {
+    content: '';
+    position: absolute;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: #ffffff;
+    top: 3px;
+    left: 3px;
+    transition: transform 0.2s ease;
+    box-shadow: 0 1px 3px rgb(0 0 0 / 18%);
+  }
+
+  .fe-subscription-section__toggle-input:checked + .fe-subscription-section__toggle-track {
+    background: #3a342e;
+  }
+
+  .fe-subscription-section__toggle-input:checked + .fe-subscription-section__toggle-track::after {
+    transform: translateX(20px);
+  }
+
+  .fe-subscription-section__toggle-input:focus-visible + .fe-subscription-section__toggle-track {
+    outline: 2px solid color-mix(in srgb, var(--fe-sub-text, #302313) 36%, transparent);
+    outline-offset: 3px;
+  }
+
+  .fe-subscription-section__toggle-label {
+    flex: 1;
+    text-align: left;
+  }
+
+  .fe-subscription-section__submit {
+    margin-top: clamp(10px, 2vw, 16px);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 14px 36px;
+    border-radius: 999px;
+    border: none;
+    cursor: pointer;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    background: var(--fe-sub-btn-bg, #32291a);
+    color: var(--fe-sub-btn-text, #ffffff);
+    transition: opacity 0.2s ease, transform 0.15s ease;
+  }
+
+  .fe-subscription-section__submit:hover {
+    opacity: 0.92;
+  }
+
+  .fe-subscription-section__submit:active {
+    transform: scale(0.99);
+  }
+
+  .fe-subscription-section__submit:focus-visible {
+    outline: 2px solid var(--fe-sub-text, #302313);
+    outline-offset: 3px;
+  }
+
+  @media screen and (max-width: 989px) {
+    .fe-subscription-section__inner {
+      grid-template-columns: 1fr;
+      gap: clamp(28px, 5vw, 40px);
+    }
+
+    .fe-subscription-section__intro {
+      max-width: none;
+    }
+
+    .fe-subscription-section__row--split {
+      grid-template-columns: 1fr;
+    }
+
+    .fe-subscription-section__row--split .fe-subscription-section__field {
+      margin-bottom: clamp(18px, 2.5vw, 22px);
+    }
+
+    .fe-subscription-section__row--split + .fe-subscription-section__field {
+      margin-top: 0;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Subscription Section",
+  "tag": "section",
+  "class": "fe-subscription-section-root",
+  "settings": [
+    {
+      "type": "text",
+      "id": "section_heading",
+      "label": "Section heading",
+      "default": "Join our Mailing list"
+    },
+    {
+      "type": "richtext",
+      "id": "section_text",
+      "label": "Section text",
+      "default": "<p>Sign up for an account to receive exclusive wine offers, event invitations and more.</p>"
+    },
+    {
+      "type": "text",
+      "id": "form_heading",
+      "label": "Form heading",
+      "default": "Create an Account"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background color",
+      "default": "#efeee9"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color",
+      "default": "#302313"
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "Button label",
+      "default": "Submit"
+    },
+    {
+      "type": "color",
+      "id": "button_background_color",
+      "label": "Button background color",
+      "default": "#32291a"
+    },
+    {
+      "type": "color",
+      "id": "button_text_color",
+      "label": "Button text color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Padding top",
+      "min": 0,
+      "max": 160,
+      "step": 4,
+      "unit": "px",
+      "default": 80
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Padding bottom",
+      "min": 0,
+      "max": 160,
+      "step": 4,
+      "unit": "px",
+      "default": 80
+    },
+    {
+      "type": "range",
+      "id": "container_width",
+      "label": "Container width",
+      "min": 900,
+      "max": 1400,
+      "step": 10,
+      "unit": "px",
+      "default": 1200
+    }
+  ],
+  "presets": [
+    {
+      "name": "Subscription Section"
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,691 @@
+{% liquid
+  assign current_product = product | default: closest.product
+
+  assign technical_vine_age = current_product.metafields.custom.vine_age.value | default: current_product.metafields.custom.vine_age
+  assign technical_alcohol = current_product.metafields.wine.alcohol.value | default: current_product.metafields.wine.alcohol
+  assign technical_oak = current_product.metafields.wine.oak.value | default: current_product.metafields.wine.oak
+  assign technical_blend = current_product.metafields.wine.blend.value | default: current_product.metafields.wine.blend
+  assign technical_region = current_product.metafields.wine.region.value | default: current_product.metafields.wine.region
+
+  assign technical_vine_age = technical_vine_age | strip_html | strip
+  assign technical_alcohol = technical_alcohol | strip_html | strip
+  assign technical_oak = technical_oak | strip_html | strip
+  assign technical_blend = technical_blend | strip_html | strip
+  assign technical_region = technical_region | strip_html | strip
+
+  assign has_technical = false
+  if technical_vine_age != blank or technical_alcohol != blank or technical_oak != blank or technical_blend != blank or technical_region != blank
+    assign has_technical = true
+  endif
+
+  assign awards_entries = current_product.metafields.custom.awards.value
+  assign reviews_entries = current_product.metafields.custom.reviews.value
+
+  assign awards_count = 0
+  if awards_entries != blank
+    assign awards_count = awards_entries.size
+    if awards_count == 0
+      assign awards_count = 1
+    endif
+  endif
+
+  assign reviews_count = 0
+  if reviews_entries != blank
+    assign reviews_count = reviews_entries.size
+    if reviews_count == 0
+      assign reviews_count = 1
+    endif
+  endif
+
+  assign has_reviews_awards = false
+  if awards_count > 0 or reviews_count > 0
+    assign has_reviews_awards = true
+  endif
+
+  assign notes_viticulture = current_product.metafields.wine.viticulture
+  assign notes_winemaking = current_product.metafields.wine.winemaking_notes
+  assign notes_certifications = current_product.metafields.wine.certifications
+  assign notes_cellaring = current_product.metafields.wine.cellaring
+
+  assign notes_aroma = current_product.metafields.wine.aroma
+  assign notes_palate = current_product.metafields.wine.palate
+  assign notes_food_pairing = current_product.metafields.wine.food_pairing
+  assign notes_colour = current_product.metafields.custom.colours
+
+  assign has_notes_row_1 = false
+  if notes_viticulture != blank and notes_viticulture.value != blank
+    assign has_notes_row_1 = true
+  endif
+  if notes_winemaking != blank and notes_winemaking.value != blank
+    assign has_notes_row_1 = true
+  endif
+  if notes_certifications != blank and notes_certifications.value != blank
+    assign has_notes_row_1 = true
+  endif
+  if notes_cellaring != blank and notes_cellaring.value != blank
+    assign has_notes_row_1 = true
+  endif
+
+  assign has_notes_row_2 = false
+  if notes_aroma != blank and notes_aroma.value != blank
+    assign has_notes_row_2 = true
+  endif
+  if notes_palate != blank and notes_palate.value != blank
+    assign has_notes_row_2 = true
+  endif
+  if notes_food_pairing != blank and notes_food_pairing.value != blank
+    assign has_notes_row_2 = true
+  endif
+  if notes_colour != blank and notes_colour.value != blank
+    assign has_notes_row_2 = true
+  endif
+
+  assign has_notes = false
+  if has_notes_row_1 or has_notes_row_2
+    assign has_notes = true
+  endif
+
+  assign has_any_tabs = false
+  if has_technical or has_reviews_awards or has_notes
+    assign has_any_tabs = true
+  endif
+
+  assign active_tab = ''
+  if has_technical
+    assign active_tab = 'technical'
+  elsif has_reviews_awards
+    assign active_tab = 'reviews-awards'
+  elsif has_notes
+    assign active_tab = 'notes'
+  endif
+
+  assign initial_reviews_to_show = section.settings.reviews_initial_count | default: 2
+%}
+
+{% if has_any_tabs %}
+  <section
+    id="WineProductTabs-{{ section.id }}"
+    class="wine-product-tabs"
+    style="
+      --wine-tabs-bg: {{ section.settings.background_color }};
+      --wine-tabs-container: {{ section.settings.container_width }}px;
+      --wine-tabs-pt: {{ section.settings.padding_top }}px;
+      --wine-tabs-pb: {{ section.settings.padding_bottom }}px;
+    "
+  >
+    <div class="wine-product-tabs__container">
+      <span id="wine-product-tabs" class="wine-product-tabs__anchor" aria-hidden="true"></span>
+      <span id="wine-product-tabs-reviews-awards" class="wine-product-tabs__anchor" aria-hidden="true"></span>
+      <div class="wine-product-tabs__nav" role="tablist" aria-label="Wine product details tabs">
+        {% if has_technical %}
+          <button
+            class="wine-product-tabs__nav-item{% if active_tab == 'technical' %} is-active{% endif %}"
+            type="button"
+            role="tab"
+            data-tab-target="technical"
+            aria-selected="{% if active_tab == 'technical' %}true{% else %}false{% endif %}"
+          >
+            Technical
+          </button>
+        {% endif %}
+
+        {% if has_reviews_awards %}
+          <button
+            class="wine-product-tabs__nav-item{% if active_tab == 'reviews-awards' %} is-active{% endif %}"
+            type="button"
+            role="tab"
+            data-tab-target="reviews-awards"
+            aria-selected="{% if active_tab == 'reviews-awards' %}true{% else %}false{% endif %}"
+          >
+            Reviews & Awards
+          </button>
+        {% endif %}
+
+        {% if has_notes %}
+          <button
+            class="wine-product-tabs__nav-item{% if active_tab == 'notes' %} is-active{% endif %}"
+            type="button"
+            role="tab"
+            data-tab-target="notes"
+            aria-selected="{% if active_tab == 'notes' %}true{% else %}false{% endif %}"
+          >
+            Notes
+          </button>
+        {% endif %}
+      </div>
+
+      <div class="wine-product-tabs__panels">
+        {% if has_technical %}
+          <div
+            class="wine-product-tabs__panel{% if active_tab == 'technical' %} is-active{% endif %}"
+            role="tabpanel"
+            data-tab-panel="technical"
+            {% unless active_tab == 'technical' %}hidden{% endunless %}
+          >
+            <div class="wine-product-tabs__technical-grid">
+              {% if technical_vine_age != blank %}
+                <article class="wine-product-tabs__item">
+                  <h3 class="wine-product-tabs__item-title">Vine Age</h3>
+                  <p class="wine-product-tabs__item-value">{{ technical_vine_age }}</p>
+                </article>
+              {% endif %}
+
+              {% if technical_alcohol != blank %}
+                <article class="wine-product-tabs__item">
+                  <h3 class="wine-product-tabs__item-title">Alcohol</h3>
+                  <p class="wine-product-tabs__item-value">{{ technical_alcohol }}</p>
+                </article>
+              {% endif %}
+
+              {% if technical_oak != blank %}
+                <article class="wine-product-tabs__item">
+                  <h3 class="wine-product-tabs__item-title">Oak</h3>
+                  <p class="wine-product-tabs__item-value">{{ technical_oak }}</p>
+                </article>
+              {% endif %}
+
+              {% if technical_blend != blank %}
+                <article class="wine-product-tabs__item">
+                  <h3 class="wine-product-tabs__item-title">Blend</h3>
+                  <p class="wine-product-tabs__item-value">{{ technical_blend }}</p>
+                </article>
+              {% endif %}
+
+              {% if technical_region != blank %}
+                <article class="wine-product-tabs__item">
+                  <h3 class="wine-product-tabs__item-title">Region</h3>
+                  <p class="wine-product-tabs__item-value">{{ technical_region }}</p>
+                </article>
+              {% endif %}
+            </div>
+          </div>
+        {% endif %}
+
+        {% if has_reviews_awards %}
+          <div
+            class="wine-product-tabs__panel{% if active_tab == 'reviews-awards' %} is-active{% endif %}"
+            role="tabpanel"
+            data-tab-panel="reviews-awards"
+            {% unless active_tab == 'reviews-awards' %}hidden{% endunless %}
+          >
+            {% if awards_count > 0 %}
+              <div class="wine-product-tabs__subsection">
+                <h2 class="wine-product-tabs__heading">Awards</h2>
+                <div class="wine-product-tabs__awards-grid">
+                  {% for award in awards_entries %}
+                    {% assign award_info = award.award_info.value | default: award.award_info %}
+                    {% assign award_info = award_info | strip_html | strip %}
+                    {% if award_info != blank %}
+                      <article class="wine-product-tabs__card">
+                        <p class="wine-product-tabs__card-copy">{{ award_info }}</p>
+                      </article>
+                    {% endif %}
+                  {% endfor %}
+                </div>
+              </div>
+            {% endif %}
+
+            {% if reviews_count > 0 %}
+              <div class="wine-product-tabs__subsection">
+                <h2 class="wine-product-tabs__heading">Reviews</h2>
+                <div class="wine-product-tabs__reviews-grid">
+                  {% for review in reviews_entries %}
+                    {% assign review_name = review.name.value | default: review.name %}
+                    {% assign review_subject = review.subject.value | default: review.subject %}
+                    {% assign review_text = review.review.value | default: review.review %}
+                    {% assign review_rating = review.rating.value | default: review.rating %}
+
+                    {% assign review_name = review_name | strip_html | strip %}
+                    {% assign review_subject = review_subject | strip_html | strip %}
+                    {% assign review_text = review_text | strip_html | strip %}
+                    {% assign review_rating = review_rating | strip_html | strip %}
+
+                    {% if review_name != blank or review_subject != blank or review_text != blank or review_rating != blank %}
+                      <article
+                        class="wine-product-tabs__card wine-product-tabs__review-item{% if forloop.index > initial_reviews_to_show %} is-hidden-review{% endif %}"
+                        {% if forloop.index > initial_reviews_to_show %}hidden{% endif %}
+                      >
+                        {% if review_name != blank %}
+                          <h3 class="wine-product-tabs__review-name">{{ review_name }}</h3>
+                        {% endif %}
+                        {% if review_subject != blank %}
+                          <p class="wine-product-tabs__review-subject">{{ review_subject }}</p>
+                        {% endif %}
+                        {% if review_text != blank %}
+                          {% assign review_text_len = review_text | size %}
+                          {% if review_text_len > 150 %}
+                            {% assign review_short = review_text | truncate: 150, '' %}
+                            <p class="wine-product-tabs__review-copy">
+                              <span class="wine-product-tabs__review-short">{{ review_short }}&hellip;</span>
+                              <span class="wine-product-tabs__review-full" hidden>{{ review_text }}</span>
+                              <button
+                                type="button"
+                                class="wine-product-tabs__read-toggle"
+                                aria-expanded="false"
+                                data-read-toggle
+                              >Read More</button>
+                            </p>
+                          {% else %}
+                            <p class="wine-product-tabs__review-copy">{{ review_text }}</p>
+                          {% endif %}
+                        {% endif %}
+                        {% if review_rating != blank %}
+                          <p class="wine-product-tabs__review-rating">Rating: {{ review_rating }}</p>
+                        {% endif %}
+                      </article>
+                    {% endif %}
+                  {% endfor %}
+                </div>
+
+                {% if reviews_count > initial_reviews_to_show %}
+                  <button type="button" class="wine-product-tabs__show-more" data-show-more-reviews>
+                    Show More
+                  </button>
+                {% endif %}
+              </div>
+            {% endif %}
+          </div>
+        {% endif %}
+
+        {% if has_notes %}
+          <div
+            class="wine-product-tabs__panel{% if active_tab == 'notes' %} is-active{% endif %}"
+            role="tabpanel"
+            data-tab-panel="notes"
+            {% unless active_tab == 'notes' %}hidden{% endunless %}
+          >
+            {% if has_notes_row_1 %}
+              <div class="wine-product-tabs__subsection">
+                <h2 class="wine-product-tabs__heading">Notes</h2>
+                <div class="wine-product-tabs__notes-grid">
+                  {% if notes_viticulture != blank and notes_viticulture.value != blank %}
+                    <article class="wine-product-tabs__item">
+                      <h3 class="wine-product-tabs__item-title">Viticulture</h3>
+                      <div class="wine-product-tabs__item-value">{{ notes_viticulture | metafield_tag }}</div>
+                    </article>
+                  {% endif %}
+                  {% if notes_winemaking != blank and notes_winemaking.value != blank %}
+                    <article class="wine-product-tabs__item">
+                      <h3 class="wine-product-tabs__item-title">Wine Making</h3>
+                      <div class="wine-product-tabs__item-value">{{ notes_winemaking | metafield_tag }}</div>
+                    </article>
+                  {% endif %}
+                  {% if notes_certifications != blank and notes_certifications.value != blank %}
+                    <article class="wine-product-tabs__item">
+                      <h3 class="wine-product-tabs__item-title">Certifications</h3>
+                      <div class="wine-product-tabs__item-value">{{ notes_certifications | metafield_tag }}</div>
+                    </article>
+                  {% endif %}
+                  {% if notes_cellaring != blank and notes_cellaring.value != blank %}
+                    <article class="wine-product-tabs__item">
+                      <h3 class="wine-product-tabs__item-title">Cellaring</h3>
+                      <div class="wine-product-tabs__item-value">{{ notes_cellaring | metafield_tag }}</div>
+                    </article>
+                  {% endif %}
+                </div>
+              </div>
+            {% endif %}
+
+            {% if has_notes_row_2 %}
+              <div class="wine-product-tabs__subsection">
+                <h2 class="wine-product-tabs__heading">Tasting Notes</h2>
+                <div class="wine-product-tabs__notes-grid">
+                  {% if notes_aroma != blank and notes_aroma.value != blank %}
+                    <article class="wine-product-tabs__item">
+                      <h3 class="wine-product-tabs__item-title">Aroma</h3>
+                      <div class="wine-product-tabs__item-value">{{ notes_aroma | metafield_tag }}</div>
+                    </article>
+                  {% endif %}
+                  {% if notes_palate != blank and notes_palate.value != blank %}
+                    <article class="wine-product-tabs__item">
+                      <h3 class="wine-product-tabs__item-title">Palate</h3>
+                      <div class="wine-product-tabs__item-value">{{ notes_palate | metafield_tag }}</div>
+                    </article>
+                  {% endif %}
+                  {% if notes_food_pairing != blank and notes_food_pairing.value != blank %}
+                    <article class="wine-product-tabs__item">
+                      <h3 class="wine-product-tabs__item-title">Food Pairing</h3>
+                      <div class="wine-product-tabs__item-value">{{ notes_food_pairing | metafield_tag }}</div>
+                    </article>
+                  {% endif %}
+                  {% if notes_colour != blank and notes_colour.value != blank %}
+                    <article class="wine-product-tabs__item">
+                      <h3 class="wine-product-tabs__item-title">Colour</h3>
+                      <div class="wine-product-tabs__item-value">{{ notes_colour | metafield_tag }}</div>
+                    </article>
+                  {% endif %}
+                </div>
+              </div>
+            {% endif %}
+          </div>
+        {% endif %}
+      </div>
+    </div>
+  </section>
+
+  <script>
+    (() => {
+      const section = document.getElementById('WineProductTabs-{{ section.id }}');
+      if (!section) return;
+
+      const tabButtons = section.querySelectorAll('[data-tab-target]');
+      const tabPanels = section.querySelectorAll('[data-tab-panel]');
+
+      tabButtons.forEach((button) => {
+        button.addEventListener('click', () => {
+          const target = button.getAttribute('data-tab-target');
+
+          tabButtons.forEach((btn) => {
+            const isActive = btn === button;
+            btn.classList.toggle('is-active', isActive);
+            btn.setAttribute('aria-selected', isActive ? 'true' : 'false');
+          });
+
+          tabPanels.forEach((panel) => {
+            const isActive = panel.getAttribute('data-tab-panel') === target;
+            panel.classList.toggle('is-active', isActive);
+            panel.hidden = !isActive;
+          });
+        });
+      });
+
+      if (window.location.hash === '#wine-product-tabs-reviews-awards') {
+        const reviewsTab = section.querySelector('[data-tab-target="reviews-awards"]');
+        if (reviewsTab) {
+          reviewsTab.click();
+        }
+      }
+
+      const showMoreButton = section.querySelector('[data-show-more-reviews]');
+      if (showMoreButton) {
+        showMoreButton.addEventListener('click', () => {
+          const hiddenReviews = section.querySelectorAll('.is-hidden-review[hidden]');
+          hiddenReviews.forEach((item) => {
+            item.hidden = false;
+          });
+          showMoreButton.hidden = true;
+        });
+      }
+
+      // Read More / Read Less toggle for individual review items
+      section.querySelectorAll('[data-read-toggle]').forEach((toggle) => {
+        toggle.addEventListener('click', () => {
+          const copy = toggle.closest('.wine-product-tabs__review-copy');
+          if (!copy) return;
+          const shortEl = copy.querySelector('.wine-product-tabs__review-short');
+          const fullEl  = copy.querySelector('.wine-product-tabs__review-full');
+          const expanded = toggle.getAttribute('aria-expanded') === 'true';
+
+          if (expanded) {
+            // Collapse back to short
+            shortEl.hidden = false;
+            fullEl.hidden = true;
+            fullEl.classList.remove('is-visible');
+            toggle.textContent = 'Read More';
+            toggle.setAttribute('aria-expanded', 'false');
+          } else {
+            // Expand to full
+            shortEl.hidden = true;
+            fullEl.hidden = false;
+            fullEl.classList.add('is-visible');
+            toggle.textContent = 'Read Less';
+            toggle.setAttribute('aria-expanded', 'true');
+          }
+        });
+      });
+    })();
+  </script>
+{% endif %}
+
+{% stylesheet %}
+  .wine-product-tabs {
+    background: #e9e9e2;
+    padding-top: var(--wine-tabs-pt);
+    padding-bottom: var(--wine-tabs-pb);
+    padding-inline: 20px;
+  }
+
+  .wine-product-tabs__container {
+    max-width: var(--wine-tabs-container);
+    margin: 0 auto;
+  }
+
+  .wine-product-tabs__anchor {
+    display: block;
+    position: relative;
+    top: -12px;
+    visibility: hidden;
+  }
+
+  .wine-product-tabs__nav {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow-x: auto;
+    white-space: nowrap;
+    margin-bottom: 42px;
+    scrollbar-width: thin;
+  }
+
+  .wine-product-tabs__nav-item {
+    appearance: none;
+    border: 0;
+    border-bottom: 2px solid transparent;
+    background: transparent;
+    color: #302313;
+    font-size: 17px;
+    line-height: 1.2;
+    padding: 0 22px 10px;
+    cursor: pointer;
+    position: relative;
+    flex: 0 0 auto;
+  }
+
+  .wine-product-tabs__nav-item + .wine-product-tabs__nav-item::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 4px;
+    bottom: 10px;
+    width: 1px;
+    background: rgba(48, 35, 19, 0.28);
+  }
+
+  .wine-product-tabs__nav-item.is-active {
+    border-bottom-color: #302313;
+  }
+
+  .wine-product-tabs__panel {
+    display: none;
+  }
+
+  .wine-product-tabs__panel.is-active {
+    display: block;
+  }
+
+  .wine-product-tabs__heading {
+    margin: 0 0 22px;
+    font-family: eidetic-neo, serif;
+    font-weight: 500;
+    font-size: clamp(1.8rem, 3.3vw, 36px);
+    line-height: 1.1;
+    color: #302313;
+  }
+
+  .wine-product-tabs__subsection + .wine-product-tabs__subsection {
+    margin-top: 48px;
+  }
+
+  .wine-product-tabs__technical-grid,
+  .wine-product-tabs__notes-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 28px 26px;
+  }
+
+  .wine-product-tabs__awards-grid,
+  .wine-product-tabs__reviews-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 22px;
+  }
+
+  .wine-product-tabs__item,
+  .wine-product-tabs__card {
+    background: transparent;
+    border: 0;
+    padding: 22px 20px;
+  }
+
+  .wine-product-tabs__item-title,
+  .wine-product-tabs__review-name {
+    margin: 0 0 8px;
+    font-family: eidetic-neo, serif;
+    font-weight: 600;
+    font-size: 18px;
+    line-height: 1.2;
+    color: #302313;
+  }
+
+  .wine-product-tabs__item-value,
+  .wine-product-tabs__card-copy,
+  .wine-product-tabs__review-subject,
+  .wine-product-tabs__review-copy,
+  .wine-product-tabs__review-rating {
+    margin: 0;
+    color: #302313;
+    line-height: 1.6;
+    font-size: 15px;
+  }
+
+  .wine-product-tabs__review-subject {
+    font-weight: 600;
+    margin-bottom: 8px;
+  }
+
+  .wine-product-tabs__review-copy {
+    margin-bottom: 10px;
+  }
+
+  .wine-product-tabs__review-full {
+    display: none;
+  }
+
+  .wine-product-tabs__review-full.is-visible {
+    display: inline;
+  }
+
+  .wine-product-tabs__read-toggle {
+    display: inline;
+    margin-left: 4px;
+    appearance: none;
+    border: 0;
+    background: transparent;
+    color: #a97d3b;
+    font-size: 14px;
+    font-family: inherit;
+    cursor: pointer;
+    padding: 0;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+    vertical-align: baseline;
+  }
+
+  .wine-product-tabs__show-more {
+    margin-top: 20px;
+    border: 1px solid #302313;
+    background: transparent;
+    color: #302313;
+    border-radius: 999px;
+    padding: 10px 18px;
+    font-size: 14px;
+    cursor: pointer;
+  }
+
+  @media (max-width: 1024px) {
+    .wine-product-tabs__technical-grid,
+    .wine-product-tabs__notes-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (max-width: 750px) {
+    .wine-product-tabs {
+      padding-inline: 16px;
+    }
+
+    .wine-product-tabs__nav {
+      justify-content: flex-start;
+      margin-bottom: 30px;
+    }
+
+    .wine-product-tabs__awards-grid,
+    .wine-product-tabs__reviews-grid,
+    .wine-product-tabs__technical-grid,
+    .wine-product-tabs__notes-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Wine Product Tabs",
+  "tag": "section",
+  "enabled_on": {
+    "templates": ["product"]
+  },
+  "settings": [
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background color",
+      "default": "#E9E9E2"
+    },
+    {
+      "type": "range",
+      "id": "container_width",
+      "label": "Container width",
+      "min": 960,
+      "max": 1400,
+      "step": 10,
+      "unit": "px",
+      "default": 1110
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Top spacing",
+      "min": 20,
+      "max": 200,
+      "step": 10,
+      "unit": "px",
+      "default": 80
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Bottom spacing",
+      "min": 20,
+      "max": 220,
+      "step": 10,
+      "unit": "px",
+      "default": 80
+    },
+    {
+      "type": "range",
+      "id": "reviews_initial_count",
+      "label": "Initial reviews shown",
+      "min": 1,
+      "max": 6,
+      "step": 1,
+      "default": 2
+    }
+  ],
+  "presets": [
+    {
+      "name": "Wine Product Tabs"
+    }
+  ]
+}
+{% endschema %}

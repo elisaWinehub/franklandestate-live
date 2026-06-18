@@ -1,0 +1,135 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "hero": {
+      "type": "page-hero-banner",
+      "settings": {
+        "heading": "",
+        "text_vertical_position": "lower-center",
+        "text_color": "#ffffff",
+        "image": "shopify://shop_images/Growing_Organically_Banner.jpg",
+        "background_position": "center center",
+        "background_color": "#efeee9",
+        "desktop_height": 560,
+        "mobile_height": 360,
+        "overlay_opacity": 25
+      }
+    },
+    "text_image_column_4KmyVE": {
+      "type": "text-image-column",
+      "name": "Text + Image",
+      "settings": {
+        "heading": "From the time they began planting Isolation Ridge in 1988, Judi Cullam and Barrie Smith never wavered in their commitment to respect the land. ",
+        "heading_font_size": 32,
+        "heading_font_family": "serif",
+        "heading_font_weight": "400",
+        "body": "",
+        "button_label": "",
+        "button_link": "",
+        "image_url": "",
+        "text_alignment": "center",
+        "text_container_width": "normal",
+        "background_color": "#efeee9",
+        "padding_top": 80,
+        "padding_bottom": 80
+      }
+    },
+    "main": {
+      "type": "main-page",
+      "settings": {}
+    },
+    "alt_1": {
+      "type": "alternating-content",
+      "settings": {
+        "image": "shopify://shop_images/FE_ROSE.jpg",
+        "heading": "",
+        "body": "<p>The family have always invested time and energy into maintaining the ecological balance of the region, nurturing the microbiology of our soils and supporting causes to improve the health and future prosperity of our local fauna and flora.</p><p>We took this a step further with conversion to organic viticulture on our Isolation Ridge vineyard in 2005, and received full organic certification just in time for the 2009 harvest. Since then, all of the wines produced from Isolation Ridge carry full organic certification through Australian Certified Organics (ACO) and more recently to Southern Cross Certified Australia (SXC). This certification involves yearly audits and random sampling of produce to ensure our customers have peace of mind in knowing that the wine they are drinking is fully certified. </p>",
+        "button_label": "",
+        "button_link": "",
+        "image_position": "image_right",
+        "background_color": "#efeee9",
+        "padding_top": 80,
+        "padding_bottom": 80,
+        "divider_position": "none"
+      }
+    },
+    "alt_2": {
+      "type": "alternating-content",
+      "settings": {
+        "image": "shopify://shop_images/FE_HARVEST.jpg",
+        "heading": "",
+        "body": "<p>Organic principles prohibit the use of synthetic fertilisers, pesticides, fungicides and plant growth hormones. Instead, we at Frankland Estate rely on mid-row cultivation, as well as a range of composting and mulching techniques, to increase soil fertility and encourage biodiversity.</p><p>Our decision to become fully certified evolved as a natural progression from farming with minimal inputs under a “sustainable farming practice” method. At Frankland Estate we value the importance of organic farming and agricultural sustainability. We practise what we preach our vineyard, and the results speak for themselves in the wines.</p>",
+        "button_label": "",
+        "button_link": "",
+        "image_position": "image_left",
+        "background_color": "#efeee9",
+        "padding_top": 80,
+        "padding_bottom": 80,
+        "divider_position": "none"
+      }
+    },
+    "quote_1": {
+      "type": "quote-section",
+      "settings": {
+        "quote_text": "<p>\"It’s the little things… like noticing hot days can fatigue a vine, just like they do us, and asking ‘what can we do to give the vine additional energy to thrive?’ The cool breeze that rolls in over the landscape on a warm summer’s day brings relief to both the vineyard and vineyard worker equally - to share these moments with the vine is what makes a truly great viticulturalist.\"</p>",
+        "author": "HUNTER SMITH",
+        "quote_font_family": "serif",
+        "quote_font_size": 24,
+        "quote_font_weight": "400",
+        "author_font_family": "sans",
+        "author_font_size": 12,
+        "author_font_weight": "400",
+        "background_color": "#efeee9",
+        "text_color": "#302313",
+        "author_color": "#6e6256",
+        "padding_top": 84,
+        "padding_bottom": 84,
+        "show_top_divider": false,
+        "show_bottom_divider": false,
+        "divider_color": "#d2cbc2",
+        "max_width": 850,
+        "show_quote_marks": false
+      }
+    },
+    "banner_1": {
+      "type": "fullwidth-image-banner",
+      "settings": {
+        "image": "shopify://shop_images/Frankland_Estate_Shop_Our_Wines.jpg",
+        "image_url": "",
+        "mobile_image_url": "",
+        "title": "Shop Our Wines",
+        "subtitle": "Explore our range of certified organic, award-winning wines, delivered straight to your door.",
+        "button_label": "Shop Now",
+        "button_link": "#",
+        "text_alignment": "center",
+        "button_bg_color": "#ffffff",
+        "button_text_color": "#302313",
+        "button_hover_bg_color": "#302313",
+        "button_hover_text_color": "#ffffff",
+        "background_color": "#efeee9",
+        "padding_top": 80,
+        "padding_bottom": 80,
+        "section_height": 55,
+        "mobile_height": 40,
+        "overlay_opacity": 20
+      }
+    }
+  },
+  "order": [
+    "hero",
+    "text_image_column_4KmyVE",
+    "main",
+    "alt_1",
+    "alt_2",
+    "quote_1",
+    "banner_1"
+  ]
+}

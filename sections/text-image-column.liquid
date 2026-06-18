@@ -1,0 +1,295 @@
+{%- liquid
+  assign sid        = section.id
+  assign pt         = section.settings.padding_top
+  assign pb         = section.settings.padding_bottom
+  assign text_align = section.settings.text_alignment
+  assign text_width = section.settings.text_container_width | default: 'normal'
+  assign bg         = section.settings.background_color
+
+  assign heading_size = section.settings.heading_font_size | default: 32
+  assign heading_family_choice = section.settings.heading_font_family | default: 'serif'
+  assign heading_weight = section.settings.heading_font_weight | default: '400'
+
+  if heading_family_choice == 'sans-serif'
+    assign heading_ff_stack = 'Arial, Helvetica, sans-serif'
+  else
+    assign heading_ff_stack = 'Georgia, "Times New Roman", serif'
+  endif
+-%}
+
+<section
+  class="fe-text-img fe-text-img--{{ sid }}"
+  style="background-color:{{ bg }}; padding-top:{{ pt }}px; padding-bottom:{{ pb }}px;"
+>
+  <div class="fe-text-img__inner">
+    <div class="fe-text-img__text fe-text-img__text--{{ text_align }} fe-text-img__text--width-{{ text_width }}">
+      {%- if section.settings.heading != blank -%}
+        <h2 class="fe-text-img__heading">{{ section.settings.heading | escape }}</h2>
+      {%- endif -%}
+
+      {%- if section.settings.body != blank -%}
+        <div class="fe-text-img__body rte">{{ section.settings.body }}</div>
+      {%- endif -%}
+
+      {%- if section.settings.button_label != blank and section.settings.button_link != blank -%}
+        <a href="{{ section.settings.button_link }}" class="fe-text-img__btn">
+          {{ section.settings.button_label | escape }}
+        </a>
+      {%- endif -%}
+    </div>
+
+    {%- if section.settings.image != blank or section.settings.image_url != blank -%}
+      <div class="fe-text-img__media">
+        {%- if section.settings.image != blank -%}
+          <img
+            src="{{ section.settings.image | image_url: width: 1200 }}"
+            srcset="
+              {{ section.settings.image | image_url: width: 600  }} 600w,
+              {{ section.settings.image | image_url: width: 900  }} 900w,
+              {{ section.settings.image | image_url: width: 1200 }} 1200w
+            "
+            sizes="(max-width: 1024px) 100vw, 980px"
+            alt="{{ section.settings.image.alt | escape | default: section.settings.heading }}"
+            loading="lazy"
+          >
+        {%- else -%}
+          <img
+            src="{{ section.settings.image_url }}"
+            alt="{{ section.settings.heading | escape }}"
+            loading="lazy"
+          >
+        {%- endif -%}
+      </div>
+    {%- endif -%}
+  </div>
+</section>
+
+<style>
+  .fe-text-img--{{ sid }} {
+    width: 100%;
+  }
+
+  .fe-text-img--{{ sid }} .fe-text-img__inner {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 24px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 36px;
+  }
+
+  /* Text */
+  .fe-text-img--{{ sid }} .fe-text-img__text--left   { text-align: left; }
+  .fe-text-img--{{ sid }} .fe-text-img__text--center { text-align: center; }
+  .fe-text-img--{{ sid }} .fe-text-img__text--right  { text-align: right; }
+  .fe-text-img--{{ sid }} .fe-text-img__text {
+    width: 100%;
+  }
+
+  .fe-text-img--{{ sid }} .fe-text-img__text--width-narrow {
+    max-width: 620px;
+  }
+
+  .fe-text-img--{{ sid }} .fe-text-img__text--width-normal {
+    max-width: 780px;
+  }
+
+  .fe-text-img--{{ sid }} .fe-text-img__text--width-wide {
+    max-width: 1080px;
+  }
+
+  .fe-text-img--{{ sid }} .fe-text-img__heading {
+    font-family: {{ heading_ff_stack }};
+    font-size: {{ heading_size }}px;
+    font-weight: {{ heading_weight }};
+    line-height: 1.2;
+    margin: 0 0 24px;
+    color: #32291a;
+  }
+
+  .fe-text-img--{{ sid }} .fe-text-img__body {
+    font-family: "Plus Jakarta Sans", sans-serif;
+    font-size: 16px;
+    line-height: 1.7;
+    color: #4a403a;
+    margin-bottom: 24px;
+  }
+
+  .fe-text-img--{{ sid }} .fe-text-img__body p { margin: 0 0 1em; }
+  .fe-text-img--{{ sid }} .fe-text-img__body p:last-child { margin-bottom: 0; }
+
+  .fe-text-img--{{ sid }} .fe-text-img__btn {
+    display: inline-block;
+    border: 1px solid #333;
+    padding: 10px 22px;
+    font-family: Arial, sans-serif;
+    font-size: 13px;
+    letter-spacing: 0.04em;
+    color: #32291a;
+    text-decoration: none;
+    transition: background 0.2s, color 0.2s;
+  }
+
+  .fe-text-img--{{ sid }} .fe-text-img__btn:hover {
+    background: #32291a;
+    color: #fff;
+  }
+
+  /* Image */
+  .fe-text-img--{{ sid }} .fe-text-img__media {
+    width: 100%;
+    max-width: 980px;
+  }
+  .fe-text-img--{{ sid }} .fe-text-img__media img {
+    width: 100%;
+    height: auto;
+    display: block;
+    object-fit: cover;
+  }
+</style>
+
+{% schema %}
+{
+  "name": "Text + Image",
+  "tag": "div",
+  "class": "fe-text-image-section",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Content"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "About Frankland Estate"
+    },
+    {
+      "type": "header",
+      "content": "Heading typography"
+    },
+    {
+      "type": "range",
+      "id": "heading_font_size",
+      "min": 16,
+      "max": 80,
+      "step": 1,
+      "unit": "px",
+      "label": "Heading font size",
+      "default": 32
+    },
+    {
+      "type": "select",
+      "id": "heading_font_family",
+      "label": "Heading font family",
+      "options": [
+        { "value": "serif", "label": "Serif" },
+        { "value": "sans-serif", "label": "Sans-serif" }
+      ],
+      "default": "serif"
+    },
+    {
+      "type": "select",
+      "id": "heading_font_weight",
+      "label": "Heading font weight",
+      "options": [
+        { "value": "300", "label": "300" },
+        { "value": "400", "label": "400" },
+        { "value": "500", "label": "500" },
+        { "value": "600", "label": "600" },
+        { "value": "700", "label": "700" }
+      ],
+      "default": "400"
+    },
+    {
+      "type": "richtext",
+      "id": "body",
+      "label": "Body text",
+      "default": "<p>Frankland Estate is a place, a family, our traits and values all bound up as one.</p>"
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "Button label"
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "Button link"
+    },
+    {
+      "type": "header",
+      "content": "Image"
+    },
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Image"
+    },
+    {
+      "type": "text",
+      "id": "image_url",
+      "label": "Image URL (temporary)",
+      "default": "https://www.franklandestate.com.au/dist/images/sitegates/signup/background.jpg"
+    },
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "select",
+      "id": "text_alignment",
+      "label": "Text alignment",
+      "options": [
+        { "value": "left",   "label": "Left" },
+        { "value": "center", "label": "Center" },
+        { "value": "right",  "label": "Right" }
+      ],
+      "default": "center"
+    },
+    {
+      "type": "select",
+      "id": "text_container_width",
+      "label": "Text container width",
+      "options": [
+        { "value": "narrow", "label": "Narrow" },
+        { "value": "normal", "label": "Normal" },
+        { "value": "wide", "label": "Wide" }
+      ],
+      "default": "normal"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background color",
+      "default": "#d8cec0"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 120,
+      "step": 8,
+      "unit": "px",
+      "label": "Padding top",
+      "default": 80
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 120,
+      "step": 8,
+      "unit": "px",
+      "label": "Padding bottom",
+      "default": 80
+    }
+  ],
+  "presets": [
+    {
+      "name": "Text + Image"
+    }
+  ]
+}
+{% endschema %}

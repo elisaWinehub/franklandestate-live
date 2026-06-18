@@ -1,0 +1,239 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "hero": {
+      "type": "page-hero-banner",
+      "settings": {
+        "heading": "Where We Live",
+        "text_vertical_position": "lower-center",
+        "text_color": "#ffffff",
+        "image": "shopify://shop_images/Where_We_Live_Banner_Brighter.jpg",
+        "background_position": "center center",
+        "background_color": "#efeee9",
+        "desktop_height": 560,
+        "mobile_height": 360,
+        "overlay_opacity": 25
+      }
+    },
+    "main": {
+      "type": "main-page",
+      "settings": {}
+    },
+    "text_image_column_VP8gtQ": {
+      "type": "text-image-column",
+      "name": "Text + Image",
+      "settings": {
+        "heading": "This place is special, and we hope you taste its life, joy and detail in our wines.",
+        "heading_font_size": 24,
+        "heading_font_family": "serif",
+        "heading_font_weight": "400",
+        "body": "",
+        "button_label": "",
+        "button_link": "",
+        "image_url": "",
+        "text_alignment": "center",
+        "text_container_width": "normal",
+        "background_color": "#e9e9e2",
+        "padding_top": 80,
+        "padding_bottom": 80
+      }
+    },
+    "simple_divider_qmrmdP": {
+      "type": "simple-divider",
+      "name": "Simple Divider",
+      "settings": {
+        "divider_color": "#d3d2cb",
+        "divider_thickness": 1,
+        "divider_width": 92,
+        "padding_top": 24,
+        "padding_bottom": 24,
+        "background_color": "#e9e9e2",
+        "alignment": "center"
+      }
+    },
+    "alt_1": {
+      "type": "alternating-content",
+      "settings": {
+        "image": "shopify://shop_images/Founded_in_1988_2.jpg",
+        "heading": "",
+        "body": "<p>Founded in 1988 by Barrie Smith and Judi Cullam, Frankland Estate is buried deep in the heart of Western Australia’s most isolated wine region. It’s located 330km south of Perth, 250km east of Margaret River and some 50km inland from the wild and picturesque Great Southern coastline. We named our vineyard Isolation Ridge on account of its rugged remoteness<br/><br/></p>",
+        "button_label": "",
+        "button_link": "",
+        "image_position": "image_right",
+        "background_color": "#e9e9e2",
+        "padding_top": 80,
+        "padding_bottom": 80,
+        "show_border_top": false,
+        "show_border_bottom": false,
+        "border_color": "#d3d2cb",
+        "content_font_size": 16,
+        "divider_position": "none"
+      }
+    },
+    "simple_divider_aDUUdp": {
+      "type": "simple-divider",
+      "name": "Simple Divider",
+      "settings": {
+        "divider_color": "#d3d2cb",
+        "divider_thickness": 1,
+        "divider_width": 92,
+        "padding_top": 24,
+        "padding_bottom": 24,
+        "background_color": "#e9e9e2",
+        "alignment": "center"
+      }
+    },
+    "alt_2": {
+      "type": "alternating-content",
+      "settings": {
+        "image": "shopify://shop_images/Soil_Profile.jpg",
+        "heading": "",
+        "body": "<p>The site is defined by undulating slopes of ironstone gravel over clay - what we call “coffee rock.” These fragile, infertile soils demand a great deal of care, and reward it with wines that bear a distinctly savoury, ferrous stamp that marries beautifully with pristine, generous fruit flavours and natural acidity.</p>",
+        "button_label": "",
+        "button_link": "",
+        "image_position": "image_left",
+        "background_color": "#e9e9e2",
+        "padding_top": 80,
+        "padding_bottom": 80,
+        "show_border_top": false,
+        "show_border_bottom": false,
+        "border_color": "#d3d2cb",
+        "content_font_size": 16,
+        "divider_position": "none"
+      }
+    },
+    "simple_divider_djYXmF": {
+      "type": "simple-divider",
+      "name": "Simple Divider",
+      "settings": {
+        "divider_color": "#d3d2cb",
+        "divider_thickness": 1,
+        "divider_width": 92,
+        "padding_top": 24,
+        "padding_bottom": 24,
+        "background_color": "#e9e9e2",
+        "alignment": "center"
+      }
+    },
+    "alt_3": {
+      "type": "alternating-content",
+      "settings": {
+        "image": "shopify://shop_images/Clean_Growing_Environment.jpg",
+        "heading": "",
+        "body": "<p>A pristine environment, free from light and noise pollution, combined with a stable, cool climate, makes the site ideally suited to organic farming. Certified organic since 2009, the vineyard benefits from long, even ripening conditions, shaped by Southern Ocean influences and cool nights. The result is fruit that develops depth and flavour while retaining freshness, structure and energy.</p>",
+        "button_label": "",
+        "button_link": "",
+        "image_position": "image_right",
+        "background_color": "#e9e9e2",
+        "padding_top": 80,
+        "padding_bottom": 80,
+        "show_border_top": false,
+        "show_border_bottom": false,
+        "border_color": "#d3d2cb",
+        "content_font_size": 16,
+        "divider_position": "none"
+      }
+    },
+    "simple_divider_i8BCWQ": {
+      "type": "simple-divider",
+      "name": "Simple Divider",
+      "settings": {
+        "divider_color": "#d3d2cb",
+        "divider_thickness": 1,
+        "divider_width": 92,
+        "padding_top": 24,
+        "padding_bottom": 24,
+        "background_color": "#e9e9e2",
+        "alignment": "center"
+      }
+    },
+    "alt_4": {
+      "type": "alternating-content",
+      "settings": {
+        "image": "shopify://shop_images/Our_Grapes.jpg",
+        "heading": "",
+        "body": "<p>Our grapes get to hang and ripen perfectly in steady autumn conditions, as the freshening influence of the Southern Ocean and cool nights ensure the wines retain nerve and energy.</p>",
+        "button_label": "",
+        "button_link": "",
+        "image_position": "image_left",
+        "background_color": "#e9e9e2",
+        "padding_top": 80,
+        "padding_bottom": 80,
+        "show_border_top": false,
+        "show_border_bottom": false,
+        "border_color": "#d3d2cb",
+        "content_font_size": 16,
+        "divider_position": "none"
+      }
+    },
+    "quote_1": {
+      "type": "quote-section",
+      "settings": {
+        "quote_text": "<p>\"Frankland Estate has emerged as one of the great vineyards of Australia\"</p>",
+        "author": "HUON HOOKE",
+        "quote_font_family": "serif",
+        "quote_font_size": 24,
+        "quote_font_weight": "400",
+        "author_font_family": "sans",
+        "author_font_size": 12,
+        "author_font_weight": "400",
+        "background_color": "#e9e9e2",
+        "text_color": "#302313",
+        "author_color": "#6e6256",
+        "padding_top": 84,
+        "padding_bottom": 84,
+        "show_top_divider": false,
+        "show_bottom_divider": false,
+        "divider_color": "#d2cbc2",
+        "max_width": 850,
+        "show_quote_marks": false
+      }
+    },
+    "banner_1": {
+      "type": "fullwidth-image-banner",
+      "settings": {
+        "image": "shopify://shop_images/Frankland_Estate_Organics_and_You.jpg",
+        "image_url": "",
+        "mobile_image_url": "",
+        "title": "Organics & You",
+        "subtitle": "Learn why our certified organic vineyard and wines are important for you.",
+        "button_label": "Read More...",
+        "button_link": "#",
+        "text_alignment": "left",
+        "button_bg_color": "#ffffff",
+        "button_text_color": "#302313",
+        "button_hover_bg_color": "#302313",
+        "button_hover_text_color": "#ffffff",
+        "background_color": "#e9e9e2",
+        "padding_top": 80,
+        "padding_bottom": 80,
+        "section_height": 55,
+        "mobile_height": 40,
+        "overlay_opacity": 20
+      }
+    }
+  },
+  "order": [
+    "hero",
+    "main",
+    "text_image_column_VP8gtQ",
+    "simple_divider_qmrmdP",
+    "alt_1",
+    "simple_divider_aDUUdp",
+    "alt_2",
+    "simple_divider_djYXmF",
+    "alt_3",
+    "simple_divider_i8BCWQ",
+    "alt_4",
+    "quote_1",
+    "banner_1"
+  ]
+}

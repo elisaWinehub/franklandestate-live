@@ -1,0 +1,400 @@
+{%- liquid
+  assign current_product = product
+  assign hide_empty = hide_empty | default: true
+  assign open_first = open_first | default: false
+  assign initial_reviews = reviews_initial_count | default: 2
+
+  assign wine_size = current_product.metafields.custom.size.value | default: current_product.metafields.custom.size | strip_html | strip
+  assign wine_type = current_product.metafields.custom.type.value | default: current_product.metafields.custom.type | strip_html | strip
+  assign wine_body = current_product.metafields.custom.body.value | default: current_product.metafields.custom.body | strip_html | strip
+  assign wine_varietal = current_product.metafields.custom.varietal.value | default: current_product.metafields.custom.varietal | strip_html | strip
+
+  assign has_wine_details = false
+  if wine_size != blank or wine_type != blank or wine_body != blank or wine_varietal != blank
+    assign has_wine_details = true
+  endif
+
+  assign notes_viticulture = current_product.metafields.wine.viticulture
+  assign has_vineyard = false
+  if notes_viticulture != blank and notes_viticulture.value != blank
+    assign has_vineyard = true
+  endif
+
+  assign notes_aroma = current_product.metafields.wine.aroma
+  assign notes_palate = current_product.metafields.wine.palate
+  assign notes_food_pairing = current_product.metafields.wine.food_pairing
+  assign notes_colour = current_product.metafields.custom.colours
+  assign has_tasting = false
+  if notes_aroma != blank and notes_aroma.value != blank
+    assign has_tasting = true
+  endif
+  if notes_palate != blank and notes_palate.value != blank
+    assign has_tasting = true
+  endif
+  if notes_food_pairing != blank and notes_food_pairing.value != blank
+    assign has_tasting = true
+  endif
+  if notes_colour != blank and notes_colour.value != blank
+    assign has_tasting = true
+  endif
+
+  assign notes_winemaking = current_product.metafields.wine.winemaking_notes
+  assign notes_certifications = current_product.metafields.wine.certifications
+  assign notes_cellaring = current_product.metafields.wine.cellaring
+  assign has_winemaking = false
+  if notes_winemaking != blank and notes_winemaking.value != blank
+    assign has_winemaking = true
+  endif
+  if notes_certifications != blank and notes_certifications.value != blank
+    assign has_winemaking = true
+  endif
+  if notes_cellaring != blank and notes_cellaring.value != blank
+    assign has_winemaking = true
+  endif
+
+  assign technical_vine_age = current_product.metafields.custom.vine_age.value | default: current_product.metafields.custom.vine_age | strip_html | strip
+  assign technical_alcohol = current_product.metafields.wine.alcohol.value | default: current_product.metafields.wine.alcohol | strip_html | strip
+  assign technical_oak = current_product.metafields.wine.oak.value | default: current_product.metafields.wine.oak | strip_html | strip
+  assign technical_blend = current_product.metafields.wine.blend.value | default: current_product.metafields.wine.blend | strip_html | strip
+  assign technical_region = current_product.metafields.wine.region.value | default: current_product.metafields.wine.region | strip_html | strip
+
+  assign has_technical = false
+  if technical_vine_age != blank or technical_alcohol != blank or technical_oak != blank or technical_blend != blank or technical_region != blank
+    assign has_technical = true
+  endif
+
+  assign awards_entries = current_product.metafields.custom.awards.value
+  assign reviews_entries = current_product.metafields.custom.reviews.value
+  assign awards_count = 0
+  if awards_entries != blank
+    assign awards_count = awards_entries.size
+    if awards_count == 0
+      assign awards_count = 1
+    endif
+  endif
+  assign reviews_count = 0
+  if reviews_entries != blank
+    assign reviews_count = reviews_entries.size
+    if reviews_count == 0
+      assign reviews_count = 1
+    endif
+  endif
+  assign has_awards = false
+  if awards_count > 0
+    assign has_awards = true
+  endif
+  assign has_reviews = false
+  if reviews_count > 0
+    assign has_reviews = true
+  endif
+
+  assign tasting_note_url = ''
+  assign tasting_note_label = ''
+  assign tasting_note_drop = current_product.metafields.custom.tasting_notes
+  if tasting_note_drop == blank
+    assign tasting_note_drop = current_product.metafields.custom.tasting_note
+  endif
+  if tasting_note_drop != blank and tasting_note_drop.value != blank
+    assign tasting_note_file = tasting_note_drop.value
+    if tasting_note_file.url != blank
+      assign tasting_note_url = tasting_note_file.url
+
+      assign tasting_note_filename = tasting_note_file.filename
+      if tasting_note_filename == blank
+        assign tasting_note_filename = tasting_note_file.url | split: '/' | last | split: '?' | first
+      endif
+
+      assign tasting_note_base = tasting_note_filename | split: '.' | first
+      assign tasting_note_parts = tasting_note_base | split: '-'
+      assign tasting_note_parts_count = tasting_note_parts.size
+
+      assign tasting_note_clean_base = tasting_note_base
+      if tasting_note_parts_count > 5
+        assign tasting_note_idx_last = tasting_note_parts_count | minus: 1
+        assign tasting_note_idx_prev_1 = tasting_note_parts_count | minus: 2
+        assign tasting_note_idx_prev_2 = tasting_note_parts_count | minus: 3
+        assign tasting_note_idx_prev_3 = tasting_note_parts_count | minus: 4
+        assign tasting_note_idx_prev_4 = tasting_note_parts_count | minus: 5
+
+        assign tasting_note_last = tasting_note_parts[tasting_note_idx_last]
+        assign tasting_note_prev_1 = tasting_note_parts[tasting_note_idx_prev_1]
+        assign tasting_note_prev_2 = tasting_note_parts[tasting_note_idx_prev_2]
+        assign tasting_note_prev_3 = tasting_note_parts[tasting_note_idx_prev_3]
+        assign tasting_note_prev_4 = tasting_note_parts[tasting_note_idx_prev_4]
+
+        if tasting_note_last.size == 12 and tasting_note_prev_1.size == 4 and tasting_note_prev_2.size == 4 and tasting_note_prev_3.size == 4 and tasting_note_prev_4.size == 8
+          assign tasting_note_keep_count = tasting_note_parts_count | minus: 5
+          assign tasting_note_clean_base = ''
+          for part in tasting_note_parts limit: tasting_note_keep_count
+            if forloop.first
+              assign tasting_note_clean_base = part
+            else
+              assign tasting_note_clean_base = tasting_note_clean_base | append: '-' | append: part
+            endif
+          endfor
+        endif
+      endif
+
+      assign tasting_note_label = tasting_note_clean_base | replace: '_', ' ' | replace: '-', ' ' | strip
+    else
+      assign tasting_note_url = tasting_note_drop.value
+    endif
+  endif
+
+  assign has_tasting_note = false
+  if tasting_note_url != blank
+    assign has_tasting_note = true
+  endif
+
+  assign first_open_set = false
+-%}
+
+<div class="fe-product-accordion" data-fe-product-accordion="{{ section_id }}">
+  {%- if hide_empty == false or has_wine_details -%}
+    {%- liquid
+      assign panel_open = false
+      if open_first and first_open_set == false
+        assign panel_open = true
+        assign first_open_set = true
+      endif
+    -%}
+    <details class="fe-product-accordion__item fe-product-accordion__item--wine-details{% if panel_open %} fe-product-accordion__item--expanded{% endif %}"{% if panel_open %} open{% endif %} data-fe-accordion-item>
+      <summary class="fe-product-accordion__trigger">
+        <span>Wine Details</span>
+        <svg class="fe-product-accordion__chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </summary>
+      <div class="fe-product-accordion__panel">
+        <div class="fe-product-accordion__panel-inner">
+        <div class="fe-product-accordion__stack fe-product-accordion__stack--inline">
+          {%- if wine_size != blank -%}<article class="fe-product-accordion__field fe-product-accordion__field--inline"><p class="fe-product-accordion__field-line"><span class="fe-product-accordion__field-title">Size</span><span class="fe-product-accordion__field-value">{{ wine_size }}</span></p></article>{%- endif -%}
+          {%- if wine_type != blank -%}<article class="fe-product-accordion__field fe-product-accordion__field--inline"><p class="fe-product-accordion__field-line"><span class="fe-product-accordion__field-title">Type</span><span class="fe-product-accordion__field-value">{{ wine_type }}</span></p></article>{%- endif -%}
+          {%- if wine_body != blank -%}<article class="fe-product-accordion__field fe-product-accordion__field--inline"><p class="fe-product-accordion__field-line"><span class="fe-product-accordion__field-title">Body</span><span class="fe-product-accordion__field-value">{{ wine_body }}</span></p></article>{%- endif -%}
+          {%- if wine_varietal != blank -%}<article class="fe-product-accordion__field fe-product-accordion__field--inline"><p class="fe-product-accordion__field-line"><span class="fe-product-accordion__field-title">Varietal</span><span class="fe-product-accordion__field-value">{{ wine_varietal }}</span></p></article>{%- endif -%}
+        </div>
+        </div>
+      </div>
+    </details>
+  {%- endif -%}
+
+  {%- if hide_empty == false or has_vineyard -%}
+    {%- liquid
+      assign panel_open = false
+      if open_first and first_open_set == false
+        assign panel_open = true
+        assign first_open_set = true
+      endif
+    -%}
+    <details class="fe-product-accordion__item{% if panel_open %} fe-product-accordion__item--expanded{% endif %}"{% if panel_open %} open{% endif %} data-fe-accordion-item>
+      <summary class="fe-product-accordion__trigger">
+        <span>Vineyard</span>
+        <svg class="fe-product-accordion__chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </summary>
+      <div class="fe-product-accordion__panel">
+        <div class="fe-product-accordion__panel-inner">
+        <div class="fe-product-accordion__stack">
+          <article class="fe-product-accordion__field">
+            <h3 class="fe-product-accordion__field-title">Viticulture</h3>
+            <div class="fe-product-accordion__field-value rte">{{ notes_viticulture | metafield_tag }}</div>
+          </article>
+        </div>
+        </div>
+      </div>
+    </details>
+  {%- endif -%}
+
+  {%- if hide_empty == false or has_tasting -%}
+    {%- liquid
+      assign panel_open = false
+      if open_first and first_open_set == false
+        assign panel_open = true
+        assign first_open_set = true
+      endif
+    -%}
+    <details class="fe-product-accordion__item{% if panel_open %} fe-product-accordion__item--expanded{% endif %}"{% if panel_open %} open{% endif %} data-fe-accordion-item>
+      <summary class="fe-product-accordion__trigger">
+        <span>Tasting Notes</span>
+        <svg class="fe-product-accordion__chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </summary>
+      <div class="fe-product-accordion__panel">
+        <div class="fe-product-accordion__panel-inner">
+        <div class="fe-product-accordion__stack">
+          {%- if notes_aroma != blank and notes_aroma.value != blank -%}<article class="fe-product-accordion__field"><h3 class="fe-product-accordion__field-title">Aroma</h3><div class="fe-product-accordion__field-value rte">{{ notes_aroma | metafield_tag }}</div></article>{%- endif -%}
+          {%- if notes_palate != blank and notes_palate.value != blank -%}<article class="fe-product-accordion__field"><h3 class="fe-product-accordion__field-title">Palate</h3><div class="fe-product-accordion__field-value rte">{{ notes_palate | metafield_tag }}</div></article>{%- endif -%}
+          {%- if notes_food_pairing != blank and notes_food_pairing.value != blank -%}<article class="fe-product-accordion__field"><h3 class="fe-product-accordion__field-title">Food Pairing</h3><div class="fe-product-accordion__field-value rte">{{ notes_food_pairing | metafield_tag }}</div></article>{%- endif -%}
+          {%- if notes_colour != blank and notes_colour.value != blank -%}<article class="fe-product-accordion__field"><h3 class="fe-product-accordion__field-title">Colour</h3><div class="fe-product-accordion__field-value rte">{{ notes_colour | metafield_tag }}</div></article>{%- endif -%}
+        </div>
+        </div>
+      </div>
+    </details>
+  {%- endif -%}
+
+  {%- if hide_empty == false or has_winemaking -%}
+    {%- liquid
+      assign panel_open = false
+      if open_first and first_open_set == false
+        assign panel_open = true
+        assign first_open_set = true
+      endif
+    -%}
+    <details class="fe-product-accordion__item{% if panel_open %} fe-product-accordion__item--expanded{% endif %}"{% if panel_open %} open{% endif %} data-fe-accordion-item>
+      <summary class="fe-product-accordion__trigger">
+        <span>Winemaking</span>
+        <svg class="fe-product-accordion__chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </summary>
+      <div class="fe-product-accordion__panel">
+        <div class="fe-product-accordion__panel-inner">
+        <div class="fe-product-accordion__stack">
+          {%- if notes_winemaking != blank and notes_winemaking.value != blank -%}<article class="fe-product-accordion__field"><h3 class="fe-product-accordion__field-title">Wine Making</h3><div class="fe-product-accordion__field-value rte">{{ notes_winemaking | metafield_tag }}</div></article>{%- endif -%}
+          {%- if notes_certifications != blank and notes_certifications.value != blank -%}<article class="fe-product-accordion__field"><h3 class="fe-product-accordion__field-title">Certifications</h3><div class="fe-product-accordion__field-value rte">{{ notes_certifications | metafield_tag }}</div></article>{%- endif -%}
+          {%- if notes_cellaring != blank and notes_cellaring.value != blank -%}<article class="fe-product-accordion__field"><h3 class="fe-product-accordion__field-title">Cellaring</h3><div class="fe-product-accordion__field-value rte">{{ notes_cellaring | metafield_tag }}</div></article>{%- endif -%}
+        </div>
+        </div>
+      </div>
+    </details>
+  {%- endif -%}
+
+  {%- if hide_empty == false or has_technical -%}
+    {%- liquid
+      assign panel_open = false
+      if open_first and first_open_set == false
+        assign panel_open = true
+        assign first_open_set = true
+      endif
+    -%}
+    <details class="fe-product-accordion__item{% if panel_open %} fe-product-accordion__item--expanded{% endif %}"{% if panel_open %} open{% endif %} data-fe-accordion-item>
+      <summary class="fe-product-accordion__trigger">
+        <span>Technical Details</span>
+        <svg class="fe-product-accordion__chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </summary>
+      <div class="fe-product-accordion__panel">
+        <div class="fe-product-accordion__panel-inner">
+        <div class="fe-product-accordion__stack">
+          {%- if technical_vine_age != blank -%}<article class="fe-product-accordion__field"><h3 class="fe-product-accordion__field-title">Vine Age</h3><p class="fe-product-accordion__field-value">{{ technical_vine_age }}</p></article>{%- endif -%}
+          {%- if technical_alcohol != blank -%}<article class="fe-product-accordion__field"><h3 class="fe-product-accordion__field-title">Alcohol</h3><p class="fe-product-accordion__field-value">{{ technical_alcohol }}</p></article>{%- endif -%}
+          {%- if technical_oak != blank -%}<article class="fe-product-accordion__field"><h3 class="fe-product-accordion__field-title">Oak</h3><p class="fe-product-accordion__field-value">{{ technical_oak }}</p></article>{%- endif -%}
+          {%- if technical_blend != blank -%}<article class="fe-product-accordion__field"><h3 class="fe-product-accordion__field-title">Blend</h3><p class="fe-product-accordion__field-value">{{ technical_blend }}</p></article>{%- endif -%}
+          {%- if technical_region != blank -%}<article class="fe-product-accordion__field"><h3 class="fe-product-accordion__field-title">Region</h3><p class="fe-product-accordion__field-value">{{ technical_region }}</p></article>{%- endif -%}
+        </div>
+        </div>
+      </div>
+    </details>
+  {%- endif -%}
+
+  {%- if hide_empty == false or has_tasting_note -%}
+    {%- liquid
+      assign panel_open = false
+      if open_first and first_open_set == false
+        assign panel_open = true
+        assign first_open_set = true
+      endif
+    -%}
+    <details class="fe-product-accordion__item{% if panel_open %} fe-product-accordion__item--expanded{% endif %}"{% if panel_open %} open{% endif %} data-fe-accordion-item>
+      <summary class="fe-product-accordion__trigger">
+        <span>Tasting Note PDF</span>
+        <svg class="fe-product-accordion__chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </summary>
+      <div class="fe-product-accordion__panel">
+        <div class="fe-product-accordion__panel-inner">
+        <a
+          class="fe-product-accordion__tasting-note"
+          href="{{ tasting_note_url }}"
+          target="_blank"
+          rel="noopener"
+        >
+          <span class="fe-product-accordion__tasting-note-text">
+            {%- if tasting_note_label != blank -%}
+              {{ tasting_note_label | escape }}
+            {%- else -%}
+              Download tasting notes
+            {%- endif -%}
+          </span>
+          <svg class="fe-product-accordion__tasting-note-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M12 5v10M8 11l4 4 4-4M5 19h14" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </a>
+        </div>
+      </div>
+    </details>
+  {%- endif -%}
+
+  {%- if hide_empty == false or has_awards -%}
+    {%- liquid
+      assign panel_open = false
+      if open_first and first_open_set == false
+        assign panel_open = true
+        assign first_open_set = true
+      endif
+    -%}
+    <details class="fe-product-accordion__item{% if panel_open %} fe-product-accordion__item--expanded{% endif %}"{% if panel_open %} open{% endif %} data-fe-accordion-item>
+      <summary class="fe-product-accordion__trigger">
+        <span>Awards</span>
+        <svg class="fe-product-accordion__chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </summary>
+      <div class="fe-product-accordion__panel">
+        <div class="fe-product-accordion__panel-inner">
+        <div class="fe-product-accordion__stack">
+          {%- for award in awards_entries -%}
+            {%- assign award_info = award.award_info.value | default: award.award_info | strip_html | strip -%}
+            {%- if award_info != blank -%}
+              <article class="fe-product-accordion__field"><p class="fe-product-accordion__field-value">{{ award_info }}</p></article>
+            {%- endif -%}
+          {%- endfor -%}
+        </div>
+        </div>
+      </div>
+    </details>
+  {%- endif -%}
+
+  {%- if hide_empty == false or has_reviews -%}
+    {%- liquid
+      assign panel_open = false
+      if open_first and first_open_set == false
+        assign panel_open = true
+        assign first_open_set = true
+      endif
+    -%}
+    <details class="fe-product-accordion__item{% if panel_open %} fe-product-accordion__item--expanded{% endif %}"{% if panel_open %} open{% endif %} data-fe-accordion-item>
+      <summary class="fe-product-accordion__trigger">
+        <span>Reviews</span>
+        <svg class="fe-product-accordion__chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </summary>
+      <div class="fe-product-accordion__panel">
+        <div class="fe-product-accordion__panel-inner">
+        {%- if reviews_count > 0 -%}
+          <div class="fe-product-accordion__stack">
+              {%- for review in reviews_entries -%}
+                {%- liquid
+                  assign review_name = review.name.value | default: review.name | strip_html | strip
+                  assign review_subject = review.subject.value | default: review.subject | strip_html | strip
+                  assign review_text = review.review.value | default: review.review | strip_html | strip
+                  assign review_rating = review.rating.value | default: review.rating | strip_html | strip
+                -%}
+                {%- if review_name != blank or review_subject != blank or review_text != blank or review_rating != blank -%}
+                  <article class="fe-product-accordion__review{% if forloop.index > initial_reviews %} is-hidden-review{% endif %}"{% if forloop.index > initial_reviews %} hidden{% endif %}>
+                    {%- if review_name != blank -%}<h4 class="fe-product-accordion__review-name">{{ review_name }}</h4>{%- endif -%}
+                    {%- if review_subject != blank -%}<p class="fe-product-accordion__review-subject">{{ review_subject }}</p>{%- endif -%}
+                    {%- if review_text != blank -%}
+                      {%- if review_text.size > 150 -%}
+                        <p class="fe-product-accordion__review-copy">
+                          <span class="fe-product-accordion__review-short">{{ review_text | truncate: 150, '' }}&hellip;</span>
+                          <span class="fe-product-accordion__review-full" hidden>{{ review_text }}</span>
+                          <button type="button" class="fe-product-accordion__read-toggle" aria-expanded="false" data-fe-read-toggle>Read More</button>
+                        </p>
+                      {%- else -%}
+                        <p class="fe-product-accordion__review-copy">{{ review_text }}</p>
+                      {%- endif -%}
+                    {%- endif -%}
+                    {%- if review_rating != blank -%}<p class="fe-product-accordion__review-rating">Rating: {{ review_rating }}</p>{%- endif -%}
+                  </article>
+                {%- endif -%}
+              {%- endfor -%}
+            </div>
+            {%- if reviews_count > initial_reviews -%}
+              <button type="button" class="fe-product-accordion__show-more" data-fe-show-more-reviews>Show More</button>
+            {%- endif -%}
+        {%- endif -%}
+        </div>
+      </div>
+    </details>
+  {%- endif -%}
+</div>

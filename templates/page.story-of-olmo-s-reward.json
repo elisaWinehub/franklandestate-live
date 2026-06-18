@@ -1,0 +1,231 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "hero": {
+      "type": "page-hero-banner",
+      "settings": {
+        "heading": "The Story of Olmo’s Reward",
+        "text_vertical_position": "lower-center",
+        "text_color": "#ffffff",
+        "image": "shopify://shop_images/The_Story_of_Olmo_s_Reward_Banner.jpg",
+        "background_position": "center center",
+        "background_color": "#efeee9",
+        "desktop_height": 560,
+        "mobile_height": 360,
+        "overlay_opacity": 25
+      }
+    },
+    "main": {
+      "type": "main-page",
+      "settings": {}
+    },
+    "text_image_column_VP8gtQ": {
+      "type": "text-image-column",
+      "name": "Text + Image",
+      "settings": {
+        "heading": "Harold Olmo was a believer in Frankland River. He was the U.S.-born viticulturist who, back in 1955, declared that this place was at least the equal of any place in Australia or California when it came to the potential for Bordeaux-beating Cabernet blends.",
+        "heading_font_size": 28,
+        "heading_font_family": "serif",
+        "heading_font_weight": "400",
+        "body": "",
+        "button_label": "",
+        "button_link": "",
+        "image_url": "",
+        "text_alignment": "center",
+        "text_container_width": "normal",
+        "background_color": "#e9e9e2",
+        "padding_top": 80,
+        "padding_bottom": 80
+      }
+    },
+    "simple_divider_zVGcYh": {
+      "type": "simple-divider",
+      "name": "Simple Divider",
+      "settings": {
+        "divider_color": "#D3D2CB",
+        "divider_thickness": 1,
+        "divider_width": 92,
+        "padding_top": 24,
+        "padding_bottom": 24,
+        "background_color": "#e9e9e2",
+        "alignment": "center"
+      }
+    },
+    "alt_1": {
+      "type": "alternating-content",
+      "settings": {
+        "image": "shopify://shop_images/FE_HARVEST_1.jpg",
+        "heading": "",
+        "body": "<p>The Smith Cullam family were believers in Olmo. Judi Cullam and Barrie Smith named their ambitious flagship blend after him when they started producing it back in the ‘90s. All the way back then, they set out to highlight the nuance, allure and strength of a varietally blended wine, in a market that was at the time - and remains today - dominated by single-varietal wines.</p><p>Though the make-up has changed over the years, the mission has not. Olmo’s Reward is resolutely open-hearted yet restrained, that rare medium-bodied flagship that speaks with a quiet, measured authority, It is not an ‘international’ style of wine; it’s a wine that expresses Isolation Ridge and the beauty, ruggedness and singularity of this place.</p>",
+        "button_label": "",
+        "button_link": "",
+        "image_position": "image_right",
+        "background_color": "#e9e9e2",
+        "padding_top": 80,
+        "padding_bottom": 80,
+        "show_border_top": false,
+        "show_border_bottom": false,
+        "border_color": "#d3d2cb",
+        "content_font_size": 16,
+        "divider_position": "none"
+      }
+    },
+    "simple_divider_7zCKhA": {
+      "type": "simple-divider",
+      "name": "Simple Divider",
+      "settings": {
+        "divider_color": "#D3D2CB",
+        "divider_thickness": 1,
+        "divider_width": 92,
+        "padding_top": 24,
+        "padding_bottom": 24,
+        "background_color": "#e9e9e2",
+        "alignment": "center"
+      }
+    },
+    "alt_2": {
+      "type": "alternating-content",
+      "settings": {
+        "image": "shopify://shop_images/FE_GRAPES_2.jpg",
+        "heading": "",
+        "body": "<p>Judi and Barrie’s children, Hunter and Elizabeth Smith, are believers in Olmo’s Reward. Along with Elizabeth’s husband Brian Kent, who joined the team in 2010, we’ve worked tirelessly to guide this wine to greatness. As with all these things, it has evolved to sit at the top echelon of Australia’s single-site red blends thanks to a series of one-percenters: Organic viticulture; lower production; hero status for Cabernet Franc; gentler extraction; older, larger oak; shorter maturation; and greater confidence in the wine’s singularity</p>",
+        "button_label": "",
+        "button_link": "",
+        "image_position": "image_left",
+        "background_color": "#e9e9e2",
+        "padding_top": 80,
+        "padding_bottom": 80,
+        "show_border_top": false,
+        "show_border_bottom": false,
+        "border_color": "#d3d2cb",
+        "content_font_size": 16,
+        "divider_position": "none"
+      }
+    },
+    "simple_divider_zQibAm": {
+      "type": "simple-divider",
+      "name": "Simple Divider",
+      "settings": {
+        "divider_color": "#D3D2CB",
+        "divider_thickness": 1,
+        "divider_width": 92,
+        "padding_top": 24,
+        "padding_bottom": 24,
+        "background_color": "#e9e9e2",
+        "alignment": "center"
+      }
+    },
+    "alt_3": {
+      "type": "alternating-content",
+      "settings": {
+        "image": "shopify://shop_images/FE_WINERY.jpg",
+        "heading": "",
+        "body": "<p><em>“The consistency across vintages highlights a thoughtful, empathetic and precise approach to winemaking,” wrote Andrew Caillard MW following a 14-wine vertical dating back to 1994. “Red fruit characters and a strong tannin presence are found in almost all vintages. This is generally offset by good density and maturation complexity. A firm bittersweet finish lengthens the palate. The elegance, energy, rusty/sturdy textures and vinosity are standout features of the style.\"</em></p><p>﻿It is another perspective from which to appreciate Frankland River, Isolation Ridge and our family values. We hope you take great pleasure in discovering it.</p>",
+        "button_label": "",
+        "button_link": "",
+        "image_position": "image_right",
+        "background_color": "#e9e9e2",
+        "padding_top": 80,
+        "padding_bottom": 80,
+        "show_border_top": false,
+        "show_border_bottom": false,
+        "border_color": "#d3d2cb",
+        "content_font_size": 16,
+        "divider_position": "none"
+      }
+    },
+    "quote_1": {
+      "type": "quote-section",
+      "settings": {
+        "quote_text": "<p>“It is also fascinating to see how Cabernet Franc has become the driving force behind the wine. The combination of terroir, varietal character, and winemaking techniques bring a distinct singularity of style. The purity of fruit, ferruginous minerality and gentle vigour are all neatly aligned.”</p>",
+        "author": "ANDREW CAILLARD MW",
+        "quote_font_family": "serif",
+        "quote_font_size": 24,
+        "quote_font_weight": "400",
+        "author_font_family": "sans",
+        "author_font_size": 12,
+        "author_font_weight": "400",
+        "background_color": "#e9e9e2",
+        "text_color": "#302313",
+        "author_color": "#6e6256",
+        "padding_top": 84,
+        "padding_bottom": 84,
+        "show_top_divider": false,
+        "show_bottom_divider": false,
+        "divider_color": "#d2cbc2",
+        "max_width": 850,
+        "show_quote_marks": false
+      }
+    },
+    "quote_section_Qe96r6": {
+      "type": "quote-section",
+      "name": "Quote Section",
+      "settings": {
+        "quote_text": "<p>“The consistency across vintages highlights a thoughtful, empathetic and precise approach to winemaking… The elegance, energy, rusty/sturdy textures and vinosity are standout features of the style.”</p>",
+        "author": "ANDREW CAILLARD MW ON OLMO'S REWARD",
+        "quote_font_family": "serif",
+        "quote_font_size": 24,
+        "quote_font_weight": "400",
+        "author_font_family": "sans",
+        "author_font_size": 12,
+        "author_font_weight": "400",
+        "background_color": "#e9e9e2",
+        "text_color": "#302313",
+        "author_color": "#6e6256",
+        "padding_top": 84,
+        "padding_bottom": 84,
+        "show_top_divider": false,
+        "show_bottom_divider": false,
+        "divider_color": "#d2cbc2",
+        "max_width": 850,
+        "show_quote_marks": false
+      }
+    },
+    "banner_1": {
+      "type": "fullwidth-image-banner",
+      "settings": {
+        "image": "shopify://shop_images/Frankland_Estate_Shop_Olmos_Reward_and_More.jpg",
+        "image_url": "",
+        "mobile_image": "shopify://shop_images/Frankland_Estate_Shop_Olmos_Reward_and_More.jpg",
+        "mobile_image_url": "",
+        "title": "Shop Olmo's Reward & More",
+        "subtitle": "Explore our range of certified organic, award-winning wines delivered straight to your door.",
+        "button_label": "Shop Now",
+        "button_link": "#",
+        "text_alignment": "left",
+        "button_bg_color": "#ffffff",
+        "button_text_color": "#302313",
+        "button_hover_bg_color": "#302313",
+        "button_hover_text_color": "#ffffff",
+        "background_color": "#e9e9e2",
+        "padding_top": 80,
+        "padding_bottom": 80,
+        "section_height": 55,
+        "mobile_height": 40,
+        "overlay_opacity": 20
+      }
+    }
+  },
+  "order": [
+    "hero",
+    "main",
+    "text_image_column_VP8gtQ",
+    "simple_divider_zVGcYh",
+    "alt_1",
+    "simple_divider_7zCKhA",
+    "alt_2",
+    "simple_divider_zQibAm",
+    "alt_3",
+    "quote_1",
+    "quote_section_Qe96r6",
+    "banner_1"
+  ]
+}

@@ -1,0 +1,345 @@
+{%- comment -%}
+  Product media gallery with vertical thumbnails (desktop) / horizontal (mobile).
+  @param product {Product}
+  @param section_id {String}
+  @param gallery_bg {String}
+  @param thumb_position {String} left|bottom
+  @param image_radius {Number}
+{%- endcomment -%}
+
+{%- liquid
+  assign sid = section_id
+  assign image_media_count = 0
+  for media in product.media
+    if media.media_type == 'image'
+      assign image_media_count = image_media_count | plus: 1
+    endif
+  endfor
+  if image_media_count == 0 and product.featured_image
+    assign image_media_count = 1
+  endif
+  assign show_thumbs = false
+  if image_media_count > 1
+    assign show_thumbs = true
+  endif
+  assign enable_lightbox = false
+  if image_media_count > 0
+    assign enable_lightbox = true
+  endif
+-%}
+
+<div
+  class="fe-product-gallery fe-product-gallery--{{ thumb_position | default: 'left' }}"
+  data-fe-product-gallery="{{ sid }}"
+  data-fe-pg-image-count="{{ image_media_count }}"
+  style="--fe-pg-radius: {{ image_radius | default: 8 }}px;"
+>
+  {%- if show_thumbs -%}
+    <div class="fe-product-gallery__thumbs" role="tablist" aria-label="Product images">
+      {%- assign thumb_index = 0 -%}
+      {%- for media in product.media -%}
+        {%- if media.media_type == 'image' -%}
+          <button
+            type="button"
+            class="fe-product-gallery__thumb{% if thumb_index == 0 %} is-active{% endif %}"
+            role="tab"
+            aria-selected="{% if thumb_index == 0 %}true{% else %}false{% endif %}"
+            aria-controls="fe-pg-main-{{ sid }}-{{ thumb_index }}"
+            data-fe-pg-thumb="{{ thumb_index }}"
+            data-fe-pg-src="{{ media | image_url: width: 1800 }}"
+            data-fe-pg-full-src="{{ media | image_url: width: 2400 }}"
+            data-fe-pg-srcset="{{ media | image_url: width: 800 }} 800w, {{ media | image_url: width: 1200 }} 1200w, {{ media | image_url: width: 1800 }} 1800w"
+            data-fe-pg-alt="{{ media.alt | escape | default: product.title }}"
+          >
+            <img
+              src="{{ media | image_url: width: 160 }}"
+              alt="{{ media.alt | escape | default: product.title }}"
+              width="80"
+              height="80"
+              loading="lazy"
+            >
+          </button>
+          {%- assign thumb_index = thumb_index | plus: 1 -%}
+        {%- endif -%}
+      {%- endfor -%}
+    </div>
+  {%- endif -%}
+
+  <div class="fe-product-gallery__main-wrap">
+    <figure
+      class="fe-product-gallery__main{% if enable_lightbox %} fe-product-gallery__main--lightbox{% endif %}"
+      id="fe-pg-main-{{ sid }}-0"
+      {% if enable_lightbox %}
+        data-fe-pg-lightbox-trigger
+        role="button"
+        tabindex="0"
+        aria-label="View enlarged product image"
+      {% endif %}
+    >
+      {%- assign first_media = product.featured_media | default: product.media.first -%}
+      {%- if first_media != blank -%}
+        {%- if first_media.media_type == 'image' -%}
+          <img
+            class="fe-product-gallery__main-img"
+            data-fe-pg-main-img
+            data-fe-pg-full-src="{{ first_media | image_url: width: 2400 }}"
+            src="{{ first_media | image_url: width: 1800 }}"
+            srcset="
+              {{ first_media | image_url: width: 800 }} 800w,
+              {{ first_media | image_url: width: 1200 }} 1200w,
+              {{ first_media | image_url: width: 1800 }} 1800w
+            "
+            sizes="(min-width: 990px) 580px, 100vw"
+            alt="{{ first_media.alt | escape | default: product.title }}"
+            width="{{ first_media.width }}"
+            height="{{ first_media.height }}"
+            loading="eager"
+          >
+        {%- else -%}
+          {{ first_media | media_tag: class: 'fe-product-gallery__main-img', data-fe-pg-main-img: true }}
+        {%- endif -%}
+      {%- elsif product.featured_image != blank -%}
+        <img
+          class="fe-product-gallery__main-img"
+          data-fe-pg-main-img
+          data-fe-pg-full-src="{{ product.featured_image | image_url: width: 2400 }}"
+          src="{{ product.featured_image | image_url: width: 1800 }}"
+          alt="{{ product.featured_image.alt | escape | default: product.title }}"
+          loading="eager"
+        >
+      {%- else -%}
+        {{ 'product-apparel-1' | placeholder_svg_tag: 'fe-product-gallery__main-img fe-product-gallery__main-img--placeholder' }}
+      {%- endif -%}
+    </figure>
+  </div>
+
+  {%- if enable_lightbox -%}
+    <div
+      class="fe-product-gallery__modal"
+      hidden
+      data-fe-pg-modal
+      data-fe-pg-section="{{ sid }}"
+      aria-hidden="true"
+      style="--fe-pg-radius: {{ image_radius | default: 8 }}px;"
+    >
+      <div class="fe-product-gallery__modal-overlay" data-fe-pg-modal-close tabindex="-1"></div>
+      <div class="fe-product-gallery__modal-dialog" role="dialog" aria-modal="true" aria-label="Product image">
+        <button type="button" class="fe-product-gallery__modal-close" data-fe-pg-modal-close aria-label="Close">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true" focusable="false">
+            <path d="M18 6L6 18M6 6l12 12" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"/>
+          </svg>
+        </button>
+        {%- if image_media_count > 1 -%}
+          <button type="button" class="fe-product-gallery__modal-arrow fe-product-gallery__modal-arrow--prev" data-fe-pg-modal-prev aria-label="Previous image">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true" focusable="false">
+              <path d="M15 18l-6-6 6-6" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
+          <button type="button" class="fe-product-gallery__modal-arrow fe-product-gallery__modal-arrow--next" data-fe-pg-modal-next aria-label="Next image">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true" focusable="false">
+              <path d="M9 18l6-6-6-6" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
+        {%- endif -%}
+        <div class="fe-product-gallery__modal-stage">
+          <div class="fe-product-gallery__modal-loader" data-fe-pg-modal-loader aria-hidden="true">
+            <span class="fe-product-gallery__modal-spinner"></span>
+          </div>
+          <img class="fe-product-gallery__modal-img" data-fe-pg-modal-img alt="">
+        </div>
+      </div>
+    </div>
+  {%- endif -%}
+</div>
+
+{% stylesheet %}
+  .fe-product-gallery__modal {
+    position: fixed;
+    inset: 0;
+    z-index: 10050;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    box-sizing: border-box;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+  }
+
+  .fe-product-gallery__modal.is-open {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  .fe-product-gallery__modal[hidden] {
+    display: none !important;
+  }
+
+  .fe-product-gallery__modal-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.88);
+    cursor: pointer;
+  }
+
+  .fe-product-gallery__modal-dialog {
+    position: relative;
+    z-index: 1;
+    width: min(100%, 1100px);
+    max-height: calc(100vh - 48px);
+    transform: scale(0.98);
+    opacity: 0;
+    transition: transform 0.32s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.32s ease;
+  }
+
+  .fe-product-gallery__modal.is-open .fe-product-gallery__modal-dialog {
+    transform: scale(1);
+    opacity: 1;
+  }
+
+  .fe-product-gallery__modal-stage {
+    position: relative;
+    width: 100%;
+    max-height: calc(100vh - 48px);
+    min-height: 200px;
+    border-radius: var(--fe-pg-radius, 8px);
+    overflow: hidden;
+    background: #111;
+  }
+
+  .fe-product-gallery__modal-loader {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(17, 17, 17, 0.45);
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition: opacity 0.2s ease, visibility 0.2s ease;
+  }
+
+  .fe-product-gallery__modal-stage.is-loading .fe-product-gallery__modal-loader {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  .fe-product-gallery__modal-spinner {
+    width: 40px;
+    height: 40px;
+    border: 3px solid rgba(255, 255, 255, 0.22);
+    border-top-color: #fff;
+    border-radius: 50%;
+    animation: fe-pg-modal-spin 0.75s linear infinite;
+  }
+
+  @keyframes fe-pg-modal-spin {
+    to { transform: rotate(360deg); }
+  }
+
+  .fe-product-gallery__modal-img {
+    display: block;
+    width: 100%;
+    max-height: calc(100vh - 48px);
+    object-fit: contain;
+    object-position: center;
+    opacity: 1;
+    transition: opacity 0.3s ease;
+  }
+
+  .fe-product-gallery__modal-img.is-fading {
+    opacity: 0;
+  }
+
+  .fe-product-gallery__modal-close {
+    position: absolute;
+    top: 0;
+    right: 0;
+    z-index: 3;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    padding: 0;
+    border: none;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.14);
+    color: #fff;
+    cursor: pointer;
+    transition: background 0.2s ease;
+  }
+
+  .fe-product-gallery__modal-close:hover {
+    background: rgba(255, 255, 255, 0.24);
+  }
+
+  .fe-product-gallery__modal-arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 3;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    padding: 0;
+    border: none;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.92);
+    color: #1a1a1a;
+    cursor: pointer;
+    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.2);
+    transition: transform 0.2s ease;
+  }
+
+  .fe-product-gallery__modal-arrow:hover {
+    transform: translateY(-50%) scale(1.04);
+  }
+
+  .fe-product-gallery__modal-arrow:disabled {
+    opacity: 0.45;
+    cursor: wait;
+    pointer-events: none;
+  }
+
+  .fe-product-gallery__modal-arrow--prev {
+    left: -64px;
+  }
+
+  .fe-product-gallery__modal-arrow--next {
+    right: -64px;
+  }
+
+  @media (max-width: 989px) {
+    .fe-product-gallery__modal-arrow--prev {
+      left: 8px;
+    }
+
+    .fe-product-gallery__modal-arrow--next {
+      right: 8px;
+    }
+
+    .fe-product-gallery__modal-close {
+      top: 12px;
+      right: 12px;
+      background: rgba(0, 0, 0, 0.45);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .fe-product-gallery__modal,
+    .fe-product-gallery__modal-dialog,
+    .fe-product-gallery__modal-img {
+      transition: none;
+    }
+
+    .fe-product-gallery__modal-spinner {
+      animation: none;
+    }
+  }
+{% endstylesheet %}

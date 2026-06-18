@@ -1,0 +1,43 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "type": "header",
+  "name": "Header",
+  "sections": {
+    "header_section": {
+      "type": "header",
+      "custom_css": [],
+      "settings": {
+        "show_announcement_bar": true,
+        "bar_text": "Free Shipping and 10% off RRP on dozen purchases — login to your account.",
+        "bar_bg": "#b3833d",
+        "bar_color": "#ffffff",
+        "logo_width": 200,
+        "main_menu": "main-menu-fl",
+        "show_desktop_hamburger": false,
+        "header_text_default": "#ffffff",
+        "header_bg_alt": "#efeee9",
+        "header_text_alt": "#534846",
+        "overlay_menu_1": "main-menu-fl",
+        "overlay_menu_2": "",
+        "overlay_menu_3": "",
+        "overlay_contact_url": "#",
+        "overlay_contact_label": "Contact Us",
+        "social_instagram": "#",
+        "social_facebook": "#",
+        "social_twitter": "#",
+        "social_pinterest": "#"
+      }
+    }
+  },
+  "order": [
+    "header_section"
+  ]
+}

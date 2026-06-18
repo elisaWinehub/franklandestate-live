@@ -1,0 +1,55 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "hero": {
+      "type": "page-hero-banner",
+      "settings": {
+        "heading": "",
+        "text_vertical_position": "lower-center",
+        "text_color": "#ffffff",
+        "image": "shopify://shop_images/SHOTBYTHOM-09598_1.jpg",
+        "background_position": "center center",
+        "background_color": "#efeee9",
+        "desktop_height": 560,
+        "mobile_height": 360,
+        "overlay_opacity": 25
+      }
+    },
+    "main": {
+      "type": "main-page",
+      "settings": {}
+    },
+    "text_image_column_UjyKKL": {
+      "type": "text-image-column",
+      "name": "Text + Image",
+      "settings": {
+        "heading": "",
+        "heading_font_size": 32,
+        "heading_font_family": "serif",
+        "heading_font_weight": "400",
+        "body": "<p>At Frankland Estate, protecting your privacy is very important to us. We hope the following statement will help you understand how we collect, use and safeguard the personal information you provide to us on our site.</p><h4>I. What kind of information do we collect from you when you visit our site?</h4><p>When you visit www.franklandestate.com.au, our Google Analytics package collects some basic information about your browser. Examples are things like what type of browser and operating system are you using; how long did you stay on our site; what pages did you look at. This helps us understand how visitors browse our site, so that we can make their shopping experience better.</p><p>We also collect personal information about you when you check out of our online store such as your name, address, postal code, phone number, etc. We need this information to process payment and ship our wines to you.</p><h4>II. Sharing of personal information - we don't do it.</h4><p>Under no circumstances will we share any personal information that we collect with any third parties or web sites. All the information you give us is completely private and used solely for order processing and shipping. If you give us permission to send you marketing emails then we use your email for that purpose, but never does that email get sold or distributed to any other web site or list.</p><h4>III. Newsletter Opt-Out.</h4><p>If you have chosen to opt into our newsletter or marketing emails and decide to opt out, we have a simple unsubscribe form that will let you get off our email list. Also, under the member area, you will find a simple form to unsubscribe.</p><h4>IV. Consumer inquiries and privacy.</h4><p>If you have any questions about your privacy, or want to make changes to your profile, or get off our marketing list, simply <a href=\"mailto:info@franklandestate.com.au\" target=\"_blank\">send us an email</a>.</p><h4>V. Protecting your information.</h4><p>All the payment information we collect is done so under SSL - a standard internet security measure. Any data that we store about you is kept behind a secure firewall in our database and is not accessible to the public in any way.</p>",
+        "button_label": "",
+        "button_link": "",
+        "image_url": "",
+        "text_alignment": "left",
+        "text_container_width": "normal",
+        "background_color": "#e9e9e2",
+        "padding_top": 80,
+        "padding_bottom": 80
+      }
+    }
+  },
+  "order": [
+    "hero",
+    "main",
+    "text_image_column_UjyKKL"
+  ]
+}

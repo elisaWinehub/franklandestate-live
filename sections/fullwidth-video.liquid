@@ -1,0 +1,348 @@
+{%- liquid
+  assign sid        = section.id
+  assign src_type   = section.settings.video_source_type
+  assign height_vh  = section.settings.section_height
+  assign overlay_op = section.settings.overlay_opacity | divided_by: 100.0
+  assign autoplay_enabled = section.settings.autoplay
+  assign muted_enabled = section.settings.muted
+  if autoplay_enabled
+    assign muted_enabled = true
+  endif
+
+  assign embed_url = ''
+  if section.settings.youtube_url != blank
+    assign raw_yt = section.settings.youtube_url
+    if raw_yt contains 'youtu.be/'
+      assign yt_id = raw_yt | split: 'youtu.be/' | last | split: '?' | first
+    elsif raw_yt contains 'v='
+      assign yt_id = raw_yt | split: 'v=' | last | split: '&' | first
+    else
+      assign yt_id = ''
+    endif
+    if yt_id != ''
+      assign embed_url = 'https://www.youtube.com/embed/' | append: yt_id
+      if section.settings.autoplay
+        assign embed_url = embed_url | append: '?autoplay=1&mute=1&playsinline=1&loop=1&playlist=' | append: yt_id
+      else
+        assign embed_url = embed_url | append: '?playsinline=1'
+      endif
+    endif
+  elsif section.settings.vimeo_url != blank
+    assign raw_vm = section.settings.vimeo_url
+    assign vm_id  = raw_vm | split: 'vimeo.com/' | last | split: '?' | first | split: '/' | first
+    if vm_id != blank
+      assign embed_url = 'https://player.vimeo.com/video/' | append: vm_id
+      if section.settings.autoplay
+        assign embed_url = embed_url | append: '?autoplay=1&muted=1&loop=1&background=1'
+      elsif section.settings.show_controls
+        assign embed_url = embed_url | append: '?title=0&byline=0&portrait=0'
+      endif
+    endif
+  endif
+-%}
+
+<section class="fe-video fe-video--{{ sid }}" style="height:{{ height_vh }}vh; min-height:280px;">
+
+  {%- comment -%} ── Video source ──────────────────────────────────── {%- endcomment -%}
+  {%- if section.settings.shopify_video != blank -%}
+    {%- if section.settings.poster_image != blank -%}
+      {{- section.settings.shopify_video | video_tag:
+        autoplay: autoplay_enabled,
+        loop:     section.settings.loop,
+        muted:    muted_enabled,
+        controls: section.settings.show_controls,
+        playsinline: true,
+        class:    'fe-video__player',
+        poster:   section.settings.poster_image | image_url: width: 1600,
+        preload:  'metadata'
+      -}}
+    {%- else -%}
+      {{- section.settings.shopify_video | video_tag:
+        autoplay: autoplay_enabled,
+        loop:     section.settings.loop,
+        muted:    muted_enabled,
+        controls: section.settings.show_controls,
+        playsinline: true,
+        class:    'fe-video__player',
+        preload:  'metadata'
+      -}}
+    {%- endif -%}
+
+  {%- elsif section.settings.external_video_url != blank -%}
+    <video
+      class="fe-video__player"
+      src="{{ section.settings.external_video_url }}"
+      {% if section.settings.poster_image != blank %}poster="{{ section.settings.poster_image | image_url: width: 1600 }}"{% endif %}
+      playsinline
+      {% if section.settings.autoplay %}autoplay{% endif %}
+      {% if section.settings.loop %}loop{% endif %}
+      {% if muted_enabled %}muted{% endif %}
+      {% if section.settings.show_controls %}controls{% endif %}
+      preload="metadata"
+    ></video>
+
+  {%- elsif embed_url != '' -%}
+    <div class="fe-video__embed-wrap">
+      <iframe
+        src="{{ embed_url }}"
+        class="fe-video__embed"
+        allow="autoplay; fullscreen; picture-in-picture"
+        allowfullscreen
+        title="{{ section.settings.overlay_title | escape | default: 'Video' }}"
+        loading="lazy"
+        frameborder="0"
+      ></iframe>
+    </div>
+
+  {%- elsif section.settings.poster_image != blank -%}
+    {%- comment -%} Poster fallback when no video is configured {%- endcomment -%}
+    <img
+      class="fe-video__poster-only"
+      src="{{ section.settings.poster_image | image_url: width: 1600 }}"
+      alt="{{ section.settings.overlay_title | escape | default: '' }}"
+      loading="lazy"
+    >
+  {%- endif -%}
+
+  {%- comment -%} ── Dark overlay ──────────────────────────────────── {%- endcomment -%}
+  {%- if overlay_op > 0 -%}
+    <div class="fe-video__overlay" style="opacity:{{ overlay_op }}"></div>
+  {%- endif -%}
+
+  {%- comment -%} ── Text overlay ──────────────────────────────────── {%- endcomment -%}
+  {%- if section.settings.overlay_title != blank or section.settings.overlay_subtitle != blank -%}
+    <div class="fe-video__text">
+      {%- if section.settings.overlay_title != blank -%}
+        <h2 class="fe-video__title">{{ section.settings.overlay_title | escape }}</h2>
+      {%- endif -%}
+      {%- if section.settings.overlay_subtitle != blank -%}
+        <p class="fe-video__subtitle">{{ section.settings.overlay_subtitle | escape }}</p>
+      {%- endif -%}
+    </div>
+  {%- endif -%}
+
+</section>
+
+<style>
+  .fe-video--{{ sid }} {
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+    background: #000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* Native video / img fill */
+  .fe-video--{{ sid }} .fe-video__player,
+  .fe-video--{{ sid }} .fe-video__poster-only {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  /* Embed iframe — letterbox fill */
+  .fe-video--{{ sid }} .fe-video__embed-wrap {
+    position: absolute;
+    inset: 0;
+    pointer-events: {% if section.settings.show_controls %}auto{% else %}none{% endif %};
+  }
+
+  .fe-video--{{ sid }} .fe-video__embed {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 177.78vh; /* 16:9 trick */
+    height: 56.25vw;
+    min-width: 100%;
+    min-height: 100%;
+    transform: translate(-50%, -50%);
+    border: 0;
+  }
+
+  /* Dark overlay */
+  .fe-video--{{ sid }} .fe-video__overlay {
+    position: absolute;
+    inset: 0;
+    background: #000;
+    pointer-events: none;
+  }
+
+  /* Text */
+  .fe-video--{{ sid }} .fe-video__text {
+    position: relative;
+    z-index: 1;
+    text-align: center;
+    color: #fff;
+    padding: 24px;
+    max-width: 800px;
+  }
+
+  .fe-video--{{ sid }} .fe-video__title {
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: clamp(26px, 3.5vw, 48px);
+    font-weight: 400;
+    margin: 0 0 16px;
+    line-height: 1.15;
+  }
+
+  .fe-video--{{ sid }} .fe-video__subtitle {
+    font-family: "Plus Jakarta Sans", sans-serif;
+    font-size: clamp(14px, 1.5vw, 18px);
+    margin: 0;
+    opacity: 0.9;
+  }
+</style>
+
+{%- if autoplay_enabled -%}
+<script>
+  (function () {
+    var root = document.querySelector('.fe-video--{{ sid }}');
+    if (!root) return;
+    var player = root.querySelector('video.fe-video__player');
+    if (!player) return;
+
+    function tryPlay() {
+      var p = player.play();
+      if (p && typeof p.catch === 'function') {
+        p.catch(function () {});
+      }
+    }
+
+    if (player.readyState >= 2) {
+      tryPlay();
+    } else {
+      player.addEventListener('loadeddata', tryPlay, { once: true });
+    }
+  })();
+</script>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Full-width Video",
+  "tag": "div",
+  "class": "fe-video-section",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Video source"
+    },
+    {
+      "type": "select",
+      "id": "video_source_type",
+      "label": "Source type",
+      "options": [
+        { "value": "shopify",  "label": "Shopify-hosted video" },
+        { "value": "external", "label": "External video URL (mp4)" },
+        { "value": "youtube",  "label": "YouTube" },
+        { "value": "vimeo",    "label": "Vimeo" }
+      ],
+      "default": "youtube"
+    },
+    {
+      "type": "video",
+      "id": "shopify_video",
+      "label": "Shopify-hosted video"
+    },
+    {
+      "type": "text",
+      "id": "external_video_url",
+      "label": "External video URL",
+      "info": "Direct .mp4 or .webm URL"
+    },
+    {
+      "type": "text",
+      "id": "youtube_url",
+      "label": "YouTube URL",
+      "info": "e.g. https://www.youtube.com/watch?v=XXXXXXX"
+    },
+    {
+      "type": "text",
+      "id": "vimeo_url",
+      "label": "Vimeo URL",
+      "info": "e.g. https://vimeo.com/XXXXXXX"
+    },
+    {
+      "type": "image_picker",
+      "id": "poster_image",
+      "label": "Poster / fallback image"
+    },
+    {
+      "type": "header",
+      "content": "Playback"
+    },
+    {
+      "type": "checkbox",
+      "id": "autoplay",
+      "label": "Autoplay",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "muted",
+      "label": "Muted",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "loop",
+      "label": "Loop",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_controls",
+      "label": "Show player controls",
+      "default": false
+    },
+    {
+      "type": "header",
+      "content": "Overlay text"
+    },
+    {
+      "type": "text",
+      "id": "overlay_title",
+      "label": "Title"
+    },
+    {
+      "type": "text",
+      "id": "overlay_subtitle",
+      "label": "Subtitle"
+    },
+    {
+      "type": "range",
+      "id": "overlay_opacity",
+      "min": 0,
+      "max": 80,
+      "step": 5,
+      "unit": "%",
+      "label": "Overlay darkness",
+      "default": 0
+    },
+    {
+      "type": "header",
+      "content": "Height"
+    },
+    {
+      "type": "range",
+      "id": "section_height",
+      "min": 20,
+      "max": 100,
+      "step": 5,
+      "unit": "vh",
+      "label": "Section height",
+      "default": 60
+    }
+  ],
+  "presets": [
+    {
+      "name": "Full-width Video"
+    }
+  ]
+}
+{% endschema %}

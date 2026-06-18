@@ -1,0 +1,296 @@
+{%- liquid
+  assign sid = section.id
+-%}
+
+<section class="fe-quote fe-quote--{{ sid }}">
+  <div class="fe-quote__inner">
+    {%- if section.settings.quote_text != blank -%}
+      <div class="fe-quote__text-wrap">
+        {%- if section.settings.show_quote_marks -%}
+          <span class="fe-quote__mark fe-quote__mark--open" aria-hidden="true">"</span>
+        {%- endif -%}
+
+        <div class="fe-quote__text rte">{{ section.settings.quote_text }}</div>
+
+        {%- if section.settings.show_quote_marks -%}
+          <span class="fe-quote__mark fe-quote__mark--close" aria-hidden="true">"</span>
+        {%- endif -%}
+      </div>
+    {%- endif -%}
+
+    {%- if section.settings.author != blank -%}
+      <p class="fe-quote__author">{{ section.settings.author | escape }}</p>
+    {%- endif -%}
+  </div>
+</section>
+
+<style>
+  .fe-quote--{{ sid }} {
+    width: 100%;
+    background: {{ section.settings.background_color }};
+    padding-top: {{ section.settings.padding_top }}px;
+    padding-bottom: {{ section.settings.padding_bottom }}px;
+    position: relative;
+  }
+
+  .fe-quote--{{ sid }}::before,
+  .fe-quote--{{ sid }}::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: {{ section.settings.divider_color }};
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .fe-quote--{{ sid }}::before {
+    top: 0;
+  }
+
+  .fe-quote--{{ sid }}::after {
+    bottom: 0;
+  }
+
+  {%- if section.settings.show_top_divider -%}
+    .fe-quote--{{ sid }}::before { opacity: 1; }
+  {%- endif -%}
+
+  {%- if section.settings.show_bottom_divider -%}
+    .fe-quote--{{ sid }}::after { opacity: 1; }
+  {%- endif -%}
+
+  .fe-quote--{{ sid }} .fe-quote__inner {
+    max-width: {{ section.settings.max_width }}px;
+    margin: 0 auto;
+    padding: 0 20px;
+    box-sizing: border-box;
+    text-align: center;
+  }
+
+  .fe-quote--{{ sid }} .fe-quote__text-wrap {
+    position: relative;
+  }
+
+  .fe-quote--{{ sid }} .fe-quote__text {
+    color: {{ section.settings.text_color }};
+    font-family: {% if section.settings.quote_font_family == 'sans' %}"Plus Jakarta Sans", sans-serif{% else %}Georgia, "Times New Roman", serif{% endif %};
+    font-size: {{ section.settings.quote_font_size }}px;
+    font-weight: {{ section.settings.quote_font_weight }};
+    line-height: 1.5;
+    letter-spacing: 0.01em;
+  }
+
+  .fe-quote--{{ sid }} .fe-quote__text p {
+    margin: 0;
+  }
+
+  .fe-quote--{{ sid }} .fe-quote__text p + p {
+    margin-top: 10px;
+  }
+
+  .fe-quote--{{ sid }} .fe-quote__mark {
+    color: {{ section.settings.text_color }};
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: clamp(26px, 3vw, 38px);
+    line-height: 1;
+    opacity: 0.85;
+    display: inline-block;
+  }
+
+  .fe-quote--{{ sid }} .fe-quote__mark--open {
+    margin-right: 6px;
+    vertical-align: top;
+  }
+
+  .fe-quote--{{ sid }} .fe-quote__mark--close {
+    margin-left: 6px;
+    vertical-align: bottom;
+  }
+
+  .fe-quote--{{ sid }} .fe-quote__author {
+    margin: 18px 0 0;
+    color: {{ section.settings.author_color }};
+    font-family: {% if section.settings.author_font_family == 'serif' %}Georgia, "Times New Roman", serif{% else %}"Plus Jakarta Sans", sans-serif{% endif %};
+    font-size: {{ section.settings.author_font_size }}px;
+    font-weight: {{ section.settings.author_font_weight }};
+    letter-spacing: 0.12em;
+    line-height: 1.4;
+    text-transform: uppercase;
+  }
+
+  @media (max-width: 768px) {
+    .fe-quote--{{ sid }} .fe-quote__text {
+      font-size: max(18px, calc({{ section.settings.quote_font_size }}px - 2px));
+    }
+
+    .fe-quote--{{ sid }} .fe-quote__author {
+      margin-top: 14px;
+      font-size: max(11px, calc({{ section.settings.author_font_size }}px - 1px));
+    }
+  }
+</style>
+
+{% schema %}
+{
+  "name": "Quote Section",
+  "tag": "section",
+  "class": "fe-quote-section",
+  "settings": [
+    {
+      "type": "richtext",
+      "id": "quote_text",
+      "label": "Quote text"
+    },
+    {
+      "type": "text",
+      "id": "author",
+      "label": "Author"
+    },
+    {
+      "type": "select",
+      "id": "quote_font_family",
+      "label": "Quote font family",
+      "default": "serif",
+      "options": [
+        { "value": "serif", "label": "Serif" },
+        { "value": "sans", "label": "Sans-serif" }
+      ]
+    },
+    {
+      "type": "range",
+      "id": "quote_font_size",
+      "label": "Quote font size",
+      "min": 16,
+      "max": 64,
+      "step": 1,
+      "unit": "px",
+      "default": 24
+    },
+    {
+      "type": "select",
+      "id": "quote_font_weight",
+      "label": "Quote font weight",
+      "default": "400",
+      "options": [
+        { "value": "300", "label": "300" },
+        { "value": "400", "label": "400" },
+        { "value": "500", "label": "500" },
+        { "value": "600", "label": "600" },
+        { "value": "700", "label": "700" }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "author_font_family",
+      "label": "Author font family",
+      "default": "sans",
+      "options": [
+        { "value": "serif", "label": "Serif" },
+        { "value": "sans", "label": "Sans-serif" }
+      ]
+    },
+    {
+      "type": "range",
+      "id": "author_font_size",
+      "label": "Author font size",
+      "min": 10,
+      "max": 32,
+      "step": 1,
+      "unit": "px",
+      "default": 12
+    },
+    {
+      "type": "select",
+      "id": "author_font_weight",
+      "label": "Author font weight",
+      "default": "400",
+      "options": [
+        { "value": "300", "label": "300" },
+        { "value": "400", "label": "400" },
+        { "value": "500", "label": "500" },
+        { "value": "600", "label": "600" },
+        { "value": "700", "label": "700" }
+      ]
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background color",
+      "default": "#EFEEE9"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Quote text color",
+      "default": "#302313"
+    },
+    {
+      "type": "color",
+      "id": "author_color",
+      "label": "Author text color",
+      "default": "#6E6256"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Padding top",
+      "min": 0,
+      "max": 220,
+      "step": 4,
+      "unit": "px",
+      "default": 84
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Padding bottom",
+      "min": 0,
+      "max": 220,
+      "step": 4,
+      "unit": "px",
+      "default": 84
+    },
+    {
+      "type": "checkbox",
+      "id": "show_top_divider",
+      "label": "Show top divider",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "show_bottom_divider",
+      "label": "Show bottom divider",
+      "default": false
+    },
+    {
+      "type": "color",
+      "id": "divider_color",
+      "label": "Divider color",
+      "default": "#D2CBC2"
+    },
+    {
+      "type": "range",
+      "id": "max_width",
+      "label": "Content max width",
+      "min": 520,
+      "max": 1200,
+      "step": 10,
+      "unit": "px",
+      "default": 850
+    },
+    {
+      "type": "checkbox",
+      "id": "show_quote_marks",
+      "label": "Show quote marks",
+      "default": true
+    }
+  ],
+  "presets": [
+    {
+      "name": "Quote Section"
+    }
+  ]
+}
+{% endschema %}

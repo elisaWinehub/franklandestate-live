@@ -1,0 +1,61 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "hero": {
+      "type": "page-hero-banner",
+      "settings": {
+        "heading": "",
+        "text_vertical_position": "lower-center",
+        "text_color": "#ffffff",
+        "image": "shopify://shop_images/ThirdEye-217.jpg",
+        "background_position": "center center",
+        "background_color": "#efeee9",
+        "desktop_height": 560,
+        "mobile_height": 360,
+        "overlay_opacity": 25
+      }
+    },
+    "main": {
+      "type": "main-page",
+      "settings": {}
+    },
+    "alternating_content_4VNQUB": {
+      "type": "alternating-content",
+      "name": "Alternating Content",
+      "settings": {
+        "section_anchor_id": "",
+        "image": "shopify://shop_images/ThirdEye-175_1.jpg",
+        "heading": "Join the Frankland Estate Wine Club",
+        "heading_font_size": 44,
+        "body": "<p>Enjoy discounted wine packs, exclusive releases, and free delivery for qualifying members. Get priority access to limited wines, complimentary cellar door tastings for you plus three guests, and invitations to special events and annual tastings.<br/>Frankland Estate Wine Club brings our best wines straight to your door with member-only perks, flexible club packs, no joining fees, and the freedom to cancel anytime.<br/></p>",
+        "enable_read_more": false,
+        "read_more_label": "Read More",
+        "read_less_label": "Read Less",
+        "button_label": "",
+        "button_link": "",
+        "image_position": "image_left",
+        "background_color": "#EFEEE9",
+        "padding_top": 80,
+        "padding_bottom": 80,
+        "show_border_top": false,
+        "show_border_bottom": false,
+        "border_color": "#D3D2CB",
+        "content_font_size": 16,
+        "divider_position": "none"
+      }
+    }
+  },
+  "order": [
+    "hero",
+    "main",
+    "alternating_content_4VNQUB"
+  ]
+}

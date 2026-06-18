@@ -1,0 +1,1260 @@
+{%- liquid
+  assign sid = section.id
+  assign cil_scope = 'fe-alternating-content-form--' | append: sid
+  assign position = section.settings.content_position | default: 'content_left'
+  assign form_mode = section.settings.form_mode | default: 'static'
+  assign content_fs = section.settings.content_font_size | default: 16
+  assign heading_fs_max = section.settings.heading_font_size | default: 40
+  assign heading_fs_min = heading_fs_max | minus: 14
+  if heading_fs_min < 22
+    assign heading_fs_min = 22
+  endif
+  assign heading_ff = section.settings.heading_font_family | default: 'eidetic_neo'
+  assign heading_font_family_css = 'eidetic-neo, Georgia, "Times New Roman", serif'
+  case heading_ff
+    when 'plus_jakarta'
+      assign heading_font_family_css = '"Plus Jakarta Sans", sans-serif'
+    when 'georgia'
+      assign heading_font_family_css = 'Georgia, "Times New Roman", serif'
+    when 'arial'
+      assign heading_font_family_css = 'Arial, Helvetica, sans-serif'
+    else
+      assign heading_font_family_css = 'eidetic-neo, Georgia, "Times New Roman", serif'
+  endcase
+  assign heading_fw = section.settings.heading_font_weight | default: 400
+  assign container_w = section.settings.container_width | default: 1110
+  assign gap_px = section.settings.gap | default: 48
+
+  assign exp_placeholder = section.settings.experience_type_placeholder | default: 'Please select'
+  assign exp_raw = section.settings.experience_type_options | strip
+  if exp_raw == blank
+    assign exp_opts = 'Standard tasting|Premium tasting|Private tour|Masterclass' | split: '|'
+  else
+    assign exp_opts = exp_raw | newline_to_br | split: '<br />'
+  endif
+-%}
+
+<section
+  {% if section.settings.section_anchor_id != blank %}id="{{ section.settings.section_anchor_id | handleize }}"{% endif %}
+  class="fe-alternating-content-form fe-alternating-content-form--{{ sid }}{% if position == 'form_left' %} fe-alternating-content-form--form-left{% endif %}"
+>
+  <div class="fe-alternating-content-form__inner">
+    <div class="fe-alternating-content-form__grid">
+      <div class="fe-alternating-content-form__content">
+        {%- if section.settings.heading != blank -%}
+          <h2 class="fe-alternating-content-form__heading">{{ section.settings.heading | escape }}</h2>
+        {%- endif -%}
+        {%- if section.settings.body != blank -%}
+          <div class="fe-alternating-content-form__body rte">{{ section.settings.body }}</div>
+        {%- endif -%}
+        {%- if section.settings.button_label != blank and section.settings.button_link != blank -%}
+          <a class="fe-alternating-content-form__button" href="{{ section.settings.button_link }}">{{ section.settings.button_label | escape }}</a>
+        {%- endif -%}
+        {%- for block in section.blocks -%}
+          {%- if block.type == 'contact_info_list' -%}
+            {% render 'fe-contact-info-list', block: block, scope_class: cil_scope %}
+          {%- endif -%}
+        {%- endfor -%}
+      </div>
+
+      <div class="fe-alternating-content-form__form-wrap">
+        {%- if form_mode == 'static' -%}
+          <form
+            class="fe-alternating-content-form__form fe-alternating-content-form__form--static"
+            data-fe-acf-static-form
+            novalidate
+          >
+            {%- if section.settings.form_heading != blank -%}
+              <h3 class="fe-alternating-content-form__form-title">{{ section.settings.form_heading | escape }}</h3>
+            {%- endif -%}
+
+            <div class="fe-alternating-content-form__fields" data-fe-acf-fields>
+              <div class="fe-alternating-content-form__row">
+                <div class="fe-alternating-content-form__field" data-fe-acf-field-wrap>
+                  <label class="visually-hidden" for="fe-acf-fn-{{ sid }}">First Name (required)</label>
+                  <input
+                    class="fe-alternating-content-form__input"
+                    id="fe-acf-fn-{{ sid }}"
+                    name="first_name"
+                    type="text"
+                    autocomplete="given-name"
+                    required
+                    placeholder="First Name *"
+                    aria-required="true"
+                    aria-describedby="fe-acf-fn-{{ sid }}-err"
+                  >
+                  <p id="fe-acf-fn-{{ sid }}-err" class="fe-alternating-content-form__field-error" role="alert" hidden></p>
+                </div>
+                <div class="fe-alternating-content-form__field" data-fe-acf-field-wrap>
+                  <label class="visually-hidden" for="fe-acf-ln-{{ sid }}">Last Name (required)</label>
+                  <input
+                    class="fe-alternating-content-form__input"
+                    id="fe-acf-ln-{{ sid }}"
+                    name="last_name"
+                    type="text"
+                    autocomplete="family-name"
+                    required
+                    placeholder="Last Name *"
+                    aria-required="true"
+                    aria-describedby="fe-acf-ln-{{ sid }}-err"
+                  >
+                  <p id="fe-acf-ln-{{ sid }}-err" class="fe-alternating-content-form__field-error" role="alert" hidden></p>
+                </div>
+              </div>
+
+              <div class="fe-alternating-content-form__row">
+                <div class="fe-alternating-content-form__field" data-fe-acf-field-wrap>
+                  <label class="visually-hidden" for="fe-acf-ph-{{ sid }}">Phone (required)</label>
+                  <input
+                    class="fe-alternating-content-form__input"
+                    id="fe-acf-ph-{{ sid }}"
+                    name="phone"
+                    type="tel"
+                    autocomplete="tel"
+                    required
+                    placeholder="Phone *"
+                    aria-required="true"
+                    aria-describedby="fe-acf-ph-{{ sid }}-err"
+                  >
+                  <p id="fe-acf-ph-{{ sid }}-err" class="fe-alternating-content-form__field-error" role="alert" hidden></p>
+                </div>
+                <div class="fe-alternating-content-form__field" data-fe-acf-field-wrap>
+                  <label class="visually-hidden" for="fe-acf-guests-{{ sid }}">Number of guests</label>
+                  <input
+                    class="fe-alternating-content-form__input"
+                    id="fe-acf-guests-{{ sid }}"
+                    name="number_of_guests"
+                    type="text"
+                    inputmode="numeric"
+                    autocomplete="off"
+                    placeholder="Number of guests"
+                    aria-describedby="fe-acf-guests-{{ sid }}-err"
+                  >
+                  <p id="fe-acf-guests-{{ sid }}-err" class="fe-alternating-content-form__field-error" role="alert" hidden></p>
+                </div>
+              </div>
+
+              <div class="fe-alternating-content-form__row">
+                <div class="fe-alternating-content-form__field" data-fe-acf-field-wrap>
+                  <label class="visually-hidden" for="fe-acf-exp-{{ sid }}">Experience type</label>
+                  <select
+                    class="fe-alternating-content-form__select"
+                    id="fe-acf-exp-{{ sid }}"
+                    name="experience_type"
+                    aria-describedby="fe-acf-exp-{{ sid }}-err"
+                  >
+                    <option value="" selected disabled>{{ exp_placeholder | escape }}</option>
+                    {%- for opt_line in exp_opts -%}
+                      {%- assign opt = opt_line | strip -%}
+                      {%- if opt != blank -%}
+                        <option value="{{ opt | escape }}">{{ opt | escape }}</option>
+                      {%- endif -%}
+                    {%- endfor -%}
+                  </select>
+                  <p id="fe-acf-exp-{{ sid }}-err" class="fe-alternating-content-form__field-error" role="alert" hidden></p>
+                </div>
+                <div class="fe-alternating-content-form__field" data-fe-acf-field-wrap>
+                  <label class="visually-hidden" for="fe-acf-em-{{ sid }}">Email (required)</label>
+                  <input
+                    class="fe-alternating-content-form__input"
+                    id="fe-acf-em-{{ sid }}"
+                    name="email"
+                    type="email"
+                    autocomplete="email"
+                    required
+                    placeholder="Email *"
+                    aria-required="true"
+                    aria-describedby="fe-acf-em-{{ sid }}-err"
+                  >
+                  <p id="fe-acf-em-{{ sid }}-err" class="fe-alternating-content-form__field-error" role="alert" hidden></p>
+                </div>
+              </div>
+
+              <div class="fe-alternating-content-form__field fe-alternating-content-form__field--checkbox">
+                <label class="fe-alternating-content-form__checkbox-label" for="fe-acf-mail-{{ sid }}">
+                  <input class="fe-alternating-content-form__checkbox" id="fe-acf-mail-{{ sid }}" name="mailing_list_opt_in" type="checkbox" value="yes">
+                  <span>Opt into mailing list</span>
+                </label>
+              </div>
+
+              <div class="fe-alternating-content-form__field" data-fe-acf-field-wrap>
+                <label class="visually-hidden" for="fe-acf-date-{{ sid }}">Date (required)</label>
+                <div class="fe-alternating-content-form__date-wrap">
+                  <input
+                    class="fe-alternating-content-form__input fe-alternating-content-form__input--date"
+                    id="fe-acf-date-{{ sid }}"
+                    name="booking_date"
+                    type="date"
+                    required
+                    aria-required="true"
+                    aria-describedby="fe-acf-date-{{ sid }}-err"
+                  >
+                  <span class="fe-alternating-content-form__date-icon" aria-hidden="true">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" focusable="false">
+                      <rect x="3" y="5" width="18" height="16" rx="2" stroke="currentColor" stroke-width="1.5"/>
+                      <path d="M3 10h18M8 3v4M16 3v4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                    </svg>
+                  </span>
+                </div>
+                <p id="fe-acf-date-{{ sid }}-err" class="fe-alternating-content-form__field-error" role="alert" hidden></p>
+              </div>
+
+              <div data-fe-acf-field-wrap data-fe-acf-time-wrap>
+                <fieldset class="fe-alternating-content-form__fieldset" aria-describedby="fe-acf-time-{{ sid }}-err">
+                  <legend class="visually-hidden">
+                    Preferred booking time (required)
+                  </legend>
+                  <p class="fe-alternating-content-form__legend fe-alternating-content-form__legend--time" aria-hidden="false">
+                    Preferred booking time <span class="fe-alternating-content-form__req" aria-hidden="true">*</span>
+                  </p>
+                  <div class="fe-alternating-content-form__radios">
+                    <label class="fe-alternating-content-form__radio-label">
+                      <input class="fe-alternating-content-form__radio" type="radio" name="preferred_booking_time" value="10-11">
+                      <span>10–11am</span>
+                    </label>
+                    <label class="fe-alternating-content-form__radio-label">
+                      <input class="fe-alternating-content-form__radio" type="radio" name="preferred_booking_time" value="11-12">
+                      <span>11am–12pm</span>
+                    </label>
+                    <label class="fe-alternating-content-form__radio-label">
+                      <input class="fe-alternating-content-form__radio" type="radio" name="preferred_booking_time" value="13-14">
+                      <span>1pm–2pm</span>
+                    </label>
+                    <label class="fe-alternating-content-form__radio-label">
+                      <input class="fe-alternating-content-form__radio" type="radio" name="preferred_booking_time" value="14-15">
+                      <span>2pm–3pm</span>
+                    </label>
+                  </div>
+                </fieldset>
+                <p id="fe-acf-time-{{ sid }}-err" class="fe-alternating-content-form__field-error" role="alert" hidden></p>
+              </div>
+
+              <button type="submit" class="fe-alternating-content-form__submit" data-fe-acf-submit>
+                {{ section.settings.submit_button_label | default: 'Send' | escape }}
+              </button>
+            </div>
+
+            <div class="fe-alternating-content-form__success" data-fe-acf-success hidden role="status">
+              {{- section.settings.success_message | default: 'Thank you — your message has been received.' | escape | newline_to_br -}}
+            </div>
+          </form>
+        {%- else -%}
+          <div class="fe-alternating-content-form__form fe-alternating-content-form__form--custom">
+            {%- if section.settings.form_heading != blank -%}
+              <h3 class="fe-alternating-content-form__form-title">{{ section.settings.form_heading | escape }}</h3>
+            {%- endif -%}
+            {%- if section.settings.custom_liquid != blank -%}
+              <div class="fe-alternating-content-form__custom-liquid">{{ section.settings.custom_liquid }}</div>
+            {%- endif -%}
+            {%- for block in section.blocks -%}
+              {%- if block.type == '@app' -%}
+                <div class="fe-alternating-content-form__app-slot" {{ block.shopify_attributes }}>
+                  {% render block %}
+                </div>
+              {%- endif -%}
+            {%- endfor -%}
+          </div>
+        {%- endif -%}
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .fe-alternating-content-form.fe-alternating-content-form--{{ sid }} {
+    background-color: {{ section.settings.background_color | default: '#EFEEE9' }};
+    padding-top: {{ section.settings.padding_top | default: 80 }}px;
+    padding-bottom: {{ section.settings.padding_bottom | default: 80 }}px;
+    color: {{ section.settings.text_color | default: '#302313' }};
+    box-sizing: border-box;
+  }
+
+  .fe-alternating-content-form.fe-alternating-content-form--{{ sid }} *,
+  .fe-alternating-content-form.fe-alternating-content-form--{{ sid }} *::before,
+  .fe-alternating-content-form.fe-alternating-content-form--{{ sid }} *::after {
+    box-sizing: border-box;
+  }
+
+  .fe-alternating-content-form.fe-alternating-content-form--{{ sid }} .fe-alternating-content-form__inner {
+    max-width: {{ container_w }}px;
+    margin: 0 auto;
+    padding: 0 20px;
+    width: 100%;
+  }
+
+  .fe-alternating-content-form.fe-alternating-content-form--{{ sid }} .fe-alternating-content-form__grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: {{ gap_px }}px;
+    align-items: start;
+  }
+
+  .fe-alternating-content-form.fe-alternating-content-form--{{ sid }}.fe-alternating-content-form--form-left .fe-alternating-content-form__content {
+    order: 2;
+  }
+
+  .fe-alternating-content-form.fe-alternating-content-form--{{ sid }}.fe-alternating-content-form--form-left .fe-alternating-content-form__form-wrap {
+    order: 1;
+  }
+
+  .fe-alternating-content-form.fe-alternating-content-form--{{ sid }} .fe-alternating-content-form__content {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    min-width: 0;
+  }
+
+  .fe-alternating-content-form.fe-alternating-content-form--{{ sid }} .fe-alternating-content-form__heading {
+    margin: 0;
+    font-family: {{ heading_font_family_css }};
+    font-weight: {{ heading_fw }};
+    font-size: clamp({{ heading_fs_min }}px, 3vw, {{ heading_fs_max }}px);
+    line-height: 1.14;
+    color: {{ section.settings.text_color | default: '#302313' }};
+  }
+
+  .fe-alternating-content-form.fe-alternating-content-form--{{ sid }} .fe-alternating-content-form__body {
+    margin: 0;
+    font-family: "Plus Jakarta Sans", sans-serif;
+    font-size: {{ content_fs }}px;
+    line-height: 1.62;
+    color: {{ section.settings.text_color | default: '#302313' }};
+    opacity: 0.92;
+  }
+
+  .fe-alternating-content-form.fe-alternating-content-form--{{ sid }} .fe-alternating-content-form__body p {
+    margin: 0;
+  }
+
+  .fe-alternating-content-form.fe-alternating-content-form--{{ sid }} .fe-alternating-content-form__body p + p {
+    margin-top: 12px;
+  }
+
+  .fe-alternating-content-form.fe-alternating-content-form--{{ sid }} .fe-alternating-content-form__button {
+    align-self: flex-start;
+    margin-top: 4px;
+    display: inline-block;
+    border: 1px solid {{ section.settings.button_border_color | default: '#302313' }};
+    background: {{ section.settings.button_background_color | default: '#302313' }};
+    color: {{ section.settings.button_text_color | default: '#ffffff' }};
+    text-decoration: none;
+    font-family: "Plus Jakarta Sans", sans-serif;
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 11px 22px;
+    transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+  }
+
+  .fe-alternating-content-form.fe-alternating-content-form--{{ sid }} .fe-alternating-content-form__button:hover {
+    background: {{ section.settings.button_text_color | default: '#ffffff' }};
+    color: {{ section.settings.button_background_color | default: '#302313' }};
+    border-color: {{ section.settings.button_background_color | default: '#302313' }};
+  }
+
+  .fe-alternating-content-form.fe-alternating-content-form--{{ sid }} .fe-alternating-content-form__form-wrap {
+    min-width: 0;
+  }
+
+  .fe-alternating-content-form.fe-alternating-content-form--{{ sid }} .fe-alternating-content-form__form-title {
+    margin: 0 0 18px;
+    font-family: {{ heading_font_family_css }};
+    font-weight: {{ heading_fw }};
+    font-size: clamp({{ heading_fs_min | minus: 4 }}px, 2.4vw, {{ heading_fs_max | minus: 6 }}px);
+    line-height: 1.18;
+    color: {{ section.settings.text_color | default: '#302313' }};
+  }
+
+  .fe-alternating-content-form.fe-alternating-content-form--{{ sid }} .fe-alternating-content-form__fields {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .fe-alternating-content-form.fe-alternating-content-form--{{ sid }} .fe-alternating-content-form__row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+
+  .fe-alternating-content-form.fe-alternating-content-form--{{ sid }} .fe-alternating-content-form__field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .fe-alternating-content-form.fe-alternating-content-form--{{ sid }} .fe-alternating-content-form__req {
+    color: #c62828;
+    font-weight: 500;
+    margin-left: 1px;
+  }
+
+  .fe-alternating-content-form.fe-alternating-content-form--{{ sid }} .fe-alternating-content-form__field-error {
+    margin: 5px 0 0;
+    font-family: "Plus Jakarta Sans", sans-serif;
+    font-size: {{ content_fs | minus: 2 | at_least: 11 }}px;
+    line-height: 1.4;
+    color: #c62828;
+    min-height: 1.2em;
+  }
+
+  .fe-alternating-content-form.fe-alternating-content-form--{{ sid }} .fe-alternating-content-form__field--invalid .fe-alternating-content-form__input,
+  .fe-alternating-content-form.fe-alternating-content-form--{{ sid }} .fe-alternating-content-form__field--invalid .fe-alternating-content-form__select,
+  .fe-alternating-content-form.fe-alternating-content-form--{{ sid }} .fe-alternating-content-form__field--invalid .fe-alternating-content-form__input--date {
+    border-color: #c62828;
+  }
+
+  .fe-alternating-content-form.fe-alternating-content-form--{{ sid }} .fe-alternating-content-form__field--invalid[data-fe-acf-time-wrap] .fe-alternating-content-form__radios {
+    outline: 1px solid #c62828;
+    outline-offset: 2px;
+  }
+
+  .fe-alternating-content-form.fe-alternating-content-form--{{ sid }} .fe-alternating-content-form__label {
+    font-family: "Plus Jakarta Sans", sans-serif;
+    font-size: {{ content_fs | minus: 1 | at_least: 12 }}px;
+    letter-spacing: 0.02em;
+    color: {{ section.settings.text_color | default: '#302313' }};
+    opacity: 0.88;
+  }
+
+  .fe-alternating-content-form.fe-alternating-content-form--{{ sid }} .fe-alternating-content-form__input,
+  .fe-alternating-content-form.fe-alternating-content-form--{{ sid }} .fe-alternating-content-form__textarea,
+  .fe-alternating-content-form.fe-alternating-content-form--{{ sid }} .fe-alternating-content-form__select {
+    width: 100%;
+    margin: 0;
+    padding: 11px 12px;
+    border: 1px solid {{ section.settings.input_border_color | default: '#C9C4BE' }};
+    background: rgba(255, 255, 255, 0.92);
+    font-family: "Plus Jakarta Sans", sans-serif;
+    font-size: {{ content_fs }}px;
+    line-height: 1.45;
+    color: {{ section.settings.text_color | default: '#302313' }};
+    border-radius: 3px;
+    transition: border-color 0.2s ease;
+  }
+
+  .fe-alternating-content-form.fe-alternating-content-form--{{ sid }} .fe-alternating-content-form__select {
+    appearance: none;
+    padding-right: 36px;
+    background-color: rgba(255, 255, 255, 0.92);
+    background-image: linear-gradient(45deg, transparent 50%, rgba(48, 35, 19, 0.55) 50%), linear-gradient(135deg, rgba(48, 35, 19, 0.55) 50%, transparent 50%);
+    background-position: calc(100% - 18px) calc(50% + 3px), calc(100% - 13px) calc(50% + 3px);
+    background-size: 5px 5px, 5px 5px;
+    background-repeat: no-repeat;
+    cursor: pointer;
+    color: {{ section.settings.text_color | default: '#302313' }};
+  }
+
+  .fe-alternating-content-form.fe-alternating-content-form--{{ sid }} .fe-alternating-content-form__select:invalid {
+    color: rgba(48, 35, 19, 0.45);
+  }
+
+  .fe-alternating-content-form.fe-alternating-content-form--{{ sid }} .fe-alternating-content-form__select:valid,
+  .fe-alternating-content-form.fe-alternating-content-form--{{ sid }} .fe-alternating-content-form__select option {
+    color: {{ section.settings.text_color | default: '#302313' }};
+  }
+
+  .fe-alternating-content-form.fe-alternating-content-form--{{ sid }} .fe-alternating-content-form__field--checkbox {
+    padding-top: 2px;
+  }
+
+  .fe-alternating-content-form.fe-alternating-content-form--{{ sid }} .fe-alternating-content-form__checkbox-label {
+    display: inline-flex;
+    align-items: flex-start;
+    gap: 10px;
+    cursor: pointer;
+    font-family: "Plus Jakarta Sans", sans-serif;
+    font-size: {{ content_fs }}px;
+    line-height: 1.45;
+    color: {{ section.settings.text_color | default: '#302313' }};
+    opacity: 0.92;
+  }
+
+  .fe-alternating-content-form.fe-alternating-content-form--{{ sid }} .fe-alternating-content-form__checkbox {
+    width: 18px;
+    height: 18px;
+    margin: 2px 0 0;
+    flex-shrink: 0;
+    accent-color: {{ section.settings.text_color | default: '#302313' }};
+    cursor: pointer;
+  }
+
+  .fe-alternating-content-form.fe-alternating-content-form--{{ sid }} .fe-alternating-content-form__date-wrap {
+    position: relative;
+    width: 100%;
+  }
+
+  .fe-alternating-content-form.fe-alternating-content-form--{{ sid }} .fe-alternating-content-form__input--date {
+    padding-right: 42px;
+    min-height: 44px;
+    position: relative;
+  }
+
+  .fe-alternating-content-form.fe-alternating-content-form--{{ sid }} .fe-alternating-content-form__input--date::-webkit-calendar-picker-indicator {
+    opacity: 0;
+    position: absolute;
+    right: 0;
+    width: 42px;
+    height: 100%;
+    cursor: pointer;
+  }
+
+  .fe-alternating-content-form.fe-alternating-content-form--{{ sid }} .fe-alternating-content-form__date-icon {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    pointer-events: none;
+    color: rgba(48, 35, 19, 0.45);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .fe-alternating-content-form.fe-alternating-content-form--{{ sid }} .fe-alternating-content-form__fieldset {
+    border: 0;
+    margin: 0;
+    padding: 0;
+    min-width: 0;
+  }
+
+  .fe-alternating-content-form.fe-alternating-content-form--{{ sid }} .fe-alternating-content-form__legend--time {
+    display: block;
+    width: 100%;
+    margin: 0 0 10px;
+    padding: 0;
+    font-family: "Plus Jakarta Sans", sans-serif;
+    font-size: {{ content_fs | minus: 1 | at_least: 12 }}px;
+    letter-spacing: 0.02em;
+    color: {{ section.settings.text_color | default: '#302313' }};
+    opacity: 0.88;
+    font-weight: 400;
+  }
+
+  .fe-alternating-content-form.fe-alternating-content-form--{{ sid }} .fe-alternating-content-form__radios {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .fe-alternating-content-form.fe-alternating-content-form--{{ sid }} .fe-alternating-content-form__radio-label {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    cursor: pointer;
+    font-family: "Plus Jakarta Sans", sans-serif;
+    font-size: {{ content_fs }}px;
+    line-height: 1.45;
+    color: {{ section.settings.text_color | default: '#302313' }};
+  }
+
+  .fe-alternating-content-form.fe-alternating-content-form--{{ sid }} .fe-alternating-content-form__radio {
+    width: 18px;
+    height: 18px;
+    margin: 2px 0 0;
+    flex-shrink: 0;
+    accent-color: {{ section.settings.text_color | default: '#302313' }};
+    cursor: pointer;
+  }
+
+  .fe-alternating-content-form.fe-alternating-content-form--{{ sid }} .fe-alternating-content-form__textarea {
+    resize: vertical;
+    min-height: 120px;
+  }
+
+  .fe-alternating-content-form.fe-alternating-content-form--{{ sid }} .fe-alternating-content-form__input:focus,
+  .fe-alternating-content-form.fe-alternating-content-form--{{ sid }} .fe-alternating-content-form__textarea:focus,
+  .fe-alternating-content-form.fe-alternating-content-form--{{ sid }} .fe-alternating-content-form__select:focus {
+    outline: none;
+    border-color: {{ section.settings.text_color | default: '#302313' }};
+  }
+
+  .fe-alternating-content-form.fe-alternating-content-form--{{ sid }} .fe-alternating-content-form__submit {
+    align-self: flex-start;
+    margin-top: 6px;
+    cursor: pointer;
+    border: 1px solid {{ section.settings.button_border_color | default: '#302313' }};
+    background: {{ section.settings.button_background_color | default: '#302313' }};
+    color: {{ section.settings.button_text_color | default: '#ffffff' }};
+    font-family: "Plus Jakarta Sans", sans-serif;
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 11px 26px;
+    transition: background 0.2s ease, color 0.2s ease;
+  }
+
+  .fe-alternating-content-form.fe-alternating-content-form--{{ sid }} .fe-alternating-content-form__submit:hover {
+    background: {{ section.settings.button_text_color | default: '#ffffff' }};
+    color: {{ section.settings.button_background_color | default: '#302313' }};
+  }
+
+  .fe-alternating-content-form.fe-alternating-content-form--{{ sid }} .fe-alternating-content-form__success {
+    font-family: "Plus Jakarta Sans", sans-serif;
+    font-size: {{ content_fs }}px;
+    line-height: 1.55;
+    padding-top: 4px;
+    color: {{ section.settings.text_color | default: '#302313' }};
+  }
+
+  .fe-alternating-content-form.fe-alternating-content-form--{{ sid }} .fe-alternating-content-form__custom-liquid {
+    font-family: "Plus Jakarta Sans", sans-serif;
+    font-size: {{ content_fs }}px;
+    line-height: 1.55;
+    color: {{ section.settings.text_color | default: '#302313' }};
+  }
+
+  .fe-alternating-content-form.fe-alternating-content-form--{{ sid }} .fe-alternating-content-form__app-slot + .fe-alternating-content-form__app-slot {
+    margin-top: 16px;
+  }
+
+  @media (max-width: 989px) {
+    .fe-alternating-content-form.fe-alternating-content-form--{{ sid }} .fe-alternating-content-form__grid {
+      grid-template-columns: 1fr;
+      gap: {{ gap_px | at_most: 36 }}px;
+    }
+  }
+
+  @media (max-width: 749px) {
+    .fe-alternating-content-form.fe-alternating-content-form--{{ sid }} .fe-alternating-content-form__row {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
+
+{%- if form_mode == 'static' -%}
+<script>
+  (function () {
+    var root = document.querySelector('.fe-alternating-content-form--{{ sid }}');
+    if (!root) return;
+    var form = root.querySelector('[data-fe-acf-static-form]');
+    if (!form || form.dataset.feAcfInit === '1') return;
+    form.dataset.feAcfInit = '1';
+
+    var MSG_REQUIRED = 'This field is required';
+    var MSG_EMAIL = 'Please enter a valid email address';
+
+    var fieldsEl = form.querySelector('[data-fe-acf-fields]');
+    var submitBtn = form.querySelector('[data-fe-acf-submit]');
+    var successEl = form.querySelector('[data-fe-acf-success]');
+    var timeWrap = form.querySelector('[data-fe-acf-time-wrap]');
+    var timeErr = document.getElementById('fe-acf-time-{{ sid }}-err');
+
+    function emailOk(v) {
+      return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(v || '').trim());
+    }
+
+    function errNodeFor(el) {
+      var ref = el.getAttribute('aria-describedby');
+      if (!ref) return null;
+      var id = ref.trim().split(/\s+/)[0];
+      return document.getElementById(id);
+    }
+
+    function showErr(el, msg) {
+      var node = errNodeFor(el);
+      if (!node) return;
+      node.textContent = msg;
+      node.hidden = false;
+      el.setAttribute('aria-invalid', 'true');
+      var wrap = el.closest('[data-fe-acf-field-wrap]');
+      if (wrap) wrap.classList.add('fe-alternating-content-form__field--invalid');
+    }
+
+    function clearErr(el) {
+      var node = errNodeFor(el);
+      if (!node) return;
+      node.textContent = '';
+      node.hidden = true;
+      el.removeAttribute('aria-invalid');
+      var wrap = el.closest('[data-fe-acf-field-wrap]');
+      if (wrap) wrap.classList.remove('fe-alternating-content-form__field--invalid');
+    }
+
+    function validateEmail(el) {
+      var v = el.value.trim();
+      if (!v) {
+        showErr(el, MSG_REQUIRED);
+        return false;
+      }
+      if (!emailOk(v)) {
+        showErr(el, MSG_EMAIL);
+        return false;
+      }
+      clearErr(el);
+      return true;
+    }
+
+    function validateTextRequired(el) {
+      if (!el.value || !String(el.value).trim()) {
+        showErr(el, MSG_REQUIRED);
+        return false;
+      }
+      clearErr(el);
+      return true;
+    }
+
+    function validateDateEl(el) {
+      if (!el.value) {
+        showErr(el, MSG_REQUIRED);
+        return false;
+      }
+      clearErr(el);
+      return true;
+    }
+
+    function validateTimeGroup() {
+      var checked = form.querySelector('input[name="preferred_booking_time"]:checked');
+      if (!checked) {
+        if (timeErr) {
+          timeErr.textContent = MSG_REQUIRED;
+          timeErr.hidden = false;
+        }
+        if (timeWrap) timeWrap.classList.add('fe-alternating-content-form__field--invalid');
+        return false;
+      }
+      if (timeErr) {
+        timeErr.textContent = '';
+        timeErr.hidden = true;
+      }
+      if (timeWrap) timeWrap.classList.remove('fe-alternating-content-form__field--invalid');
+      return true;
+    }
+
+    function runSubmitValidation() {
+      var ok = true;
+      var fn = form.querySelector('#fe-acf-fn-{{ sid }}');
+      var ln = form.querySelector('#fe-acf-ln-{{ sid }}');
+      var ph = form.querySelector('#fe-acf-ph-{{ sid }}');
+      var em = form.querySelector('#fe-acf-em-{{ sid }}');
+      var dt = form.querySelector('#fe-acf-date-{{ sid }}');
+
+      if (fn && !validateTextRequired(fn)) ok = false;
+      if (ln && !validateTextRequired(ln)) ok = false;
+      if (ph && !validateTextRequired(ph)) ok = false;
+      if (em && !validateEmail(em)) ok = false;
+      if (dt && !validateDateEl(dt)) ok = false;
+      if (!validateTimeGroup()) ok = false;
+
+      return ok;
+    }
+
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+      if (!fieldsEl || !successEl) return;
+
+      if (!runSubmitValidation()) {
+        var invalid = form.querySelector('[aria-invalid="true"]');
+        if (invalid && typeof invalid.focus === 'function') {
+          invalid.focus();
+        } else if (timeWrap && timeWrap.classList.contains('fe-alternating-content-form__field--invalid')) {
+          var r = timeWrap.querySelector('input[type="radio"]');
+          if (r && typeof r.focus === 'function') r.focus();
+        }
+        return;
+      }
+
+      fieldsEl.setAttribute('hidden', '');
+      if (submitBtn) submitBtn.setAttribute('hidden', '');
+      successEl.removeAttribute('hidden');
+    });
+
+    form.addEventListener('input', function (e) {
+      var t = e.target;
+      if (!t || !t.matches('input, select')) return;
+
+      if (t.name === 'preferred_booking_time') return;
+
+      if (t.name === 'email') {
+        var v = t.value.trim();
+        if (!v) {
+          clearErr(t);
+          return;
+        }
+        if (emailOk(v)) clearErr(t);
+        else showErr(t, MSG_EMAIL);
+        return;
+      }
+
+      if (t.name === 'booking_date') {
+        if (t.value) clearErr(t);
+        return;
+      }
+
+      if (
+        t.name === 'first_name' ||
+        t.name === 'last_name' ||
+        t.name === 'phone'
+      ) {
+        if (t.value && String(t.value).trim()) clearErr(t);
+      }
+    });
+
+    form.addEventListener('change', function (e) {
+      var t = e.target;
+      if (t && t.name === 'preferred_booking_time') validateTimeGroup();
+      if (t && t.name === 'booking_date' && t.value) clearErr(t);
+    });
+  })();
+</script>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Alternating Content+Form",
+  "tag": "section",
+  "class": "fe-alternating-content-form-section",
+  "max_blocks": 12,
+  "blocks": [
+    {
+      "type": "@app"
+    },
+    {
+      "type": "contact_info_list",
+      "name": "Contact info list",
+      "settings": [
+        {
+          "type": "header",
+          "content": "Item 1"
+        },
+        {
+          "type": "select",
+          "id": "item_1_icon",
+          "label": "Icon",
+          "default": "location",
+          "options": [
+            { "value": "location", "label": "Location" },
+            { "value": "phone", "label": "Phone" },
+            { "value": "email", "label": "Email" },
+            { "value": "clock", "label": "Clock" },
+            { "value": "custom", "label": "Custom SVG" }
+          ]
+        },
+        {
+          "type": "textarea",
+          "id": "item_1_custom_svg",
+          "label": "Custom SVG",
+          "info": "Paste inline SVG only (trusted content). Shown when Icon is Custom SVG.",
+          "visible_if": "{{ block.settings.item_1_icon == 'custom' }}"
+        },
+        {
+          "type": "text",
+          "id": "item_1_heading",
+          "label": "Heading",
+          "default": "Visit Us"
+        },
+        {
+          "type": "richtext",
+          "id": "item_1_body",
+          "label": "Content",
+          "default": "<p>Frankland Estate</p><p>Frankland Road, Frankland River,<br />Western Australia 6396</p>"
+        },
+        {
+          "type": "header",
+          "content": "Item 2"
+        },
+        {
+          "type": "select",
+          "id": "item_2_icon",
+          "label": "Icon",
+          "default": "phone",
+          "options": [
+            { "value": "location", "label": "Location" },
+            { "value": "phone", "label": "Phone" },
+            { "value": "email", "label": "Email" },
+            { "value": "clock", "label": "Clock" },
+            { "value": "custom", "label": "Custom SVG" }
+          ]
+        },
+        {
+          "type": "textarea",
+          "id": "item_2_custom_svg",
+          "label": "Custom SVG",
+          "info": "Paste inline SVG only (trusted content). Shown when Icon is Custom SVG.",
+          "visible_if": "{{ block.settings.item_2_icon == 'custom' }}"
+        },
+        {
+          "type": "text",
+          "id": "item_2_heading",
+          "label": "Heading",
+          "default": "Call Us"
+        },
+        {
+          "type": "richtext",
+          "id": "item_2_body",
+          "label": "Content",
+          "default": "<p>+61 (0)8 9855 1544</p><p>Mon – Fri, 10:00 AM – 4:00 PM</p>"
+        },
+        {
+          "type": "header",
+          "content": "Item 3"
+        },
+        {
+          "type": "select",
+          "id": "item_3_icon",
+          "label": "Icon",
+          "default": "email",
+          "options": [
+            { "value": "location", "label": "Location" },
+            { "value": "phone", "label": "Phone" },
+            { "value": "email", "label": "Email" },
+            { "value": "clock", "label": "Clock" },
+            { "value": "custom", "label": "Custom SVG" }
+          ]
+        },
+        {
+          "type": "textarea",
+          "id": "item_3_custom_svg",
+          "label": "Custom SVG",
+          "info": "Paste inline SVG only (trusted content). Shown when Icon is Custom SVG.",
+          "visible_if": "{{ block.settings.item_3_icon == 'custom' }}"
+        },
+        {
+          "type": "text",
+          "id": "item_3_heading",
+          "label": "Heading",
+          "default": "Email Us"
+        },
+        {
+          "type": "richtext",
+          "id": "item_3_body",
+          "label": "Content",
+          "default": "<p><a href=\"mailto:info@franklandestate.com.au\" title=\"Email Frankland Estate\">info@franklandestate.com.au</a></p>"
+        },
+        {
+          "type": "header",
+          "content": "Item 4"
+        },
+        {
+          "type": "select",
+          "id": "item_4_icon",
+          "label": "Icon",
+          "default": "clock",
+          "options": [
+            { "value": "location", "label": "Location" },
+            { "value": "phone", "label": "Phone" },
+            { "value": "email", "label": "Email" },
+            { "value": "clock", "label": "Clock" },
+            { "value": "custom", "label": "Custom SVG" }
+          ]
+        },
+        {
+          "type": "textarea",
+          "id": "item_4_custom_svg",
+          "label": "Custom SVG",
+          "info": "Paste inline SVG only (trusted content). Shown when Icon is Custom SVG.",
+          "visible_if": "{{ block.settings.item_4_icon == 'custom' }}"
+        },
+        {
+          "type": "text",
+          "id": "item_4_heading",
+          "label": "Heading",
+          "default": "Cellar Door Hours"
+        },
+        {
+          "type": "richtext",
+          "id": "item_4_body",
+          "label": "Content",
+          "default": "<p>Mon – Fri, 10:00 AM – 4:00 PM</p><p>Weekends &amp; Public Holidays</p><p>By Appointment</p>"
+        },
+        {
+          "type": "header",
+          "content": "Style"
+        },
+        {
+          "type": "color",
+          "id": "icon_color",
+          "label": "Icon color",
+          "default": "#A8793D"
+        },
+        {
+          "type": "color",
+          "id": "icon_border_color",
+          "label": "Icon border color",
+          "default": "#D3B17D"
+        },
+        {
+          "type": "color",
+          "id": "text_color",
+          "label": "Text color",
+          "default": "#302313"
+        },
+        {
+          "type": "range",
+          "id": "heading_font_size",
+          "min": 14,
+          "max": 28,
+          "step": 1,
+          "unit": "px",
+          "label": "Heading font size",
+          "default": 18
+        },
+        {
+          "type": "range",
+          "id": "body_font_size",
+          "min": 12,
+          "max": 22,
+          "step": 1,
+          "unit": "px",
+          "label": "Body font size",
+          "default": 16
+        },
+        {
+          "type": "range",
+          "id": "icon_circle_size",
+          "min": 48,
+          "max": 96,
+          "step": 4,
+          "unit": "px",
+          "label": "Icon circle size",
+          "default": 64
+        },
+        {
+          "type": "range",
+          "id": "item_spacing",
+          "min": 12,
+          "max": 48,
+          "step": 2,
+          "unit": "px",
+          "label": "Item spacing",
+          "default": 28
+        }
+      ]
+    }
+  ],
+  "settings": [
+    {
+      "type": "text",
+      "id": "section_anchor_id",
+      "label": "Section HTML id (optional)",
+      "info": "For anchor links — no spaces."
+    },
+    {
+      "type": "select",
+      "id": "content_position",
+      "label": "Layout",
+      "default": "content_left",
+      "options": [
+        { "value": "content_left", "label": "Content left / Form right" },
+        { "value": "form_left", "label": "Form left / Content right" }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "form_mode",
+      "label": "Form mode",
+      "default": "static",
+      "options": [
+        { "value": "static", "label": "Static form" },
+        { "value": "custom", "label": "Custom liquid / app form" }
+      ]
+    },
+    {
+      "type": "header",
+      "content": "Content column"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading"
+    },
+    {
+      "type": "range",
+      "id": "heading_font_size",
+      "min": 24,
+      "max": 56,
+      "step": 1,
+      "unit": "px",
+      "label": "Heading font size",
+      "default": 40,
+      "info": "Maximum on large screens; scales down on smaller viewports."
+    },
+    {
+      "type": "select",
+      "id": "heading_font_family",
+      "label": "Heading font",
+      "default": "eidetic_neo",
+      "options": [
+        { "value": "eidetic_neo", "label": "Eidetic Neo (serif)" },
+        { "value": "georgia", "label": "Georgia (serif)" },
+        { "value": "plus_jakarta", "label": "Plus Jakarta Sans" },
+        { "value": "arial", "label": "Arial" }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "heading_font_weight",
+      "label": "Heading font weight",
+      "default": "400",
+      "options": [
+        { "value": "400", "label": "Regular (400)" },
+        { "value": "500", "label": "Medium (500)" },
+        { "value": "600", "label": "Semibold (600)" },
+        { "value": "700", "label": "Bold (700)" }
+      ]
+    },
+    {
+      "type": "richtext",
+      "id": "body",
+      "label": "Body copy"
+    },
+    {
+      "type": "range",
+      "id": "content_font_size",
+      "min": 12,
+      "max": 22,
+      "step": 1,
+      "unit": "px",
+      "label": "Content font size",
+      "default": 16
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "Button label"
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "Button link"
+    },
+    {
+      "type": "header",
+      "content": "Form column"
+    },
+    {
+      "type": "text",
+      "id": "form_heading",
+      "label": "Form heading",
+      "default": "Book a tasting"
+    },
+    {
+      "type": "text",
+      "id": "experience_type_placeholder",
+      "label": "Experience type placeholder",
+      "default": "Please select"
+    },
+    {
+      "type": "textarea",
+      "id": "experience_type_options",
+      "label": "Experience type options",
+      "default": "Standard tasting\nPremium tasting\nPrivate tour\nMasterclass",
+      "info": "One option per line."
+    },
+    {
+      "type": "text",
+      "id": "submit_button_label",
+      "label": "Submit button label",
+      "default": "Submit booking request"
+    },
+    {
+      "type": "textarea",
+      "id": "success_message",
+      "label": "Success message",
+      "default": "Thank you — your booking request has been received."
+    },
+    {
+      "type": "liquid",
+      "id": "custom_liquid",
+      "label": "Custom Liquid",
+      "info": "Shown only when Form mode is “Custom liquid / app form”. Use for Hulk Form embed or other snippets."
+    },
+    {
+      "type": "header",
+      "content": "Appearance"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background color",
+      "default": "#EFEEE9"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color",
+      "default": "#302313"
+    },
+    {
+      "type": "range",
+      "id": "container_width",
+      "min": 900,
+      "max": 1400,
+      "step": 10,
+      "unit": "px",
+      "label": "Container width",
+      "default": 1110
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Padding top",
+      "min": 0,
+      "max": 160,
+      "step": 4,
+      "unit": "px",
+      "default": 80
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Padding bottom",
+      "min": 0,
+      "max": 160,
+      "step": 4,
+      "unit": "px",
+      "default": 80
+    },
+    {
+      "type": "range",
+      "id": "gap",
+      "label": "Column gap",
+      "min": 16,
+      "max": 80,
+      "step": 4,
+      "unit": "px",
+      "default": 48
+    },
+    {
+      "type": "color",
+      "id": "button_background_color",
+      "label": "Button background",
+      "default": "#302313"
+    },
+    {
+      "type": "color",
+      "id": "button_text_color",
+      "label": "Button text",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "button_border_color",
+      "label": "Button border",
+      "default": "#302313"
+    },
+    {
+      "type": "color",
+      "id": "input_border_color",
+      "label": "Form input border",
+      "default": "#C9C4BE"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Alternating Content+Form",
+      "settings": {
+        "heading": "Visit the cellar door",
+        "form_heading": "Book a tasting",
+        "content_position": "content_left",
+        "form_mode": "static",
+        "container_width": 1110,
+        "gap": 48,
+        "padding_top": 80,
+        "padding_bottom": 80
+      }
+    }
+  ]
+}
+{% endschema %}

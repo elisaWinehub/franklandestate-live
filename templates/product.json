@@ -1,0 +1,110 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "main": {
+      "type": "main-product",
+      "blocks": {
+        "vendor": {
+          "type": "vendor_label",
+          "settings": {
+            "show": true,
+            "custom_label": ""
+          }
+        },
+        "title": {
+          "type": "title",
+          "settings": {
+            "font_size_desktop": 40,
+            "font_size_mobile": 30,
+            "margin_bottom": 16
+          }
+        },
+        "description": {
+          "type": "description",
+          "settings": {
+            "truncate": false,
+            "truncate_lines": 4
+          }
+        },
+        "variant_picker": {
+          "type": "variant_picker",
+          "settings": {}
+        },
+        "price": {
+          "type": "price",
+          "settings": {
+            "font_size": 24
+          }
+        },
+        "quantity": {
+          "type": "quantity_selector",
+          "settings": {}
+        },
+        "buy_buttons": {
+          "type": "buy_buttons",
+          "settings": {
+            "button_label": "Add to Cart",
+            "sold_out_label": "Sold Out"
+          }
+        },
+        "accordion": {
+          "type": "accordion_group",
+          "settings": {
+            "reviews_initial_count": 2
+          }
+        }
+      },
+      "block_order": [
+        "vendor",
+        "title",
+        "description",
+        "variant_picker",
+        "price",
+        "quantity",
+        "buy_buttons",
+        "accordion"
+      ],
+      "settings": {
+        "container_width": 1240,
+        "background_color": "#f9f8f3",
+        "text_color": "#302313",
+        "accent_color": "#b8a574",
+        "gallery_background_color": "#efeee9",
+        "image_border_radius": 8,
+        "thumbnail_position": "left",
+        "enable_breadcrumbs": true,
+        "breadcrumb_fallback_label": "All Wines",
+        "accordion_hide_empty": true,
+        "accordion_open_first": false,
+        "padding_top": 32,
+        "padding_bottom": 64
+      }
+    },
+    "recommendations": {
+      "type": "product-recommendations-custom",
+      "settings": {
+        "heading": "You may also like",
+        "products_count": 6,
+        "visible_count": 4,
+        "show_arrows": true,
+        "background_color": "#f9f8f3",
+        "text_color": "#302313",
+        "container_width": 1240,
+        "padding_top": 48,
+        "padding_bottom": 64
+      }
+    }
+  },
+  "order": [
+    "main",
+    "recommendations"
+  ]
+}

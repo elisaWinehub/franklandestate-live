@@ -1,0 +1,539 @@
+{%- liquid
+  assign sid = section.id
+  assign overlay_opacity = section.settings.overlay_opacity | divided_by: 100.0
+  if section.settings.full_screen
+    assign hero_height = '100vh'
+  else
+    if section.settings.custom_height_unit == 'px'
+      assign hero_height = section.settings.custom_height_px | append: 'px'
+    else
+      assign hero_height = section.settings.custom_height_vh | append: 'vh'
+    endif
+  endif
+
+  assign media_type = section.settings.media_type | default: 'image'
+  assign video_source = section.settings.video_source | default: 'shopify'
+
+  assign poster_image = section.settings.video_poster
+  if poster_image == blank
+    assign poster_image = section.settings.background_image
+  endif
+
+  assign youtube_url = section.settings.youtube_url | strip
+  assign youtube_id = ''
+  if youtube_url != blank
+    if youtube_url contains 'youtu.be/'
+      assign yparts = youtube_url | split: 'youtu.be/'
+      assign youtube_id = yparts[1] | split: '?' | first | split: '/' | first | split: '&' | first
+    elsif youtube_url contains 'youtube.com/embed/'
+      assign yparts = youtube_url | split: 'embed/'
+      assign youtube_id = yparts[1] | split: '?' | first | split: '/' | first
+    elsif youtube_url contains 'v='
+      assign yparts = youtube_url | split: 'v='
+      assign youtube_id = yparts[1] | split: '&' | first | split: '?' | first
+    else
+      assign youtube_id = youtube_url | split: '?' | first | strip
+    endif
+  endif
+
+  assign show_video = false
+  if media_type == 'video'
+    if video_source == 'shopify' and section.settings.hero_video != blank
+      assign show_video = true
+    elsif video_source == 'external_mp4' and section.settings.video_mp4_url != blank
+      assign show_video = true
+    elsif video_source == 'youtube' and youtube_id != blank
+      assign show_video = true
+    elsif video_source == 'embed' and section.settings.video_embed != blank
+      assign show_video = true
+    endif
+  endif
+
+  assign poster_url = ''
+  if poster_image != blank
+    assign poster_url = poster_image | image_url: width: 2400
+  endif
+-%}
+
+<section class="fe-custom-hero fe-custom-hero--{{ sid }}" aria-label="{{ section.settings.title | escape }}">
+  <div class="fe-custom-hero__media fe-custom-hero__media--{{ media_type }}" style="--fe-hero-media-pos: {{ section.settings.background_position }};">
+    {%- if media_type == 'video' and show_video -%}
+      <div class="fe-custom-hero__video-wrap">
+        {%- if video_source == 'shopify' -%}
+          {%- if poster_image != blank -%}
+            {{
+              section.settings.hero_video
+              | video_tag:
+                class: 'fe-custom-hero__video-el',
+                autoplay: true,
+                muted: true,
+                loop: true,
+                controls: false,
+                playsinline: true,
+                poster: poster_image | image_url: width: 2400,
+                preload: 'auto'
+            }}
+          {%- else -%}
+            {{
+              section.settings.hero_video
+              | video_tag:
+                class: 'fe-custom-hero__video-el',
+                autoplay: true,
+                muted: true,
+                loop: true,
+                controls: false,
+                playsinline: true,
+                preload: 'auto'
+            }}
+          {%- endif -%}
+        {%- elsif video_source == 'external_mp4' -%}
+          <video
+            class="fe-custom-hero__video-el"
+            autoplay
+            muted
+            playsinline
+            loop
+            preload="auto"
+            {% if poster_url != blank %}poster="{{ poster_url }}"{% endif %}
+          >
+            <source src="{{ section.settings.video_mp4_url }}" type="video/mp4">
+          </video>
+        {%- elsif video_source == 'youtube' -%}
+          <div class="fe-custom-hero__video-iframe-wrap">
+            <iframe
+              class="fe-custom-hero__iframe fe-custom-hero__iframe--youtube"
+              src="https://www.youtube.com/embed/{{ youtube_id }}?autoplay=1&mute=1&playsinline=1&controls=0&rel=0&modestbranding=1&loop=1&playlist={{ youtube_id }}"
+              title="{{ section.settings.title | escape }}"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              allowfullscreen
+              loading="eager"
+              referrerpolicy="strict-origin-when-cross-origin"
+            ></iframe>
+          </div>
+        {%- elsif video_source == 'embed' -%}
+          <div class="fe-custom-hero__video-iframe-wrap fe-custom-hero__video-iframe-wrap--embed">
+            {{ section.settings.video_embed }}
+          </div>
+        {%- endif -%}
+      </div>
+
+      {%- if poster_url != blank -%}
+        <img
+          src="{{ poster_image | image_url: width: 2400 }}"
+          srcset="
+            {{ poster_image | image_url: width: 900 }} 900w,
+            {{ poster_image | image_url: width: 1400 }} 1400w,
+            {{ poster_image | image_url: width: 2000 }} 2000w,
+            {{ poster_image | image_url: width: 2400 }} 2400w
+          "
+          sizes="100vw"
+          alt="{{ poster_image.alt | escape | default: section.settings.title }}"
+          class="fe-custom-hero__img fe-custom-hero__img--video-fallback"
+          loading="lazy"
+          width="{{ poster_image.width }}"
+          height="{{ poster_image.height }}"
+        >
+      {%- elsif section.settings.background_image_url != blank -%}
+        <img
+          src="{{ section.settings.background_image_url }}"
+          alt="{{ section.settings.title | escape }}"
+          class="fe-custom-hero__img fe-custom-hero__img--video-fallback"
+          loading="lazy"
+        >
+      {%- endif -%}
+    {%- elsif media_type == 'video' -%}
+      {%- if poster_url != blank -%}
+        <img
+          src="{{ poster_image | image_url: width: 2400 }}"
+          srcset="
+            {{ poster_image | image_url: width: 900 }} 900w,
+            {{ poster_image | image_url: width: 1400 }} 1400w,
+            {{ poster_image | image_url: width: 2000 }} 2000w,
+            {{ poster_image | image_url: width: 2400 }} 2400w
+          "
+          sizes="100vw"
+          alt="{{ poster_image.alt | escape | default: section.settings.title }}"
+          class="fe-custom-hero__img"
+          loading="eager"
+          fetchpriority="high"
+          width="{{ poster_image.width }}"
+          height="{{ poster_image.height }}"
+        >
+      {%- elsif section.settings.background_image != blank -%}
+        <img
+          src="{{ section.settings.background_image | image_url: width: 2400 }}"
+          srcset="
+            {{ section.settings.background_image | image_url: width: 900 }} 900w,
+            {{ section.settings.background_image | image_url: width: 1400 }} 1400w,
+            {{ section.settings.background_image | image_url: width: 2000 }} 2000w
+          "
+          sizes="100vw"
+          alt="{{ section.settings.background_image.alt | escape | default: section.settings.title }}"
+          class="fe-custom-hero__img"
+          loading="eager"
+          fetchpriority="high"
+        >
+      {%- elsif section.settings.background_image_url != blank -%}
+        <img
+          src="{{ section.settings.background_image_url }}"
+          alt="{{ section.settings.title | escape }}"
+          class="fe-custom-hero__img"
+          loading="eager"
+          fetchpriority="high"
+        >
+      {%- endif -%}
+    {%- elsif section.settings.background_image != blank -%}
+      <img
+        src="{{ section.settings.background_image | image_url: width: 2400 }}"
+        srcset="
+          {{ section.settings.background_image | image_url: width: 900 }} 900w,
+          {{ section.settings.background_image | image_url: width: 1400 }} 1400w,
+          {{ section.settings.background_image | image_url: width: 2000 }} 2000w
+        "
+        sizes="100vw"
+        alt="{{ section.settings.background_image.alt | escape | default: section.settings.title }}"
+        class="fe-custom-hero__img"
+        loading="eager"
+        fetchpriority="high"
+      >
+    {%- elsif section.settings.background_image_url != blank -%}
+      <img
+        src="{{ section.settings.background_image_url }}"
+        alt="{{ section.settings.title | escape }}"
+        class="fe-custom-hero__img"
+        loading="eager"
+        fetchpriority="high"
+      >
+    {%- endif -%}
+    <div class="fe-custom-hero__overlay" style="opacity:{{ overlay_opacity }};"></div>
+  </div>
+
+  <div class="fe-custom-hero__content">
+    {%- if section.settings.title != blank -%}
+      <h1 class="fe-custom-hero__title">{{ section.settings.title | escape }}</h1>
+    {%- endif -%}
+    {%- if section.settings.subtitle != blank -%}
+      <p class="fe-custom-hero__subtitle">{{ section.settings.subtitle | escape }}</p>
+    {%- endif -%}
+    {%- if section.settings.button_label != blank and section.settings.button_link != blank -%}
+      <a href="{{ section.settings.button_link }}" class="fe-custom-hero__button">{{ section.settings.button_label | escape }}</a>
+    {%- endif -%}
+  </div>
+</section>
+
+<style>
+  .fe-custom-hero--{{ sid }} {
+    position: relative;
+    height: {{ hero_height }};
+    min-height: 520px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    color: #fff;
+    box-sizing: border-box;
+  }
+  .fe-custom-hero--{{ sid }} .fe-custom-hero__media {
+    position: absolute;
+    inset: 0;
+  }
+  .fe-custom-hero--{{ sid }} .fe-custom-hero__img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: var(--fe-hero-media-pos, center center);
+    display: block;
+  }
+
+  .fe-custom-hero--{{ sid }} .fe-custom-hero__video-wrap {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    z-index: 0;
+  }
+
+  .fe-custom-hero--{{ sid }} .fe-custom-hero__video-el {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: var(--fe-hero-media-pos, center center);
+    display: block;
+  }
+
+  .fe-custom-hero--{{ sid }} .fe-custom-hero__video-wrap video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: var(--fe-hero-media-pos, center center);
+  }
+
+  .fe-custom-hero--{{ sid }} .fe-custom-hero__video-iframe-wrap {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    pointer-events: none;
+  }
+
+  .fe-custom-hero--{{ sid }} .fe-custom-hero__video-iframe-wrap iframe {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 177.78vh;
+    min-width: 100%;
+    min-height: 100%;
+    height: 56.25vw;
+    border: 0;
+    transform: translate(-50%, -50%);
+  }
+
+  .fe-custom-hero--{{ sid }} .fe-custom-hero__img--video-fallback {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    display: none;
+    pointer-events: none;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .fe-custom-hero--{{ sid }} .fe-custom-hero__video-wrap {
+      display: none !important;
+    }
+    .fe-custom-hero--{{ sid }} .fe-custom-hero__img--video-fallback {
+      display: block !important;
+    }
+  }
+
+  .fe-custom-hero--{{ sid }} .fe-custom-hero__overlay {
+    position: absolute;
+    inset: 0;
+    background: #000;
+    z-index: 1;
+    pointer-events: none;
+  }
+
+  .fe-custom-hero--{{ sid }} .fe-custom-hero__content {
+    position: relative;
+    z-index: 2;
+    text-align: center;
+    max-width: 980px;
+    width: 100%;
+    padding: clamp(24px, 5vw, 56px) 20px;
+    box-sizing: border-box;
+  }
+  .fe-custom-hero--{{ sid }} .fe-custom-hero__title {
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: clamp(28px, 4vw, 56px);
+    line-height: 1.15;
+    font-weight: 400;
+    margin: 0;
+  }
+  .fe-custom-hero--{{ sid }} .fe-custom-hero__subtitle {
+    margin: 16px auto 0;
+    max-width: 720px;
+    font-family: "Plus Jakarta Sans", sans-serif;
+    font-size: clamp(14px, 1.6vw, 18px);
+    line-height: 1.5;
+  }
+  .fe-custom-hero--{{ sid }} .fe-custom-hero__button {
+    margin-top: 22px;
+    display: inline-block;
+    border: 1px solid #fff;
+    color: #fff;
+    text-decoration: none;
+    padding: 10px 22px;
+    font-family: Arial, sans-serif;
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  @media (max-width: 768px) {
+    .fe-custom-hero--{{ sid }} {
+      height: auto;
+      min-height: 100svh;
+    }
+    .fe-custom-hero--{{ sid }} .fe-custom-hero__title {
+      font-size: clamp(24px, 7.5vw, 38px);
+    }
+  }
+</style>
+
+{% schema %}
+{
+  "name": "Custom Hero Banner",
+  "tag": "section",
+  "class": "fe-custom-hero-banner",
+  "settings": [
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Title",
+      "default": "Frankland Estate has emerged as one of the great vineyards of Australia-Huon Hooke"
+    },
+    {
+      "type": "text",
+      "id": "subtitle",
+      "label": "Subtitle"
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "Button label"
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "Button link"
+    },
+    {
+      "type": "header",
+      "content": "Hero media"
+    },
+    {
+      "type": "select",
+      "id": "media_type",
+      "label": "Media type",
+      "default": "image",
+      "options": [
+        { "value": "image", "label": "Image" },
+        { "value": "video", "label": "Video" }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "video_source",
+      "label": "Video source",
+      "default": "shopify",
+      "options": [
+        { "value": "shopify", "label": "Shopify-hosted (Files)" },
+        { "value": "external_mp4", "label": "Self-hosted MP4 URL" },
+        { "value": "youtube", "label": "YouTube" },
+        { "value": "embed", "label": "Custom embed (iframe)" }
+      ],
+      "visible_if": "{{ section.settings.media_type == 'video' }}"
+    },
+    {
+      "type": "video",
+      "id": "hero_video",
+      "label": "Video",
+      "info": "Upload to Content → Files. Autoplays muted with loop.",
+      "visible_if": "{{ section.settings.media_type == 'video' and section.settings.video_source == 'shopify' }}"
+    },
+    {
+      "type": "url",
+      "id": "video_mp4_url",
+      "label": "MP4 file URL",
+      "info": "Direct link to an .mp4 file (HTTPS).",
+      "visible_if": "{{ section.settings.media_type == 'video' and section.settings.video_source == 'external_mp4' }}"
+    },
+    {
+      "type": "text",
+      "id": "youtube_url",
+      "label": "YouTube URL or video ID",
+      "placeholder": "https://www.youtube.com/watch?v=…",
+      "visible_if": "{{ section.settings.media_type == 'video' and section.settings.video_source == 'youtube' }}"
+    },
+    {
+      "type": "textarea",
+      "id": "video_embed",
+      "label": "Video embed HTML",
+      "info": "Paste a full iframe snippet. Ensure the host allows autoplay; add muted if required.",
+      "visible_if": "{{ section.settings.media_type == 'video' and section.settings.video_source == 'embed' }}"
+    },
+    {
+      "type": "image_picker",
+      "id": "video_poster",
+      "label": "Video poster / fallback image",
+      "info": "Shown before load, if video fails, and when reduced motion is preferred. Falls back to Hero image if empty.",
+      "visible_if": "{{ section.settings.media_type == 'video' }}"
+    },
+    {
+      "type": "image_picker",
+      "id": "background_image",
+      "label": "Hero image",
+      "visible_if": "{{ section.settings.media_type == 'image' }}"
+    },
+    {
+      "type": "text",
+      "id": "background_image_url",
+      "label": "Hero image URL (temporary)",
+      "default": "https://www.franklandestate.com.au/dist/images/sitegates/content/background.jpg",
+      "visible_if": "{{ section.settings.media_type == 'image' }}"
+    },
+    {
+      "type": "select",
+      "id": "background_position",
+      "label": "Image / video framing",
+      "default": "center center",
+      "options": [
+        { "value": "top left", "label": "Top left" },
+        { "value": "top center", "label": "Top center" },
+        { "value": "top right", "label": "Top right" },
+        { "value": "center left", "label": "Center left" },
+        { "value": "center center", "label": "Center center" },
+        { "value": "center right", "label": "Center right" },
+        { "value": "bottom left", "label": "Bottom left" },
+        { "value": "bottom center", "label": "Bottom center" },
+        { "value": "bottom right", "label": "Bottom right" }
+      ]
+    },
+    {
+      "type": "header",
+      "content": "Height"
+    },
+    {
+      "type": "checkbox",
+      "id": "full_screen",
+      "label": "Use full screen height",
+      "default": true
+    },
+    {
+      "type": "select",
+      "id": "custom_height_unit",
+      "label": "Custom height unit",
+      "options": [
+        { "value": "vh", "label": "Viewport height (vh)" },
+        { "value": "px", "label": "Pixels (px)" }
+      ],
+      "default": "vh",
+      "visible_if": "{{ section.settings.full_screen == false }}"
+    },
+    {
+      "type": "range",
+      "id": "custom_height_vh",
+      "min": 30,
+      "max": 100,
+      "step": 5,
+      "unit": "vh",
+      "label": "Custom height (vh)",
+      "default": 80,
+      "visible_if": "{{ section.settings.full_screen == false and section.settings.custom_height_unit == 'vh' }}"
+    },
+    {
+      "type": "range",
+      "id": "custom_height_px",
+      "min": 400,
+      "max": 1200,
+      "step": 20,
+      "unit": "px",
+      "label": "Custom height (px)",
+      "default": 720,
+      "visible_if": "{{ section.settings.full_screen == false and section.settings.custom_height_unit == 'px' }}"
+    },
+    {
+      "type": "range",
+      "id": "overlay_opacity",
+      "min": 0,
+      "max": 80,
+      "step": 5,
+      "unit": "%",
+      "label": "Overlay darkness",
+      "default": 25
+    }
+  ],
+  "presets": [
+    {
+      "name": "Custom Hero Banner"
+    }
+  ]
+}
+{% endschema %}

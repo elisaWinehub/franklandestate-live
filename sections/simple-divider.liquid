@@ -1,0 +1,145 @@
+{%- liquid
+  assign sid = section.id
+  assign divider_color = section.settings.divider_color | default: '#D3D2CB'
+  assign divider_thickness = section.settings.divider_thickness | default: 1
+  assign divider_width = section.settings.divider_width | default: 92
+  assign padding_top = section.settings.padding_top | default: 24
+  assign padding_bottom = section.settings.padding_bottom | default: 24
+  assign background_color = section.settings.background_color | default: '#FFFFFF00'
+  assign alignment = section.settings.alignment | default: 'center'
+
+  assign justify = 'center'
+  case alignment
+    when 'left'
+      assign justify = 'flex-start'
+    when 'right'
+      assign justify = 'flex-end'
+    else
+      assign justify = 'center'
+  endcase
+-%}
+
+<div
+  id="fe-simple-divider-{{ sid }}"
+  class="fe-simple-divider"
+  style="
+    padding-top: {{ padding_top }}px;
+    padding-bottom: {{ padding_bottom }}px;
+    background-color: {{ background_color }};
+  "
+  {{ section.shopify_attributes }}
+>
+  <div class="fe-simple-divider__row" style="justify-content: {{ justify }};">
+    <hr
+      class="fe-simple-divider__line"
+      aria-hidden="true"
+      style="
+        width: {{ divider_width }}%;
+        height: {{ divider_thickness }}px;
+        background-color: {{ divider_color }};
+      "
+    >
+  </div>
+</div>
+
+<style>
+  .fe-simple-divider {
+    width: 100%;
+    box-sizing: border-box;
+    margin: 0;
+  }
+
+  .fe-simple-divider__row {
+    display: flex;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .fe-simple-divider__line {
+    border: 0;
+    margin: 0;
+    padding: 0;
+    flex-shrink: 0;
+    display: block;
+    max-width: 100%;
+  }
+</style>
+
+{% schema %}
+{
+  "name": "Simple Divider",
+  "tag": "section",
+  "class": "fe-simple-divider-section",
+  "settings": [
+    {
+      "type": "color",
+      "id": "divider_color",
+      "label": "Divider color",
+      "default": "#D3D2CB"
+    },
+    {
+      "type": "range",
+      "id": "divider_thickness",
+      "min": 1,
+      "max": 5,
+      "step": 1,
+      "unit": "px",
+      "label": "Divider thickness",
+      "default": 1
+    },
+    {
+      "type": "range",
+      "id": "divider_width",
+      "min": 30,
+      "max": 100,
+      "step": 1,
+      "unit": "%",
+      "label": "Divider width",
+      "default": 92
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 150,
+      "step": 2,
+      "unit": "px",
+      "label": "Padding top",
+      "default": 24
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 150,
+      "step": 2,
+      "unit": "px",
+      "label": "Padding bottom",
+      "default": 24
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background color",
+      "alpha": true,
+      "default": "#FFFFFF00"
+    },
+    {
+      "type": "select",
+      "id": "alignment",
+      "label": "Container alignment",
+      "default": "center",
+      "options": [
+        { "value": "left", "label": "Left" },
+        { "value": "center", "label": "Center" },
+        { "value": "right", "label": "Right" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Simple Divider"
+    }
+  ]
+}
+{% endschema %}

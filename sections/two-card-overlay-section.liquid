@@ -1,0 +1,343 @@
+{%- liquid
+  assign sid = section.id
+  assign pt  = section.settings.padding_top
+  assign pb  = section.settings.padding_bottom
+  assign bg  = section.settings.background_color
+-%}
+
+<section
+  {% if section.settings.section_anchor_id != blank %}id="{{ section.settings.section_anchor_id | handleize }}"{% endif %}
+  class="fe-cards fe-cards--{{ sid }}"
+  style="background-color:{{ bg }}; padding-top:{{ pt }}px; padding-bottom:{{ pb }}px;"
+>
+  <div class="fe-cards__inner">
+
+    {%- if section.settings.section_heading != blank -%}
+      <h2 class="fe-cards__section-heading">{{ section.settings.section_heading | escape }}</h2>
+    {%- endif -%}
+
+    {%- comment -%} Optional top quote/heading {%- endcomment -%}
+    {%- if section.settings.top_quote != blank or section.settings.top_attribution != blank -%}
+      <div class="fe-cards__quote-wrap">
+        {%- if section.settings.top_quote != blank -%}
+          <blockquote class="fe-cards__quote">{{ section.settings.top_quote | escape }}</blockquote>
+        {%- endif -%}
+        {%- if section.settings.top_attribution != blank -%}
+          <cite class="fe-cards__attribution">{{ section.settings.top_attribution | escape }}</cite>
+        {%- endif -%}
+      </div>
+    {%- endif -%}
+
+    {%- comment -%} Card grid {%- endcomment -%}
+    {%- if section.blocks.size > 0 -%}
+      <div class="fe-cards__grid" style="grid-template-columns: repeat({{ section.blocks.size | at_most: 4 }}, 1fr);">
+        {%- for block in section.blocks -%}
+          {%- if block.type == 'card' -%}
+            <a
+              href="{{ block.settings.link | default: '#' }}"
+              class="fe-card"
+              {{ block.shopify_attributes }}
+            >
+              {%- comment -%} Image {%- endcomment -%}
+              {%- if block.settings.image != blank or block.settings.image_url != blank -%}
+                {%- if block.settings.image != blank -%}
+                  <img
+                    class="fe-card__img"
+                    src="{{ block.settings.image | image_url: width: 1000 }}"
+                    srcset="
+                      {{ block.settings.image | image_url: width: 600  }} 600w,
+                      {{ block.settings.image | image_url: width: 1000 }} 1000w
+                    "
+                    sizes="(max-width: 768px) 100vw, 50vw"
+                    alt="{{ block.settings.image.alt | escape | default: block.settings.title }}"
+                    loading="lazy"
+                  >
+                {%- else -%}
+                  <img
+                    class="fe-card__img"
+                    src="{{ block.settings.image_url }}"
+                    alt="{{ block.settings.title | escape }}"
+                    loading="lazy"
+                  >
+                {%- endif -%}
+              {%- else -%}
+                <div class="fe-card__img fe-card__img--placeholder"></div>
+              {%- endif -%}
+
+              {%- comment -%} Overlay {%- endcomment -%}
+              <div class="fe-card__overlay"></div>
+
+              <div class="fe-card__content">
+                {%- if block.settings.title != blank -%}
+                  <h3 class="fe-card__title">{{ block.settings.title | escape }}</h3>
+                {%- endif -%}
+                {%- if block.settings.subtitle != blank -%}
+                  <p class="fe-card__subtitle">{{ block.settings.subtitle | escape }}</p>
+                {%- endif -%}
+              </div>
+            </a>
+          {%- endif -%}
+        {%- endfor -%}
+      </div>
+    {%- endif -%}
+
+  </div>
+</section>
+
+<style>
+  .fe-cards--{{ sid }} {
+    width: 100%;
+  }
+
+  .fe-cards--{{ sid }} .fe-cards__inner {
+    max-width: 980px;
+    margin: 0 auto;
+    padding: 0 20px;
+  }
+
+  .fe-cards--{{ sid }} .fe-cards__section-heading {
+    font-family: eidetic-neo, Georgia, "Times New Roman", serif;
+    font-size: clamp(28px, 3vw, 38px);
+    font-weight: 400;
+    text-align: center;
+    margin: 0 0 48px;
+    color: #302313;
+    line-height: 1.15;
+  }
+
+  /* Quote */
+  .fe-cards--{{ sid }} .fe-cards__quote-wrap {
+    text-align: center;
+    margin-bottom: 60px;
+  }
+
+  .fe-cards--{{ sid }} .fe-cards__quote {
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: clamp(16px, 1.8vw, 20px);
+    font-weight: 400;
+    font-style: italic;
+    line-height: 1.6;
+    color: #4a403a;
+    max-width: 680px;
+    margin: 0 auto 12px;
+    quotes: "\201C""\201D";
+  }
+
+  .fe-cards--{{ sid }} .fe-cards__quote::before { content: open-quote; }
+  .fe-cards--{{ sid }} .fe-cards__quote::after  { content: close-quote; }
+
+  .fe-cards--{{ sid }} .fe-cards__attribution {
+    display: block;
+    font-family: "Plus Jakarta Sans", sans-serif;
+    font-size: 12px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #7a6f6a;
+    font-style: normal;
+  }
+
+  /* Grid */
+  .fe-cards--{{ sid }} .fe-cards__grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 24px;
+  }
+
+  /* Card */
+  .fe-cards--{{ sid }} .fe-card {
+    position: relative;
+    display: block;
+    aspect-ratio: 1 / 1;
+    overflow: hidden;
+    color: #fff;
+    text-decoration: none;
+  }
+
+  .fe-cards--{{ sid }} .fe-card__img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    transition: transform 0.4s ease;
+    display: block;
+  }
+
+  .fe-cards--{{ sid }} .fe-card__img--placeholder {
+    background: #c9b89a;
+  }
+
+  .fe-cards--{{ sid }} .fe-card:hover .fe-card__img {
+    transform: scale(1.04);
+  }
+
+  .fe-cards--{{ sid }} .fe-card__overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0,0,0,0.38);
+    transition: background 0.3s;
+  }
+
+  .fe-cards--{{ sid }} .fe-card:hover .fe-card__overlay {
+    background: rgba(0,0,0,0.45);
+  }
+
+  .fe-cards--{{ sid }} .fe-card__content {
+    position: relative;
+    z-index: 1;
+    padding: 28px 24px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    text-align: center;
+    box-sizing: border-box;
+  }
+
+  .fe-cards--{{ sid }} .fe-card__title {
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: clamp(20px, 2vw, 26px);
+    font-weight: 400;
+    margin: 0 0 8px;
+    line-height: 1.2;
+  }
+
+  .fe-cards--{{ sid }} .fe-card__subtitle {
+    font-family: "Plus Jakarta Sans", sans-serif;
+    font-size: 14px;
+    margin: 0;
+    opacity: 0.85;
+    line-height: 1.5;
+  }
+
+  /* Responsive */
+  @media (max-width: 640px) {
+    .fe-cards--{{ sid }} .fe-cards__grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
+
+{% schema %}
+{
+  "name": "Two Card Overlay",
+  "tag": "div",
+  "class": "fe-two-card-section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "section_anchor_id",
+      "label": "Section HTML id (optional)",
+      "info": "For anchors (e.g. visit-explore)."
+    },
+    {
+      "type": "text",
+      "id": "section_heading",
+      "label": "Section heading",
+      "info": "Optional title above the cards (e.g. Visit & Explore)."
+    },
+    {
+      "type": "header",
+      "content": "Top quote (optional)"
+    },
+    {
+      "type": "text",
+      "id": "top_quote",
+      "label": "Quote text"
+    },
+    {
+      "type": "text",
+      "id": "top_attribution",
+      "label": "Quote attribution"
+    },
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background color",
+      "default": "#efeee9"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 120,
+      "step": 8,
+      "unit": "px",
+      "label": "Padding top",
+      "default": 80
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 120,
+      "step": 8,
+      "unit": "px",
+      "label": "Padding bottom",
+      "default": 80
+    }
+  ],
+  "blocks": [
+    {
+      "type": "card",
+      "name": "Card",
+      "limit": 4,
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Card image"
+        },
+        {
+          "type": "text",
+          "id": "image_url",
+          "label": "Card image URL (temporary)"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title",
+          "default": "Card Title"
+        },
+        {
+          "type": "text",
+          "id": "subtitle",
+          "label": "Subtitle"
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": "Link"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Two Card Overlay",
+      "blocks": [
+        {
+          "type": "card",
+          "settings": {
+            "title": "Join the Frankland Estate Wine Club",
+            "subtitle": "Family and friends only most."
+          }
+        },
+        {
+          "type": "card",
+          "settings": {
+            "title": "Shop Our Wines",
+            "subtitle": "Finesse and balance, an old-vine expression of cool-climate growing."
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

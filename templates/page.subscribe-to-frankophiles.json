@@ -1,0 +1,52 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "hero": {
+      "type": "page-hero-banner",
+      "settings": {
+        "heading": "",
+        "text_vertical_position": "lower-center",
+        "text_color": "#ffffff",
+        "image": "shopify://shop_images/Isolation_Ridge_Vineyard_1_-_Small_53cb1b12-2ab8-4d74-bc15-8af47163c886.jpg",
+        "background_position": "center center",
+        "background_color": "#efeee9",
+        "desktop_height": 560,
+        "mobile_height": 360,
+        "overlay_opacity": 25
+      }
+    },
+    "main": {
+      "type": "main-page",
+      "settings": {}
+    },
+    "subscription_frankophiles": {
+      "type": "subscription-section",
+      "settings": {
+        "section_heading": "Join our Mailing list",
+        "section_text": "<p>Sign up for an account to receive exclusive wine offers, event invitations and more.</p>",
+        "form_heading": "Create an Account",
+        "background_color": "#ffffff",
+        "text_color": "#302313",
+        "button_label": "Submit",
+        "button_background_color": "#32291a",
+        "button_text_color": "#ffffff",
+        "padding_top": 80,
+        "padding_bottom": 80,
+        "container_width": 1200
+      }
+    }
+  },
+  "order": [
+    "hero",
+    "main",
+    "subscription_frankophiles"
+  ]
+}

@@ -1,0 +1,353 @@
+{%- doc -%}
+  Contact / info icon list for alternating-content and alternating-content-form sections.
+  @param block {Object} section block (type contact_info_list)
+  @param scope_class {String} section root class e.g. fe-alt-content--SectionID
+{%- enddoc -%}
+{%- liquid
+  assign bid = block.id
+  assign ic = block.settings.icon_color | default: '#A8793D'
+  assign ib = block.settings.icon_border_color | default: '#D3B17D'
+  assign tc = block.settings.text_color | default: '#302313'
+  assign hfs = block.settings.heading_font_size | default: 18
+  assign bfs = block.settings.body_font_size | default: 16
+  assign csz = block.settings.icon_circle_size | default: 64
+  assign isp = block.settings.item_spacing | default: 28
+
+  assign cil_skip = true
+  if block.settings.item_1_heading != blank or block.settings.item_1_body != blank
+    assign cil_skip = false
+  endif
+  if block.settings.item_1_icon == 'custom' and block.settings.item_1_custom_svg != blank
+    assign cil_skip = false
+  endif
+  if block.settings.item_2_heading != blank or block.settings.item_2_body != blank
+    assign cil_skip = false
+  endif
+  if block.settings.item_2_icon == 'custom' and block.settings.item_2_custom_svg != blank
+    assign cil_skip = false
+  endif
+  if block.settings.item_3_heading != blank or block.settings.item_3_body != blank
+    assign cil_skip = false
+  endif
+  if block.settings.item_3_icon == 'custom' and block.settings.item_3_custom_svg != blank
+    assign cil_skip = false
+  endif
+  if block.settings.item_4_heading != blank or block.settings.item_4_body != blank
+    assign cil_skip = false
+  endif
+  if block.settings.item_4_icon == 'custom' and block.settings.item_4_custom_svg != blank
+    assign cil_skip = false
+  endif
+-%}
+{%- if cil_skip -%}
+{%- else -%}
+
+{%- capture cil_icon_location -%}
+  <svg class="fe-contact-info-list__svg" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
+    <path d="M12 21s7-4.35 7-11a7 7 0 1 0-14 0c0 6.65 7 11 7 11z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+    <circle cx="12" cy="10" r="2.25" stroke="currentColor" stroke-width="1.5"/>
+  </svg>
+{%- endcapture -%}
+{%- capture cil_icon_phone -%}
+  <svg class="fe-contact-info-list__svg" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
+    <path d="M22 16.92v2.5a2 2 0 0 1-2.17 2 19.86 19.86 0 0 1-8.65-3.09 19.5 19.5 0 0 1-6-6 19.86 19.86 0 0 1-3.09-8.67A2 2 0 0 1 4.11 3h2.22a2 2 0 0 1 2 1.72c.13.87.37 1.72.72 2.53a2 2 0 0 1-.45 2.11L8 10.9a16 16 0 0 0 6 6l1.54-1.54a2 2 0 0 1 2.11-.45c.81.35 1.66.59 2.53.72A2 2 0 0 1 22 16.92z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+  </svg>
+{%- endcapture -%}
+{%- capture cil_icon_email -%}
+  <svg class="fe-contact-info-list__svg" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
+    <rect x="3" y="5" width="18" height="14" rx="2" stroke="currentColor" stroke-width="1.5"/>
+    <path d="m3 8 8.35 5.7a2 2 0 0 0 2.3 0L21 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+  </svg>
+{%- endcapture -%}
+{%- capture cil_icon_clock -%}
+  <svg class="fe-contact-info-list__svg" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
+    <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.5"/>
+    <path d="M12 7v5l3 2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+  </svg>
+{%- endcapture -%}
+
+<div
+  class="fe-contact-info-list fe-contact-info-list--{{ bid }}"
+  style="
+    --cil-icon-color: {{ ic }};
+    --cil-border-color: {{ ib }};
+    --cil-text-color: {{ tc }};
+    --cil-heading-size: {{ hfs }}px;
+    --cil-body-size: {{ bfs }}px;
+    --cil-circle: {{ csz }}px;
+    --cil-item-gap: {{ isp }}px;
+  "
+  {{ block.shopify_attributes }}
+>
+  <ul class="fe-contact-info-list__list" role="list">
+    {%- liquid
+      assign i1h = block.settings.item_1_heading
+      assign i1b = block.settings.item_1_body
+      assign i1t = block.settings.item_1_icon | default: 'location'
+      assign i1c = block.settings.item_1_custom_svg
+      assign show_1 = false
+      if i1h != blank or i1b != blank or i1t == 'custom' and i1c != blank
+        assign show_1 = true
+      endif
+    -%}
+    {%- if show_1 -%}
+      <li class="fe-contact-info-list__item">
+        <div class="fe-contact-info-list__icon-ring" aria-hidden="true">
+          <span class="fe-contact-info-list__icon-inner">
+            {%- case i1t -%}
+              {%- when 'custom' -%}
+                {%- if i1c != blank -%}
+                  <span class="fe-contact-info-list__custom-svg">{{ i1c }}</span>
+                {%- else -%}
+                  {{ cil_icon_location }}
+                {%- endif -%}
+              {%- when 'phone' -%}
+                {{ cil_icon_phone }}
+              {%- when 'email' -%}
+                {{ cil_icon_email }}
+              {%- when 'clock' -%}
+                {{ cil_icon_clock }}
+              {%- else -%}
+                {{ cil_icon_location }}
+            {%- endcase -%}
+          </span>
+        </div>
+        <div class="fe-contact-info-list__text">
+          {%- if i1h != blank -%}
+            <p class="fe-contact-info-list__heading">{{ i1h | escape }}</p>
+          {%- endif -%}
+          {%- if i1b != blank -%}
+            <div class="fe-contact-info-list__body rte">{{ i1b }}</div>
+          {%- endif -%}
+        </div>
+      </li>
+    {%- endif -%}
+
+    {%- liquid
+      assign i2h = block.settings.item_2_heading
+      assign i2b = block.settings.item_2_body
+      assign i2t = block.settings.item_2_icon | default: 'phone'
+      assign i2c = block.settings.item_2_custom_svg
+      assign show_2 = false
+      if i2h != blank or i2b != blank or i2t == 'custom' and i2c != blank
+        assign show_2 = true
+      endif
+    -%}
+    {%- if show_2 -%}
+      <li class="fe-contact-info-list__item">
+        <div class="fe-contact-info-list__icon-ring" aria-hidden="true">
+          <span class="fe-contact-info-list__icon-inner">
+            {%- case i2t -%}
+              {%- when 'custom' -%}
+                {%- if i2c != blank -%}
+                  <span class="fe-contact-info-list__custom-svg">{{ i2c }}</span>
+                {%- else -%}
+                  {{ cil_icon_phone }}
+                {%- endif -%}
+              {%- when 'location' -%}
+                {{ cil_icon_location }}
+              {%- when 'email' -%}
+                {{ cil_icon_email }}
+              {%- when 'clock' -%}
+                {{ cil_icon_clock }}
+              {%- else -%}
+                {{ cil_icon_phone }}
+            {%- endcase -%}
+          </span>
+        </div>
+        <div class="fe-contact-info-list__text">
+          {%- if i2h != blank -%}
+            <p class="fe-contact-info-list__heading">{{ i2h | escape }}</p>
+          {%- endif -%}
+          {%- if i2b != blank -%}
+            <div class="fe-contact-info-list__body rte">{{ i2b }}</div>
+          {%- endif -%}
+        </div>
+      </li>
+    {%- endif -%}
+
+    {%- liquid
+      assign i3h = block.settings.item_3_heading
+      assign i3b = block.settings.item_3_body
+      assign i3t = block.settings.item_3_icon | default: 'email'
+      assign i3c = block.settings.item_3_custom_svg
+      assign show_3 = false
+      if i3h != blank or i3b != blank or i3t == 'custom' and i3c != blank
+        assign show_3 = true
+      endif
+    -%}
+    {%- if show_3 -%}
+      <li class="fe-contact-info-list__item">
+        <div class="fe-contact-info-list__icon-ring" aria-hidden="true">
+          <span class="fe-contact-info-list__icon-inner">
+            {%- case i3t -%}
+              {%- when 'custom' -%}
+                {%- if i3c != blank -%}
+                  <span class="fe-contact-info-list__custom-svg">{{ i3c }}</span>
+                {%- else -%}
+                  {{ cil_icon_email }}
+                {%- endif -%}
+              {%- when 'location' -%}
+                {{ cil_icon_location }}
+              {%- when 'phone' -%}
+                {{ cil_icon_phone }}
+              {%- when 'clock' -%}
+                {{ cil_icon_clock }}
+              {%- else -%}
+                {{ cil_icon_email }}
+            {%- endcase -%}
+          </span>
+        </div>
+        <div class="fe-contact-info-list__text">
+          {%- if i3h != blank -%}
+            <p class="fe-contact-info-list__heading">{{ i3h | escape }}</p>
+          {%- endif -%}
+          {%- if i3b != blank -%}
+            <div class="fe-contact-info-list__body rte">{{ i3b }}</div>
+          {%- endif -%}
+        </div>
+      </li>
+    {%- endif -%}
+
+    {%- liquid
+      assign i4h = block.settings.item_4_heading
+      assign i4b = block.settings.item_4_body
+      assign i4t = block.settings.item_4_icon | default: 'clock'
+      assign i4c = block.settings.item_4_custom_svg
+      assign show_4 = false
+      if i4h != blank or i4b != blank or i4t == 'custom' and i4c != blank
+        assign show_4 = true
+      endif
+    -%}
+    {%- if show_4 -%}
+      <li class="fe-contact-info-list__item">
+        <div class="fe-contact-info-list__icon-ring" aria-hidden="true">
+          <span class="fe-contact-info-list__icon-inner">
+            {%- case i4t -%}
+              {%- when 'custom' -%}
+                {%- if i4c != blank -%}
+                  <span class="fe-contact-info-list__custom-svg">{{ i4c }}</span>
+                {%- else -%}
+                  {{ cil_icon_clock }}
+                {%- endif -%}
+              {%- when 'location' -%}
+                {{ cil_icon_location }}
+              {%- when 'phone' -%}
+                {{ cil_icon_phone }}
+              {%- when 'email' -%}
+                {{ cil_icon_email }}
+              {%- else -%}
+                {{ cil_icon_clock }}
+            {%- endcase -%}
+          </span>
+        </div>
+        <div class="fe-contact-info-list__text">
+          {%- if i4h != blank -%}
+            <p class="fe-contact-info-list__heading">{{ i4h | escape }}</p>
+          {%- endif -%}
+          {%- if i4b != blank -%}
+            <div class="fe-contact-info-list__body rte">{{ i4b }}</div>
+          {%- endif -%}
+        </div>
+      </li>
+    {%- endif -%}
+  </ul>
+</div>
+
+<style>
+  .{{ scope_class }} .fe-contact-info-list--{{ bid }} {
+    margin-top: 8px;
+  }
+
+  .{{ scope_class }} .fe-contact-info-list--{{ bid }} .fe-contact-info-list__list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--cil-item-gap, 28px);
+  }
+
+  .{{ scope_class }} .fe-contact-info-list--{{ bid }} .fe-contact-info-list__item {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    gap: clamp(14px, 3vw, 22px);
+    min-width: 0;
+  }
+
+  .{{ scope_class }} .fe-contact-info-list--{{ bid }} .fe-contact-info-list__icon-ring {
+    flex-shrink: 0;
+    width: var(--cil-circle, 64px);
+    height: var(--cil-circle, 64px);
+    border: 1px solid var(--cil-border-color, #D3B17D);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+  }
+
+  .{{ scope_class }} .fe-contact-info-list--{{ bid }} .fe-contact-info-list__icon-inner {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 52%;
+    height: 52%;
+    color: var(--cil-icon-color, #A8793D);
+  }
+
+  .{{ scope_class }} .fe-contact-info-list--{{ bid }} .fe-contact-info-list__svg {
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
+
+  .{{ scope_class }} .fe-contact-info-list--{{ bid }} .fe-contact-info-list__custom-svg svg {
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
+
+  .{{ scope_class }} .fe-contact-info-list--{{ bid }} .fe-contact-info-list__text {
+    flex: 1;
+    min-width: 0;
+    text-align: left;
+    color: var(--cil-text-color, #302313);
+  }
+
+  .{{ scope_class }} .fe-contact-info-list--{{ bid }} .fe-contact-info-list__heading {
+    margin: 0 0 6px;
+    font-family: "Plus Jakarta Sans", sans-serif;
+    font-size: var(--cil-heading-size, 18px);
+    font-weight: 700;
+    line-height: 1.35;
+    color: var(--cil-text-color, #302313);
+  }
+
+  .{{ scope_class }} .fe-contact-info-list--{{ bid }} .fe-contact-info-list__body {
+    margin: 0;
+    font-family: "Plus Jakarta Sans", sans-serif;
+    font-size: var(--cil-body-size, 16px);
+    font-weight: 400;
+    line-height: 1.58;
+    color: var(--cil-text-color, #302313);
+    opacity: 0.95;
+  }
+
+  .{{ scope_class }} .fe-contact-info-list--{{ bid }} .fe-contact-info-list__body p {
+    margin: 0;
+    font-size: inherit;
+  }
+
+  .{{ scope_class }} .fe-contact-info-list--{{ bid }} .fe-contact-info-list__body p + p {
+    margin-top: 6px;
+  }
+
+  @media (max-width: 400px) {
+    .{{ scope_class }} .fe-contact-info-list--{{ bid }} .fe-contact-info-list__item {
+      gap: 12px;
+    }
+  }
+</style>
+{%- endif -%}

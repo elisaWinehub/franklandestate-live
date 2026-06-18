@@ -1,0 +1,404 @@
+<section
+  class="wine-cart-main"
+  style="
+    --wine-cart-bg: {{ section.settings.background_color }};
+    --wine-cart-container: {{ section.settings.container_width }}px;
+    --wine-cart-pt: {{ section.settings.padding_top }}px;
+    --wine-cart-pb: {{ section.settings.padding_bottom }}px;
+  "
+>
+  <div class="wine-cart-main__container">
+    <h1 class="wine-cart-main__title">Cart Summary</h1>
+
+    {% if cart.item_count > 0 %}
+      <form class="wine-cart-main__form" action="{{ routes.cart_url }}" method="post">
+        <div class="wine-cart-main__header-row">
+          <div>Items</div>
+          <div>Quantity</div>
+          <div>Each</div>
+          <div>Amount</div>
+        </div>
+
+        <div class="wine-cart-main__items">
+          {% for item in cart.items %}
+            <div class="wine-cart-main__item-row">
+              <div class="wine-cart-main__item-col wine-cart-main__item-col--product">
+                <div class="wine-cart-main__thumb-wrap">
+                  <a class="wine-cart-main__remove" href="/cart/change?line={{ forloop.index }}&quantity=0" aria-label="Remove {{ item.product.title }}">
+                    &times;
+                  </a>
+                  <a href="{{ item.url }}" class="wine-cart-main__thumb-link">
+                    {% if item.image %}
+                      {{
+                        item.image
+                        | image_url: width: 160
+                        | image_tag: class: 'wine-cart-main__thumb', alt: item.product.title, loading: 'lazy'
+                      }}
+                    {% else %}
+                      {{ 'product-apparel-1' | placeholder_svg_tag: 'wine-cart-main__thumb wine-cart-main__thumb--placeholder' }}
+                    {% endif %}
+                  </a>
+                </div>
+                <a class="wine-cart-main__product-title" href="{{ item.url }}">{{ item.product.title }}</a>
+              </div>
+
+              <div class="wine-cart-main__item-col">
+                <label class="wine-cart-main__mobile-label">Quantity</label>
+                <input
+                  class="wine-cart-main__qty"
+                  type="number"
+                  name="updates[]"
+                  value="{{ item.quantity }}"
+                  min="0"
+                  aria-label="Quantity for {{ item.product.title }}"
+                >
+              </div>
+
+              <div class="wine-cart-main__item-col">
+                <label class="wine-cart-main__mobile-label">Each</label>
+                <div class="wine-cart-main__price">{{ item.final_price | money }}</div>
+              </div>
+
+              <div class="wine-cart-main__item-col">
+                <label class="wine-cart-main__mobile-label">Amount</label>
+                <div class="wine-cart-main__price wine-cart-main__price--line">{{ item.final_line_price | money }}</div>
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+
+        <div class="wine-cart-main__footer">
+          <div class="wine-cart-main__subtotal">
+            <span>Subtotal</span>
+            <strong>{{ cart.total_price | money }}</strong>
+          </div>
+
+          <div class="wine-cart-main__actions">
+            <button type="button" class="wine-cart-main__btn wine-cart-main__btn--light" data-clear-cart>Clear Cart</button>
+            <a class="wine-cart-main__btn wine-cart-main__btn--mid" href="{{ section.settings.continue_shopping_link | default: '/collections/all' }}">
+              Continue Shopping
+            </a>
+            <a class="wine-cart-main__btn wine-cart-main__btn--dark" href="/checkout">Go to Checkout</a>
+          </div>
+
+          <button type="submit" name="update" class="wine-cart-main__update-btn">Update Cart</button>
+
+          <p class="wine-cart-main__gst-note">
+            GST liable supply<br>
+            GST is INCLUDED in the item price where applicable<br>
+            Shipping is Calculated and added during Checkout.
+          </p>
+        </div>
+      </form>
+    {% else %}
+      <div class="wine-cart-main__empty">
+        <p>Your cart is currently empty.</p>
+        <a class="wine-cart-main__btn wine-cart-main__btn--dark" href="{{ section.settings.continue_shopping_link | default: '/collections/all' }}">
+          Continue Shopping
+        </a>
+      </div>
+    {% endif %}
+  </div>
+</section>
+
+<script>
+  (() => {
+    const section = document.getElementById('shopify-section-{{ section.id }}');
+    if (!section) return;
+    const clearCartButton = section.querySelector('[data-clear-cart]');
+    if (!clearCartButton) return;
+
+    clearCartButton.addEventListener('click', () => {
+      clearCartButton.disabled = true;
+      fetch('/cart/clear.js', {
+        method: 'POST',
+        headers: { 'Accept': 'application/json' }
+      })
+        .then(() => {
+          window.location.href = '/cart';
+        })
+        .catch(() => {
+          clearCartButton.disabled = false;
+          window.alert('Unable to clear cart right now. Please try again.');
+        });
+    });
+  })();
+</script>
+
+{% stylesheet %}
+  .wine-cart-main {
+    background: var(--wine-cart-bg);
+    padding: calc(var(--wine-cart-pt) + 12px) 20px var(--wine-cart-pb);
+    color: #302313;
+  }
+
+  .wine-cart-main__container {
+    max-width: var(--wine-cart-container);
+    margin: 0 auto;
+  }
+
+  .wine-cart-main__title {
+    margin: 0 0 36px;
+    text-align: center;
+    font-family: eidetic-neo, serif;
+    font-size: clamp(2rem, 4vw, 46px);
+    font-weight: 500;
+  }
+
+  .wine-cart-main__header-row,
+  .wine-cart-main__item-row {
+    display: grid;
+    grid-template-columns: minmax(0, 1.7fr) 150px 140px 140px;
+    gap: 18px;
+    align-items: center;
+  }
+
+  .wine-cart-main__header-row {
+    border-bottom: 1px solid rgba(48, 35, 19, 0.3);
+    padding: 0 0 14px;
+    font-family: eidetic-neo, serif;
+    font-weight: 600;
+    font-size: 18px;
+  }
+
+  .wine-cart-main__item-row {
+    border-bottom: 1px solid rgba(48, 35, 19, 0.18);
+    padding: 18px 0;
+  }
+
+  .wine-cart-main__item-col--product {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    min-width: 0;
+  }
+
+  .wine-cart-main__thumb-wrap {
+    position: relative;
+    width: 82px;
+    flex: 0 0 82px;
+  }
+
+  .wine-cart-main__thumb {
+    width: 100%;
+    height: 100px;
+    object-fit: contain;
+    display: block;
+    background: #fff;
+  }
+
+  .wine-cart-main__remove {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    border: 1px solid rgba(48, 35, 19, 0.5);
+    background: #fff;
+    color: #302313;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    line-height: 1;
+  }
+
+  .wine-cart-main__product-title {
+    color: #302313;
+    text-decoration: none;
+    font-size: 16px;
+    line-height: 1.4;
+  }
+
+  .wine-cart-main__qty {
+    width: 92px;
+    border: 1px solid rgba(48, 35, 19, 0.3);
+    background: #fff;
+    padding: 8px 10px;
+    color: #302313;
+  }
+
+  .wine-cart-main__price {
+    font-size: 16px;
+  }
+
+  .wine-cart-main__price--line {
+    font-weight: 600;
+  }
+
+  .wine-cart-main__footer {
+    padding-top: 20px;
+  }
+
+  .wine-cart-main__subtotal {
+    display: flex;
+    justify-content: flex-end;
+    align-items: baseline;
+    gap: 18px;
+    font-size: 20px;
+    margin-bottom: 16px;
+  }
+
+  .wine-cart-main__subtotal strong {
+    font-size: 34px;
+    font-weight: 600;
+  }
+
+  .wine-cart-main__actions {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 10px;
+    margin-bottom: 14px;
+  }
+
+  .wine-cart-main__btn,
+  .wine-cart-main__update-btn {
+    border: 1px solid transparent;
+    border-radius: 4px;
+    padding: 14px 16px;
+    text-align: center;
+    font-size: 14px;
+    text-decoration: none;
+    cursor: pointer;
+  }
+
+  .wine-cart-main__btn--light {
+    background: #e2e0dc;
+    color: #302313;
+  }
+
+  .wine-cart-main__btn--mid {
+    background: #b8b4ad;
+    color: #302313;
+  }
+
+  .wine-cart-main__btn--dark {
+    background: #32291a;
+    color: #fff;
+  }
+
+  .wine-cart-main__update-btn {
+    background: transparent;
+    border-color: rgba(48, 35, 19, 0.45);
+    color: #302313;
+    width: 100%;
+    margin-bottom: 16px;
+  }
+
+  .wine-cart-main__gst-note {
+    margin: 0;
+    font-size: 13px;
+    line-height: 1.6;
+    color: rgba(48, 35, 19, 0.85);
+  }
+
+  .wine-cart-main__mobile-label {
+    display: none;
+    font-size: 12px;
+    font-weight: 600;
+    margin-bottom: 4px;
+    color: rgba(48, 35, 19, 0.75);
+  }
+
+  .wine-cart-main__empty {
+    text-align: center;
+    padding: 26px 0 14px;
+    display: grid;
+    gap: 16px;
+    justify-items: center;
+  }
+
+  @media (max-width: 860px) {
+    .wine-cart-main__header-row {
+      display: none;
+    }
+
+    .wine-cart-main__item-row {
+      grid-template-columns: 1fr;
+      gap: 12px;
+      background: rgba(255, 255, 255, 0.45);
+      border: 1px solid rgba(48, 35, 19, 0.18);
+      padding: 16px;
+      margin-bottom: 12px;
+    }
+
+    .wine-cart-main__mobile-label {
+      display: block;
+    }
+
+    .wine-cart-main__item-col--product {
+      align-items: flex-start;
+    }
+
+    .wine-cart-main__qty {
+      width: 100%;
+      max-width: 130px;
+    }
+
+    .wine-cart-main__subtotal {
+      justify-content: space-between;
+    }
+
+    .wine-cart-main__actions {
+      grid-template-columns: 1fr;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Wine Cart Main",
+  "tag": "section",
+  "settings": [
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background color",
+      "default": "#e9e9e2"
+    },
+    {
+      "type": "range",
+      "id": "container_width",
+      "label": "Container width",
+      "min": 960,
+      "max": 1400,
+      "step": 10,
+      "unit": "px",
+      "default": 1110
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Top spacing",
+      "min": 20,
+      "max": 220,
+      "step": 10,
+      "unit": "px",
+      "default": 80
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Bottom spacing",
+      "min": 20,
+      "max": 220,
+      "step": 10,
+      "unit": "px",
+      "default": 80
+    },
+    {
+      "type": "text",
+      "id": "continue_shopping_link",
+      "label": "Continue shopping link",
+      "default": "/collections/all"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Wine Cart Main"
+    }
+  ]
+}
+{% endschema %}

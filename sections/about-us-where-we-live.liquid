@@ -1,0 +1,1284 @@
+{%- liquid
+  assign sid = section.id
+  assign maxw = section.settings.container_width | default: 1110
+  assign media_mode = section.settings.media_mode | default: 'gallery'
+  assign gallery_slide_count = 0
+  for block in section.blocks
+    if block.type == 'gallery_image' and block.settings.image != blank
+      assign gallery_slide_count = gallery_slide_count | plus: 1
+    endif
+  endfor
+
+  assign show_gallery = false
+  assign show_single = false
+  if media_mode == 'single' and section.settings.single_image != blank
+    assign show_single = true
+  elsif media_mode == 'gallery' and gallery_slide_count > 0
+    assign show_gallery = true
+  endif
+  assign show_media_col = false
+  if show_gallery or show_single
+    assign show_media_col = true
+  endif
+-%}
+
+<section
+  id="{{ section.settings.section_id | default: 'where-we-live' | handleize }}"
+  class="fe-about-where fe-about-where--{{ sid }}"
+  style="
+    background-color: {{ section.settings.background_color }};
+    padding-top: {{ section.settings.padding_top }}px;
+    padding-bottom: {{ section.settings.padding_bottom }}px;
+  "
+>
+  <div class="fe-about-where__inner" style="max-width: {{ maxw }}px;">
+    <div class="fe-about-where__cols{% unless show_media_col %} fe-about-where__cols--no-gallery{% endunless %}">
+      <div class="fe-about-where__main">
+        {%- if section.settings.section_number != blank -%}
+          <p class="fe-about-where__eyebrow">{{ section.settings.section_number | escape }}</p>
+        {%- endif -%}
+        {%- if section.settings.heading != blank -%}
+          <h2 class="fe-about-where__heading">{{ section.settings.heading | escape }}</h2>
+        {%- endif -%}
+        {%- if section.settings.body != blank -%}
+          <div class="fe-about-where__body rte">{{ section.settings.body }}</div>
+        {%- endif -%}
+
+        <div class="fe-about-where__features">
+          {%- for block in section.blocks -%}
+            {%- if block.type == 'feature' -%}
+              <div class="fe-about-where__feature" {{ block.shopify_attributes }}>
+                <div class="fe-about-where__feature-icon-wrap">
+                  {%- if block.settings.icon_image != blank -%}
+                    <img
+                      class="fe-about-where__feature-icon"
+                      src="{{ block.settings.icon_image | image_url: width: 120 }}"
+                      alt="{{ block.settings.icon_alt | escape | default: block.settings.title }}"
+                      loading="lazy"
+                      width="48"
+                      height="48"
+                    >
+                  {%- elsif block.settings.icon_svg != blank -%}
+                    <div class="fe-about-where__feature-svg">{{ block.settings.icon_svg }}</div>
+                  {%- else -%}
+                    {%- assign feat_title = block.settings.title | downcase -%}
+                    <div class="fe-about-where__feature-svg fe-about-where__feature-svg--default" aria-hidden="true">
+                      {%- if feat_title contains 'ocean' or feat_title contains 'coast' or feat_title contains 'sea' -%}
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.25" stroke-linecap="round"><path d="M6 30q6-5 12 0t12 0 12 0"/><path d="M6 36q6-5 12 0t12 0 12 0"/><path d="M6 24q6-5 12 0t12 0 12 0"/></svg>
+                      {%- elsif feat_title contains 'organic' or feat_title contains 'leaf' or feat_title contains 'certified' -%}
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"><path d="M24 40c10-8 14-22 2-32-9 10-6 24 2 32z"/><path d="M24 40c-8-6-12-18-4-26"/></svg>
+                      {%- elsif feat_title contains 'premium' or feat_title contains 'region' or feat_title contains 'frankland' -%}
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.25" stroke-linecap="round"><circle cx="24" cy="22" r="9"/><path d="M24 9v4M24 31v4M11 22h4M33 22h4M14 13l3 3M31 13l-3 3M14 31l3-3M31 31l-3-3"/></svg>
+                      {%- else -%}
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"><path d="M8 38 22 14l6 8 12-20 4 36z"/><path d="m14 38 10-14 6 6 10-12"/></svg>
+                      {%- endif -%}
+                    </div>
+                  {%- endif -%}
+                </div>
+                <div class="fe-about-where__feature-copy">
+                  {%- if block.settings.title != blank -%}
+                    <h3 class="fe-about-where__feature-title">{{ block.settings.title | escape }}</h3>
+                  {%- endif -%}
+                  {%- if block.settings.description != blank -%}
+                    <p class="fe-about-where__feature-desc">{{ block.settings.description | escape }}</p>
+                  {%- endif -%}
+                </div>
+              </div>
+            {%- endif -%}
+          {%- endfor -%}
+        </div>
+      </div>
+
+      {%- if show_single -%}
+        <div
+          class="fe-about-where__single"
+          style="--fe-aw-single-fit: {{ section.settings.single_image_fit | default: 'contain' }};"
+        >
+          <figure class="fe-about-where__single-inner">
+            <img
+              class="fe-about-where__single-img"
+              src="{{ section.settings.single_image | image_url: width: 1600 }}"
+              srcset="
+                {{ section.settings.single_image | image_url: width: 700 }} 700w,
+                {{ section.settings.single_image | image_url: width: 1100 }} 1100w,
+                {{ section.settings.single_image | image_url: width: 1600 }} 1600w
+              "
+              sizes="(max-width: 989px) 100vw, 45vw"
+              alt="{{ section.settings.single_image_alt | escape | default: section.settings.heading }}"
+              width="{{ section.settings.single_image.width }}"
+              height="{{ section.settings.single_image.height }}"
+              loading="lazy"
+            >
+          </figure>
+        </div>
+      {%- elsif show_gallery -%}
+        <div class="fe-about-where__gallery fe-about-where__gallery--carousel" data-fe-about-where-carousel="{{ sid }}" id="fe-about-where-carousel-{{ sid }}">
+          <div class="fe-about-where__gallery-stage-shell">
+            <div class="fe-about-where__gallery-stage" aria-live="polite">
+              {%- assign si = 0 -%}
+              {%- for block in section.blocks -%}
+                {%- if block.type == 'gallery_image' and block.settings.image != blank -%}
+                  <figure
+                    id="fe-about-where-slide-{{ sid }}-{{ si }}"
+                    class="fe-about-where__gallery-slide{% if si == 0 %} is-active{% endif %}"
+                    data-slide-index="{{ si }}"
+                    data-fe-about-where-full-src="{{ block.settings.image | image_url: width: 2800 }}"
+                    data-fe-about-where-alt="{{ block.settings.alt | escape | default: section.settings.heading }}"
+                    {% if gallery_slide_count > 1 %}role="tabpanel" aria-labelledby="fe-about-where-tab-{{ sid }}-{{ si }}"{% endif %}
+                    {{ block.shopify_attributes }}
+                  >
+                    <img
+                      class="fe-about-where__gallery-img fe-about-where__gallery-img--main"
+                      src="{{ block.settings.image | image_url: width: 1600 }}"
+                      srcset="
+                        {{ block.settings.image | image_url: width: 700 }} 700w,
+                        {{ block.settings.image | image_url: width: 1100 }} 1100w,
+                        {{ block.settings.image | image_url: width: 1600 }} 1600w
+                      "
+                      sizes="(max-width: 989px) 100vw, 45vw"
+                      alt="{{ block.settings.alt | escape | default: section.settings.heading }}"
+                      width="{{ block.settings.image.width }}"
+                      height="{{ block.settings.image.height }}"
+                      loading="{% if si == 0 %}eager{% else %}lazy{% endif %}"
+                      tabindex="0"
+                      role="button"
+                      aria-label="{{ 'accessibility.view_full_size' | t | default: 'View full size image' }}"
+                    >
+                  </figure>
+                  {%- assign si = si | plus: 1 -%}
+                {%- endif -%}
+              {%- endfor -%}
+            </div>
+
+            {%- if gallery_slide_count > 1 -%}
+              <div class="fe-about-where__gallery-arrows">
+                <button
+                  type="button"
+                  class="fe-about-where__gallery-arrow fe-about-where__gallery-arrow--prev"
+                  data-fe-about-where-prev
+                  aria-controls="fe-about-where-carousel-{{ sid }}"
+                  aria-label="{{ 'general.pagination.previous' | t | default: 'Previous image' }}"
+                >
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
+                    <path d="M15 18l-6-6 6-6" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </button>
+                <button
+                  type="button"
+                  class="fe-about-where__gallery-arrow fe-about-where__gallery-arrow--next"
+                  data-fe-about-where-next
+                  aria-controls="fe-about-where-carousel-{{ sid }}"
+                  aria-label="{{ 'general.pagination.next' | t | default: 'Next image' }}"
+                >
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
+                    <path d="M9 18l6-6-6-6" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </button>
+              </div>
+            {%- endif -%}
+          </div>
+
+          {%- if gallery_slide_count > 1 -%}
+            <div class="fe-about-where__gallery-thumbs-shell">
+              <button
+                type="button"
+                class="fe-about-where__gallery-thumbs-arrow fe-about-where__gallery-thumbs-arrow--prev"
+                data-fe-about-where-thumbs-prev
+                aria-label="{{ 'general.pagination.previous' | t | default: 'Previous thumbnails' }}"
+              >
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
+                  <path d="M15 18l-6-6 6-6" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </button>
+              <div class="fe-about-where__gallery-thumbs-track" data-fe-about-where-thumbs-track>
+                <div class="fe-about-where__gallery-thumbs" role="tablist" aria-label="Gallery thumbnails">
+                  {%- assign ti = 0 -%}
+                  {%- for block in section.blocks -%}
+                    {%- if block.type == 'gallery_image' and block.settings.image != blank -%}
+                      <button
+                        type="button"
+                        class="fe-about-where__gallery-thumb{% if ti == 0 %} is-active{% endif %}"
+                        role="tab"
+                        aria-selected="{% if ti == 0 %}true{% else %}false{% endif %}"
+                        aria-controls="fe-about-where-slide-{{ sid }}-{{ ti }}"
+                        id="fe-about-where-tab-{{ sid }}-{{ ti }}"
+                        data-fe-about-where-slide-to="{{ ti }}"
+                      >
+                        <span class="visually-hidden">Gallery image {{ ti | plus: 1 }}</span>
+                        <img
+                          src="{{ block.settings.image | image_url: width: 180 }}"
+                          alt=""
+                          loading="lazy"
+                          width="72"
+                          height="72"
+                        >
+                      </button>
+                      {%- assign ti = ti | plus: 1 -%}
+                    {%- endif -%}
+                  {%- endfor -%}
+                </div>
+              </div>
+              <button
+                type="button"
+                class="fe-about-where__gallery-thumbs-arrow fe-about-where__gallery-thumbs-arrow--next"
+                data-fe-about-where-thumbs-next
+                aria-label="{{ 'general.pagination.next' | t | default: 'Next thumbnails' }}"
+              >
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
+                  <path d="M9 18l6-6-6-6" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </button>
+            </div>
+          {%- endif -%}
+
+          <div
+            class="fe-about-where__lightbox"
+            hidden
+            data-fe-about-where-lightbox
+            aria-hidden="true"
+          >
+            <div class="fe-about-where__lightbox-backdrop" data-fe-about-where-lightbox-close tabindex="-1"></div>
+            <div
+              class="fe-about-where__lightbox-panel"
+              role="dialog"
+              aria-modal="true"
+              aria-label="{{ 'accessibility.enlarged_image' | t | default: 'Enlarged gallery image' }}"
+            >
+              <button
+                type="button"
+                class="fe-about-where__lightbox-close"
+                data-fe-about-where-lightbox-close
+                aria-label="{{ 'accessibility.close' | t | default: 'Close' }}"
+              >
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
+                  <path d="M18 6L6 18M6 6l12 12" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"/>
+                </svg>
+              </button>
+              <button
+                type="button"
+                class="fe-about-where__lightbox-nav fe-about-where__lightbox-nav--prev"
+                data-fe-about-where-lightbox-prev
+                aria-label="{{ 'general.pagination.previous' | t | default: 'Previous image' }}"
+              >
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
+                  <path d="M15 18l-6-6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </button>
+              <div class="fe-about-where__lightbox-img-wrap">
+                <img class="fe-about-where__lightbox-img" data-fe-about-where-lightbox-img src="" alt="">
+              </div>
+              <button
+                type="button"
+                class="fe-about-where__lightbox-nav fe-about-where__lightbox-nav--next"
+                data-fe-about-where-lightbox-next
+                aria-label="{{ 'general.pagination.next' | t | default: 'Next image' }}"
+              >
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
+                  <path d="M9 18l6-6-6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </button>
+            </div>
+          </div>
+        </div>
+      {%- endif -%}
+    </div>
+  </div>
+</section>
+
+<style>
+  .fe-about-where--{{ sid }} {
+    color: {{ section.settings.text_color }};
+    box-sizing: border-box;
+  }
+
+  .fe-about-where--{{ sid }} .fe-about-where__inner {
+    margin: 0 auto;
+    padding: 0 20px;
+    box-sizing: border-box;
+  }
+
+  .fe-about-where--{{ sid }} .fe-about-where__cols--no-gallery {
+    grid-template-columns: 1fr;
+  }
+
+  .fe-about-where--{{ sid }} .fe-about-where__cols {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: clamp(28px, 5vw, 48px);
+    align-items: stretch;
+  }
+
+  .fe-about-where--{{ sid }} .fe-about-where__main {
+    min-width: 0;
+  }
+
+  .fe-about-where--{{ sid }} .fe-about-where__single {
+    min-width: 0;
+    height: 100%;
+    display: flex;
+  }
+
+  .fe-about-where--{{ sid }} .fe-about-where__single-inner {
+    flex: 1;
+    width: 100%;
+    margin: 0;
+    min-height: 280px;
+    background: rgba(48, 35, 19, 0.06);
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .fe-about-where--{{ sid }} .fe-about-where__single-img {
+    width: 100%;
+    height: 100%;
+    object-fit: var(--fe-aw-single-fit, contain);
+    object-position: center top;
+    display: block;
+  }
+
+  .fe-about-where--{{ sid }} .fe-about-where__eyebrow {
+    margin: 0 0 10px;
+    font-family: "Plus Jakarta Sans", sans-serif;
+    font-size: 12px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    opacity: 0.65;
+  }
+
+  .fe-about-where--{{ sid }} .fe-about-where__heading {
+    margin: 0;
+    font-family: eidetic-neo, Georgia, "Times New Roman", serif;
+    font-size: clamp(28px, 3.2vw, 42px);
+    font-weight: 400;
+    line-height: 1.12;
+  }
+
+  .fe-about-where--{{ sid }} .fe-about-where__body {
+    margin: 18px 0 0;
+    font-family: "Plus Jakarta Sans", sans-serif;
+    font-size: 16px;
+    line-height: 1.65;
+    opacity: 0.92;
+    max-width: 520px;
+  }
+
+  .fe-about-where--{{ sid }} .fe-about-where__body p {
+    margin: 0;
+  }
+
+  .fe-about-where--{{ sid }} .fe-about-where__body p + p {
+    margin-top: 12px;
+  }
+
+  .fe-about-where--{{ sid }} .fe-about-where__features {
+    margin-top: 28px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+    border-top: 1px solid {{ section.settings.divider_color }};
+  }
+
+  .fe-about-where--{{ sid }} .fe-about-where__feature {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: 14px 16px;
+    padding: 22px 18px 22px 0;
+    border-bottom: 1px solid {{ section.settings.divider_color }};
+    border-right: 1px solid {{ section.settings.divider_color }};
+    box-sizing: border-box;
+  }
+
+  .fe-about-where--{{ sid }} .fe-about-where__feature:nth-child(2n) {
+    padding-left: 18px;
+    padding-right: 0;
+    border-right: 0;
+  }
+
+  .fe-about-where--{{ sid }} .fe-about-where__feature-icon-wrap {
+    width: 48px;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+  }
+
+  .fe-about-where--{{ sid }} .fe-about-where__feature-icon {
+    width: 48px;
+    height: 48px;
+    object-fit: contain;
+    display: block;
+    opacity: 0.85;
+  }
+
+  .fe-about-where--{{ sid }} .fe-about-where__feature-svg {
+    width: 48px;
+    color: inherit;
+  }
+
+  .fe-about-where--{{ sid }} .fe-about-where__feature-svg svg {
+    width: 48px;
+    height: auto;
+    display: block;
+  }
+
+  .fe-about-where--{{ sid }} .fe-about-where__feature-copy {
+    min-width: 0;
+  }
+
+  .fe-about-where--{{ sid }} .fe-about-where__feature-title {
+    margin: 0;
+    font-family: "Plus Jakarta Sans", sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    line-height: 1.3;
+  }
+
+  .fe-about-where--{{ sid }} .fe-about-where__feature-desc {
+    margin: 8px 0 0;
+    font-family: "Plus Jakarta Sans", sans-serif;
+    font-size: 14px;
+    line-height: 1.55;
+    opacity: 0.82;
+  }
+
+  .fe-about-where--{{ sid }} .fe-about-where__gallery {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .fe-about-where--{{ sid }} .fe-about-where__gallery-stage-shell {
+    position: relative;
+    width: 100%;
+  }
+
+  .fe-about-where--{{ sid }} .fe-about-where__gallery-stage {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16 / 10;
+    background: rgba(48, 35, 19, 0.06);
+    overflow: hidden;
+  }
+
+  .fe-about-where--{{ sid }} .fe-about-where__gallery-slide {
+    position: absolute;
+    inset: 0;
+    margin: 0;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.35s ease, visibility 0.35s ease;
+    line-height: 0;
+  }
+
+  .fe-about-where--{{ sid }} .fe-about-where__gallery-slide.is-active {
+    opacity: 1;
+    visibility: visible;
+    z-index: 1;
+  }
+
+  .fe-about-where--{{ sid }} .fe-about-where__gallery-img--main {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    vertical-align: middle;
+    cursor: pointer;
+  }
+
+  .fe-about-where--{{ sid }} .fe-about-where__gallery-arrows {
+    position: absolute;
+    inset: 0;
+    z-index: 3;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 6px;
+    pointer-events: none;
+    opacity: 1;
+    transition: opacity 0.25s ease;
+  }
+
+  .fe-about-where--{{ sid }} .fe-about-where__gallery-arrow {
+    pointer-events: auto;
+    width: 44px;
+    height: 44px;
+    border: 0;
+    border-radius: 0;
+    padding: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: #ffffff;
+    background: rgba(48, 35, 19, 0.42);
+    backdrop-filter: blur(4px);
+    transition: background 0.2s ease, transform 0.2s ease, opacity 0.2s ease;
+  }
+
+  .fe-about-where--{{ sid }} .fe-about-where__gallery-arrow:hover {
+    background: rgba(48, 35, 19, 0.62);
+  }
+
+  .fe-about-where--{{ sid }} .fe-about-where__gallery-arrow:focus-visible {
+    outline: 2px solid #ffffff;
+    outline-offset: 2px;
+    opacity: 1;
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .fe-about-where--{{ sid }} .fe-about-where__gallery-arrows {
+      opacity: 0;
+    }
+
+    .fe-about-where--{{ sid }} .fe-about-where__gallery-stage-shell:hover .fe-about-where__gallery-arrows,
+    .fe-about-where--{{ sid }} .fe-about-where__gallery-stage-shell:focus-within .fe-about-where__gallery-arrows {
+      opacity: 1;
+    }
+  }
+
+  @media (hover: none) {
+    .fe-about-where--{{ sid }} .fe-about-where__gallery-arrows {
+      opacity: 1;
+    }
+  }
+
+  .fe-about-where--{{ sid }} .fe-about-where__gallery-thumbs-shell {
+    position: relative;
+    width: 100%;
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    align-items: stretch;
+    gap: 0;
+    min-width: 0;
+  }
+
+  .fe-about-where--{{ sid }} .fe-about-where__gallery-thumbs-arrow {
+    align-self: stretch;
+    width: 38px;
+    min-width: 38px;
+    border: 0;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: {{ section.settings.text_color }};
+    background: rgba(255, 255, 255, 0.65);
+    opacity: 1;
+    transition: background 0.2s ease, opacity 0.25s ease;
+    z-index: 2;
+  }
+
+  .fe-about-where--{{ sid }} .fe-about-where__gallery-thumbs-arrow:hover {
+    background: rgba(255, 255, 255, 0.92);
+  }
+
+  .fe-about-where--{{ sid }} .fe-about-where__gallery-thumbs-arrow:focus-visible {
+    outline: 2px solid {{ section.settings.text_color }};
+    outline-offset: 2px;
+    opacity: 1;
+  }
+
+  .fe-about-where--{{ sid }} .fe-about-where__gallery-thumbs-track {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+
+  .fe-about-where--{{ sid }} .fe-about-where__gallery-thumbs-track::-webkit-scrollbar {
+    display: none;
+    width: 0;
+    height: 0;
+  }
+
+  .fe-about-where--{{ sid }} .fe-about-where__gallery-thumbs {
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: stretch;
+    gap: 10px;
+    width: max-content;
+    padding: 4px 2px;
+    box-sizing: border-box;
+  }
+
+  .fe-about-where--{{ sid }} .fe-about-where__gallery-thumb {
+    flex: 0 0 auto;
+    flex-shrink: 0;
+    width: 72px;
+    height: 72px;
+    padding: 0;
+    border: 2px solid transparent;
+    border-radius: 0;
+    background: transparent;
+    cursor: pointer;
+    overflow: hidden;
+    box-sizing: border-box;
+    opacity: 0.72;
+    transition: opacity 0.2s ease, border-color 0.2s ease;
+  }
+
+  .fe-about-where--{{ sid }} .fe-about-where__gallery-thumb:hover,
+  .fe-about-where--{{ sid }} .fe-about-where__gallery-thumb:focus-visible {
+    opacity: 1;
+    outline: none;
+    border-color: {{ section.settings.text_color }};
+  }
+
+  .fe-about-where--{{ sid }} .fe-about-where__gallery-thumb.is-active {
+    opacity: 1;
+    border-color: {{ section.settings.text_color }};
+  }
+
+  .fe-about-where--{{ sid }} .fe-about-where__gallery-thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  .fe-about-where--{{ sid }} .fe-about-where__lightbox {
+    position: fixed;
+    inset: 0;
+    z-index: 99999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: min(5vw, 24px);
+    box-sizing: border-box;
+  }
+
+  .fe-about-where--{{ sid }} .fe-about-where__lightbox[hidden] {
+    display: none !important;
+  }
+
+  .fe-about-where--{{ sid }} .fe-about-where__lightbox-backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(12, 10, 8, 0.72);
+    backdrop-filter: blur(4px);
+    cursor: pointer;
+  }
+
+  .fe-about-where--{{ sid }} .fe-about-where__lightbox-panel {
+    position: relative;
+    z-index: 1;
+    width: min(96vw, 1200px);
+    max-height: min(92vh, 900px);
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    align-items: center;
+    gap: clamp(8px, 2vw, 16px);
+    pointer-events: none;
+  }
+
+  .fe-about-where--{{ sid }} .fe-about-where__lightbox-panel > * {
+    pointer-events: auto;
+  }
+
+  .fe-about-where--{{ sid }} .fe-about-where__lightbox-img-wrap {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    max-width: 100%;
+    max-height: min(85vh, 820px);
+    min-width: 0;
+  }
+
+  .fe-about-where--{{ sid }} .fe-about-where__lightbox-img {
+    max-width: 100%;
+    max-height: min(85vh, 820px);
+    width: auto;
+    height: auto;
+    object-fit: contain;
+    display: block;
+    opacity: 1;
+    transition: opacity 0.35s ease;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .fe-about-where--{{ sid }} .fe-about-where__lightbox-img {
+      transition: none;
+    }
+  }
+
+  .fe-about-where--{{ sid }} .fe-about-where__lightbox-close {
+    position: absolute;
+    top: clamp(-44px, -6vw, -12px);
+    right: clamp(-8px, -1vw, 0px);
+    width: 44px;
+    height: 44px;
+    border: 0;
+    border-radius: 0;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: #ffffff;
+    background: transparent;
+    z-index: 2;
+    transition: opacity 0.2s ease;
+  }
+
+  .fe-about-where--{{ sid }} .fe-about-where__lightbox-close:hover {
+    opacity: 0.85;
+  }
+
+  .fe-about-where--{{ sid }} .fe-about-where__lightbox-nav {
+    width: 44px;
+    height: 44px;
+    border: 0;
+    border-radius: 0;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    flex-shrink: 0;
+    color: #ffffff;
+    background: rgba(48, 35, 19, 0.42);
+    backdrop-filter: blur(4px);
+    transition: background 0.2s ease;
+  }
+
+  .fe-about-where--{{ sid }} .fe-about-where__lightbox-nav:hover {
+    background: rgba(48, 35, 19, 0.62);
+  }
+
+  .fe-about-where--{{ sid }} .fe-about-where__lightbox-nav:focus-visible,
+  .fe-about-where--{{ sid }} .fe-about-where__lightbox-close:focus-visible {
+    outline: 2px solid #ffffff;
+    outline-offset: 2px;
+  }
+
+  @media (max-width: 749px) {
+    .fe-about-where--{{ sid }} .fe-about-where__lightbox-panel {
+      grid-template-columns: 1fr;
+      grid-template-rows: auto auto auto;
+      gap: 12px;
+      max-height: none;
+    }
+
+    .fe-about-where--{{ sid }} .fe-about-where__lightbox-nav--prev {
+      order: 2;
+      justify-self: start;
+    }
+
+    .fe-about-where--{{ sid }} .fe-about-where__lightbox-img-wrap {
+      order: 1;
+      grid-column: 1 / -1;
+    }
+
+    .fe-about-where--{{ sid }} .fe-about-where__lightbox-nav--next {
+      order: 3;
+      justify-self: end;
+    }
+
+    .fe-about-where--{{ sid }} .fe-about-where__lightbox-close {
+      top: 8px;
+      right: 8px;
+    }
+  }
+
+  @media (max-width: 989px) {
+    .fe-about-where--{{ sid }} .fe-about-where__cols {
+      grid-template-columns: 1fr;
+    }
+
+    .fe-about-where--{{ sid }} .fe-about-where__features {
+      grid-template-columns: 1fr;
+    }
+
+    .fe-about-where--{{ sid }} .fe-about-where__feature {
+      border-right: 0;
+      padding-left: 0;
+      padding-right: 0;
+    }
+
+    .fe-about-where--{{ sid }} .fe-about-where__feature:nth-child(2n) {
+      padding-left: 0;
+    }
+
+    .fe-about-where--{{ sid }} .fe-about-where__gallery-arrows {
+      opacity: 1;
+    }
+  }
+</style>
+
+<script>
+  (function () {
+    var roots = document.querySelectorAll('[data-fe-about-where-carousel]');
+    roots.forEach(function (root) {
+      var slides = root.querySelectorAll('.fe-about-where__gallery-slide');
+      var thumbs = root.querySelectorAll('.fe-about-where__gallery-thumb');
+      var thumbsTrack = root.querySelector('[data-fe-about-where-thumbs-track]');
+      var btnPrev = root.querySelector('[data-fe-about-where-prev]');
+      var btnNext = root.querySelector('[data-fe-about-where-next]');
+      var btnThumbsPrev = root.querySelector('[data-fe-about-where-thumbs-prev]');
+      var btnThumbsNext = root.querySelector('[data-fe-about-where-thumbs-next]');
+
+      var lightbox = root.querySelector('[data-fe-about-where-lightbox]');
+      var lbImg = root.querySelector('[data-fe-about-where-lightbox-img]');
+      var lbPrev = root.querySelector('[data-fe-about-where-lightbox-prev]');
+      var lbNext = root.querySelector('[data-fe-about-where-lightbox-next]');
+      var lbCloseEls = root.querySelectorAll('[data-fe-about-where-lightbox-close]');
+
+      if (!slides.length) return;
+
+      var reduceMotion =
+        window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+      var lbIndex = 0;
+      var lastFocused = null;
+      var lbFadeCleanup = null;
+      var lbAnimGen = 0;
+
+      function cancelLbFade() {
+        if (typeof lbFadeCleanup === 'function') {
+          lbFadeCleanup();
+          lbFadeCleanup = null;
+        }
+        if (lbImg) {
+          lbImg.onload = null;
+          lbImg.onerror = null;
+          lbImg.style.opacity = '1';
+        }
+        lbAnimGen++;
+      }
+
+      function activeIndex() {
+        var n = slides.length;
+        for (var k = 0; k < n; k++) {
+          if (slides[k].classList.contains('is-active')) return k;
+        }
+        return 0;
+      }
+
+      function scrollThumbIntoView(i) {
+        if (!thumbs.length || i < 0 || i >= thumbs.length) return;
+        thumbs[i].scrollIntoView({
+          inline: 'nearest',
+          block: 'nearest',
+          behavior: reduceMotion ? 'auto' : 'smooth'
+        });
+      }
+
+      function thumbsScroll(direction) {
+        if (!thumbsTrack) return;
+        var delta = Math.max(160, thumbsTrack.clientWidth * 0.55) * direction;
+        thumbsTrack.scrollBy({ left: delta, behavior: reduceMotion ? 'auto' : 'smooth' });
+      }
+
+      function go(rawIndex) {
+        var n = slides.length;
+        var i = parseInt(rawIndex, 10);
+        if (isNaN(i)) return;
+        i = ((i % n) + n) % n;
+        slides.forEach(function (slide, idx) {
+          slide.classList.toggle('is-active', idx === i);
+        });
+        thumbs.forEach(function (btn, idx) {
+          var on = idx === i;
+          btn.classList.toggle('is-active', on);
+          btn.setAttribute('aria-selected', on ? 'true' : 'false');
+        });
+        scrollThumbIntoView(i);
+      }
+
+      thumbs.forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          go(btn.getAttribute('data-fe-about-where-slide-to'));
+        });
+      });
+
+      if (btnPrev) {
+        btnPrev.addEventListener('click', function () {
+          go(activeIndex() - 1);
+        });
+      }
+      if (btnNext) {
+        btnNext.addEventListener('click', function () {
+          go(activeIndex() + 1);
+        });
+      }
+
+      if (btnThumbsPrev) {
+        btnThumbsPrev.addEventListener('click', function () {
+          thumbsScroll(-1);
+        });
+      }
+      if (btnThumbsNext) {
+        btnThumbsNext.addEventListener('click', function () {
+          thumbsScroll(1);
+        });
+      }
+
+      function slideFullAt(i) {
+        var slide = slides[i];
+        if (!slide) return { src: '', alt: '' };
+        return {
+          src: slide.getAttribute('data-fe-about-where-full-src') || '',
+          alt: slide.getAttribute('data-fe-about-where-alt') || ''
+        };
+      }
+
+      function syncLightboxImage(animate) {
+        if (!lbImg) return;
+        var d = slideFullAt(lbIndex);
+        if (!d.src) return;
+
+        cancelLbFade();
+        var gen = lbAnimGen;
+
+        function applyAndFadeIn() {
+          if (gen !== lbAnimGen) return;
+          lbImg.src = d.src;
+          lbImg.alt = d.alt;
+          function reveal() {
+            if (gen !== lbAnimGen) return;
+            lbImg.style.opacity = '1';
+          }
+          if (lbImg.complete) {
+            requestAnimationFrame(reveal);
+          } else {
+            lbImg.onload = function () {
+              lbImg.onload = null;
+              if (gen !== lbAnimGen) return;
+              requestAnimationFrame(reveal);
+            };
+            lbImg.onerror = function () {
+              lbImg.onerror = null;
+              if (gen !== lbAnimGen) return;
+              requestAnimationFrame(reveal);
+            };
+          }
+        }
+
+        if (!animate || reduceMotion) {
+          lbImg.style.opacity = '1';
+          lbImg.src = d.src;
+          lbImg.alt = d.alt;
+          return;
+        }
+
+        var finishedOut = false;
+        var fallbackTimer = null;
+
+        function finishFadeOut(e) {
+          if (finishedOut) return;
+          if (gen !== lbAnimGen) return;
+          if (e && e.propertyName !== 'opacity') return;
+          finishedOut = true;
+          clearTimeout(fallbackTimer);
+          lbImg.removeEventListener('transitionend', finishFadeOut);
+          lbFadeCleanup = null;
+          applyAndFadeIn();
+        }
+
+        lbFadeCleanup = function () {
+          finishedOut = true;
+          clearTimeout(fallbackTimer);
+          lbImg.removeEventListener('transitionend', finishFadeOut);
+        };
+
+        lbImg.style.opacity = '0';
+        lbImg.addEventListener('transitionend', finishFadeOut);
+        fallbackTimer = window.setTimeout(finishFadeOut, 500);
+      }
+
+      function lbOnDocKeydown(e) {
+        if (!lightbox || lightbox.hasAttribute('hidden')) return;
+        if (e.key === 'Escape') {
+          e.preventDefault();
+          closeLightbox();
+        } else if (e.key === 'ArrowLeft') {
+          e.preventDefault();
+          lightboxStep(-1);
+        } else if (e.key === 'ArrowRight') {
+          e.preventDefault();
+          lightboxStep(1);
+        }
+      }
+
+      function openLightbox(rawIndex) {
+        if (!lightbox || !lbImg) return;
+        var n = slides.length;
+        var i = parseInt(rawIndex, 10);
+        if (isNaN(i)) i = activeIndex();
+        lbIndex = ((i % n) + n) % n;
+        syncLightboxImage(false);
+        lastFocused = document.activeElement;
+        lightbox.removeAttribute('hidden');
+        lightbox.setAttribute('aria-hidden', 'false');
+        document.body.style.overflow = 'hidden';
+        document.addEventListener('keydown', lbOnDocKeydown);
+        var closeBtn = root.querySelector('.fe-about-where__lightbox-close');
+        if (closeBtn && typeof closeBtn.focus === 'function') closeBtn.focus();
+      }
+
+      function closeLightbox() {
+        if (!lightbox || lightbox.hasAttribute('hidden')) return;
+        document.removeEventListener('keydown', lbOnDocKeydown);
+        cancelLbFade();
+        lightbox.setAttribute('hidden', '');
+        lightbox.setAttribute('aria-hidden', 'true');
+        document.body.style.overflow = '';
+        if (lbImg) lbImg.style.opacity = '1';
+        if (lastFocused && typeof lastFocused.focus === 'function') {
+          try {
+            lastFocused.focus();
+          } catch (err) {}
+        }
+      }
+
+      function lightboxStep(delta) {
+        var n = slides.length;
+        lbIndex = (lbIndex + delta + n) % n;
+        syncLightboxImage(true);
+      }
+
+      slides.forEach(function (slide, idx) {
+        var img = slide.querySelector('.fe-about-where__gallery-img--main');
+        if (!img) return;
+        img.addEventListener('click', function (e) {
+          e.preventDefault();
+          openLightbox(idx);
+        });
+        img.addEventListener('keydown', function (e) {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            openLightbox(idx);
+          }
+        });
+      });
+
+      if (lbPrev) {
+        lbPrev.addEventListener('click', function () {
+          lightboxStep(-1);
+        });
+      }
+      if (lbNext) {
+        lbNext.addEventListener('click', function () {
+          lightboxStep(1);
+        });
+      }
+      lbCloseEls.forEach(function (el) {
+        el.addEventListener('click', closeLightbox);
+      });
+    });
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "About Where We Live",
+  "tag": "section",
+  "class": "fe-about-us-where-section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "section_id",
+      "label": "Section HTML id",
+      "default": "where-we-live"
+    },
+    {
+      "type": "paragraph",
+      "content": "Choose a single photo or gallery carousel for the right column. Gallery images are added as blocks below."
+    },
+    {
+      "type": "select",
+      "id": "media_mode",
+      "label": "Right column media",
+      "options": [
+        { "value": "gallery", "label": "Gallery carousel" },
+        { "value": "single", "label": "Single photo" }
+      ],
+      "default": "gallery"
+    },
+    {
+      "type": "image_picker",
+      "id": "single_image",
+      "label": "Single photo"
+    },
+    {
+      "type": "text",
+      "id": "single_image_alt",
+      "label": "Single photo alt text"
+    },
+    {
+      "type": "select",
+      "id": "single_image_fit",
+      "label": "Single photo fit",
+      "options": [
+        { "value": "contain", "label": "Contain (best for portraits)" },
+        { "value": "cover", "label": "Cover (fill area)" }
+      ],
+      "default": "contain"
+    },
+    {
+      "type": "text",
+      "id": "section_number",
+      "label": "Section number",
+      "default": "02"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Where We Live"
+    },
+    {
+      "type": "richtext",
+      "id": "body",
+      "label": "Body copy"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background color",
+      "default": "#efeee9"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color",
+      "default": "#302313"
+    },
+    {
+      "type": "color",
+      "id": "divider_color",
+      "label": "Feature grid divider color",
+      "default": "#d3d2cb"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 200,
+      "step": 4,
+      "unit": "px",
+      "label": "Padding top",
+      "default": 88
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 200,
+      "step": 4,
+      "unit": "px",
+      "label": "Padding bottom",
+      "default": 88
+    },
+    {
+      "type": "range",
+      "id": "container_width",
+      "min": 900,
+      "max": 1400,
+      "step": 10,
+      "unit": "px",
+      "label": "Container max width",
+      "default": 1110
+    }
+  ],
+  "blocks": [
+    {
+      "type": "feature",
+      "name": "Feature item",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "icon_image",
+          "label": "Icon image"
+        },
+        {
+          "type": "textarea",
+          "id": "icon_svg",
+          "label": "Icon SVG code (optional)",
+          "info": "Paste inline SVG if no icon image. If empty, a simple icon is chosen from the title (ocean, organic, region, or ridge/mountain)."
+        },
+        {
+          "type": "text",
+          "id": "icon_alt",
+          "label": "Icon alt text"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title",
+          "default": "Feature title"
+        },
+        {
+          "type": "textarea",
+          "id": "description",
+          "label": "Description",
+          "default": "Short supporting copy for this place-based detail."
+        }
+      ]
+    },
+    {
+      "type": "gallery_image",
+      "name": "Gallery image (right)",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image",
+          "info": "Shown as the large image; thumbnails appear below when you add more gallery blocks."
+        },
+        {
+          "type": "text",
+          "id": "alt",
+          "label": "Alt text"
+        }
+      ]
+    }
+  ],
+  "max_blocks": 24,
+  "presets": [
+    {
+      "name": "About Where We Live",
+      "blocks": [
+        {
+          "type": "feature",
+          "settings": {
+            "title": "Isolation Ridge",
+            "description": "Vines rooted in ancient gravels and cool maritime air."
+          }
+        },
+        {
+          "type": "feature",
+          "settings": {
+            "title": "Southern Ocean",
+            "description": "Influence from the coast shapes season length and freshness."
+          }
+        },
+        {
+          "type": "feature",
+          "settings": {
+            "title": "Certified Organic",
+            "description": "Farming decisions guided by soil health and biodiversity."
+          }
+        },
+        {
+          "type": "feature",
+          "settings": {
+            "title": "Premium Region",
+            "description": "Frankland River’s reputation built on structure and finesse."
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,261 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "page_hero_banner": {
+      "type": "page-hero-banner",
+      "settings": {
+        "heading": "",
+        "text_vertical_position": "lower-center",
+        "text_color": "#ffffff",
+        "image": "shopify://shop_images/Global_Partners.jpg",
+        "background_position": "center center",
+        "background_color": "#efeee9",
+        "desktop_height": 560,
+        "mobile_height": 360,
+        "overlay_opacity": 25
+      }
+    },
+    "main": {
+      "type": "main-page",
+      "settings": {}
+    },
+    "global_partners": {
+      "type": "distributors-section",
+      "blocks": {
+        "belgium": {
+          "type": "distributor",
+          "settings": {
+            "location": "Belgium",
+            "winery_name": "BBVA Ad Bibendum",
+            "phone": "+11 3211 26 27 65",
+            "email": "info@adbibendum.be",
+            "website": "www.adbibendum.be"
+          }
+        },
+        "hong_kong": {
+          "type": "distributor",
+          "settings": {
+            "location": "Hong Kong",
+            "winery_name": "Watson’s Wine",
+            "phone": "+85 226 06 8828",
+            "email": "info@watsonswine.com",
+            "website": "www.watsonswine.com"
+          }
+        },
+        "singapore": {
+          "type": "distributor",
+          "settings": {
+            "location": "Singapore",
+            "winery_name": "Octopus Distribution Networks",
+            "phone": "+65 653 33 312",
+            "email": "info@octopusgroup.com.sg",
+            "website": "www.octopusgroup.com.sg"
+          }
+        },
+        "canada_ontario": {
+          "type": "distributor",
+          "settings": {
+            "location": "Canada- Ontario",
+            "winery_name": "A Case for Wine",
+            "phone": "+1 416 482 0241",
+            "email": "orders@thecaseforwine.com",
+            "website": "www.thecaseforwine.com"
+          }
+        },
+        "japan": {
+          "type": "distributor",
+          "settings": {
+            "location": "Japan",
+            "winery_name": "Village Cellars",
+            "phone": "+81 766 72 8680",
+            "email": "wine@village-cellars.co.jp",
+            "website": "www.village-cellars.co.jp"
+          }
+        },
+        "taiwan": {
+          "type": "distributor",
+          "settings": {
+            "location": "Taiwan",
+            "winery_name": "Titlist Company Limited",
+            "phone": "+88 622 542 9399",
+            "email": "",
+            "website": "www.titlist.com.tw"
+          }
+        },
+        "canada_west": {
+          "type": "distributor",
+          "settings": {
+            "location": "Canada- British Columbia, Alberta, Manitoba, Saskatchewan",
+            "winery_name": "Roy & Co. Selections",
+            "phone": "",
+            "email": "info@royplus.co",
+            "website": "www.royplus.co/home-en"
+          }
+        },
+        "malaysia": {
+          "type": "distributor",
+          "settings": {
+            "location": "Malaysia",
+            "winery_name": "Luen Heng F&B",
+            "phone": "+60 379 83 9000",
+            "email": "",
+            "website": "www.luenheng.com"
+          }
+        },
+        "thailand": {
+          "type": "distributor",
+          "settings": {
+            "location": "Thailand",
+            "winery_name": "Wine Garage Co. Ltd.",
+            "phone": "+66 089 201 8477",
+            "email": "kim@winegarage.asia",
+            "website": "www.winegarage.asia"
+          }
+        },
+        "canada_quebec": {
+          "type": "distributor",
+          "settings": {
+            "location": "Canada- Quebec & Atlantic",
+            "winery_name": "BMT Importations",
+            "phone": "+1 514 814 5718",
+            "email": "inbox@importationsbmt.com",
+            "website": "www.importationsbmt.com"
+          }
+        },
+        "new_zealand": {
+          "type": "distributor",
+          "settings": {
+            "location": "New Zealand",
+            "winery_name": "Mineral",
+            "phone": "+64 27 580 7325",
+            "email": "james@mineralwine.co.nz",
+            "website": "www.mineral.co.nz"
+          }
+        },
+        "united_kingdom": {
+          "type": "distributor",
+          "settings": {
+            "location": "United Kingdom",
+            "winery_name": "Bancroft Wines",
+            "phone": "+44 20 7232 5450",
+            "email": "orders@bancroftwines.com",
+            "website": "www.bancroftwines.com"
+          }
+        },
+        "denmark": {
+          "type": "distributor",
+          "settings": {
+            "location": "Denmark",
+            "winery_name": "Østjysk Vinforsyning",
+            "phone": "+45 8755 9941",
+            "email": "info@vinforsyning.dk",
+            "website": "www.vinforsyning.dk/"
+          }
+        },
+        "fiji": {
+          "type": "distributor",
+          "settings": {
+            "location": "Fiji",
+            "winery_name": "Law Hill Wines",
+            "phone": "+679 336 1171",
+            "email": "marketing@lawhillfiji.com",
+            "website": ""
+          }
+        },
+        "usa": {
+          "type": "distributor",
+          "settings": {
+            "location": "USA",
+            "winery_name": "Vinedos Imports",
+            "phone": "+1 310 866 1881",
+            "email": "Barry@vinedosusa.com",
+            "website": "www.vinedosusa.com"
+          }
+        },
+        "finland": {
+          "type": "distributor",
+          "settings": {
+            "location": "Finland",
+            "winery_name": "Thirsty Bear",
+            "phone": "+358 41 366 5201",
+            "email": "tom@thirstybear.fi",
+            "website": "www.thirstybear.fi"
+          }
+        },
+        "vietnam": {
+          "type": "distributor",
+          "settings": {
+            "location": "Vietnam",
+            "winery_name": "Vinifera",
+            "phone": "+84 838 22 1141",
+            "email": "viniferavn@gmail.com",
+            "website": "www.viniferavn.com"
+          }
+        }
+      },
+      "block_order": [
+        "belgium",
+        "hong_kong",
+        "singapore",
+        "canada_ontario",
+        "japan",
+        "taiwan",
+        "canada_west",
+        "malaysia",
+        "thailand",
+        "canada_quebec",
+        "new_zealand",
+        "united_kingdom",
+        "denmark",
+        "fiji",
+        "usa",
+        "finland",
+        "vietnam"
+      ],
+      "settings": {
+        "heading": "",
+        "intro": "<p>For all international enquiries please contact</p><p>Hunter Smith | hunter@franklandestate.com.au | +61 428 551 544</p><p>Garrick Harvison | garrick@franklandestate.com.au | +61 401 040 143</p>",
+        "intro_font_family": "serif",
+        "intro_font_size": 18,
+        "intro_font_weight": "400",
+        "background_color": "#efeee9",
+        "text_color": "#302313",
+        "heading_color": "#302313",
+        "intro_color": "#302313",
+        "location_color": "#302313",
+        "winery_color": "#302313",
+        "contact_color": "#302313",
+        "location_font_family": "serif",
+        "location_font_size": 22,
+        "location_font_weight": "600",
+        "winery_font_family": "sans",
+        "winery_font_size": 14,
+        "winery_font_weight": "600",
+        "contact_font_family": "sans",
+        "contact_font_size": 15,
+        "contact_font_weight": "400",
+        "padding_top": 80,
+        "padding_bottom": 80,
+        "max_width": 1400,
+        "columns_desktop": "3",
+        "gap": 72,
+        "enable_clickable_email": true,
+        "enable_clickable_phone": true,
+        "enable_clickable_website": true
+      }
+    }
+  },
+  "order": [
+    "page_hero_banner",
+    "main",
+    "global_partners"
+  ]
+}

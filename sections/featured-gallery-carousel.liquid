@@ -1,0 +1,1729 @@
+{%- liquid
+  assign sid = section.id
+  assign slide_count = 0
+  for block in section.blocks
+    if block.type == 'slide'
+      assign slide_count = slide_count | plus: 1
+    endif
+  endfor
+  assign overlay_op = section.settings.overlay_opacity | times: 1.0 | divided_by: 100.0
+  assign show_btn = false
+  if section.settings.button_label != blank and section.settings.button_link != blank
+    assign show_btn = true
+  endif
+  assign enable_lightbox = section.settings.enable_lightbox
+  if enable_lightbox == nil
+    assign enable_lightbox = true
+  endif
+-%}
+
+<section
+  id="{{ section.settings.section_id | default: 'featured-gallery' | handleize }}"
+  class="fe-featured-gallery fe-featured-gallery--{{ sid }}"
+  data-fe-fgc="{{ sid }}"
+  style="
+    --fe-fgc-bg: {{ section.settings.background_color }};
+    --fe-fgc-text: {{ section.settings.text_color }};
+    --fe-fgc-accent: {{ section.settings.accent_color }};
+    --fe-fgc-divider: {{ section.settings.divider_color }};
+    --fe-fgc-container: {{ section.settings.container_width }}px;
+    --fe-fgc-carousel-max: {{ section.settings.carousel_max_width }}px;
+    --fe-fgc-main-w: {{ section.settings.main_image_width }}px;
+    --fe-fgc-side-w: {{ section.settings.side_image_width }}px;
+    --fe-fgc-h-desktop: {{ section.settings.image_height_desktop }}px;
+    --fe-fgc-h-mobile: {{ section.settings.image_height_mobile }}px;
+    --fe-fgc-overlay: {{ overlay_op }};
+    --fe-fgc-radius: {{ section.settings.image_border_radius }}px;
+    --fe-fgc-gap: 24px;
+    --fe-fgc-btn-text: {{ section.settings.button_text_color }};
+    --fe-fgc-btn-border: {{ section.settings.button_border_color }};
+    --fe-fgc-btn-bg: {{ section.settings.button_background_color }};
+    padding-top: {{ section.settings.padding_top }}px;
+    padding-bottom: {{ section.settings.padding_bottom }}px;
+  "
+  {% if section.settings.enable_autoplay and slide_count > 1 %}
+    data-fe-fgc-autoplay="1"
+    data-fe-fgc-autoplay-speed="{{ section.settings.autoplay_speed | times: 1000 }}"
+  {% endif %}
+>
+  <div class="fe-featured-gallery__inner">
+    <header class="fe-featured-gallery__intro">
+      {%- if section.settings.eyebrow != blank -%}
+        <p class="fe-featured-gallery__eyebrow">{{ section.settings.eyebrow | escape }}</p>
+      {%- endif -%}
+
+      {%- if section.settings.heading != blank -%}
+        <h2 class="fe-featured-gallery__heading">{{ section.settings.heading | escape }}</h2>
+      {%- endif -%}
+
+      {%- if section.settings.show_divider -%}
+        <span class="fe-featured-gallery__divider" aria-hidden="true"></span>
+      {%- endif -%}
+
+      {%- if section.settings.description != blank -%}
+        <div class="fe-featured-gallery__description rte">{{ section.settings.description }}</div>
+      {%- endif -%}
+    </header>
+
+    {%- if slide_count > 0 -%}
+      <div
+        class="fe-featured-gallery__carousel"
+        id="fe-fgc-carousel-{{ sid }}"
+        role="region"
+        aria-roledescription="carousel"
+        aria-label="{{ section.settings.heading | default: 'Gallery' | escape }}"
+      >
+        <div class="fe-featured-gallery__carousel-shell">
+          <div class="fe-featured-gallery__viewport" data-fe-fgc-viewport>
+            <div class="fe-featured-gallery__track" data-fe-fgc-track>
+              {%- assign si = 0 -%}
+              {%- for block in section.blocks -%}
+                {%- if block.type == 'slide' -%}
+                  {%- liquid
+                    assign slide_alt = block.settings.alt | default: block.settings.title | default: section.settings.heading
+                    assign slide_link = block.settings.link
+                    assign is_first = false
+                    if si == 0
+                      assign is_first = true
+                    endif
+                  -%}
+                  <article
+                    class="fe-featured-gallery__slide{% if is_first %} is-active{% endif %}"
+                    data-fe-fgc-slide
+                    data-index="{{ si }}"
+                    id="fe-fgc-slide-{{ sid }}-{{ si }}"
+                    {% if enable_lightbox and block.settings.image != blank %}
+                      data-fe-fgc-lightbox-src="{{ block.settings.image | image_url: width: 2400 }}"
+                      data-fe-fgc-lightbox-title="{{ block.settings.title | escape }}"
+                      data-fe-fgc-lightbox-subtitle="{{ block.settings.subtitle | escape }}"
+                    {% endif %}
+                    {% if slide_count > 1 %}role="group" aria-roledescription="slide" aria-label="{{ si | plus: 1 }} of {{ slide_count }}"{% endif %}
+                    {{ block.shopify_attributes }}
+                  >
+                    {%- if slide_link != blank and enable_lightbox == false -%}
+                      <a class="fe-featured-gallery__card fe-featured-gallery__card--linked" href="{{ slide_link }}">
+                    {%- else -%}
+                      <div
+                        class="fe-featured-gallery__card{% if enable_lightbox and block.settings.image != blank %} fe-featured-gallery__card--lightbox{% endif %}"
+                        {% if enable_lightbox and block.settings.image != blank %}
+                          data-fe-fgc-lightbox-trigger
+                          role="button"
+                          tabindex="0"
+                          aria-label="{{ 'products.product.media.open_media' | t | default: 'View enlarged image' | escape }}"
+                        {% endif %}
+                      >
+                    {%- endif -%}
+                      <div class="fe-featured-gallery__media">
+                        {%- if block.settings.image != blank -%}
+                          <img
+                            class="fe-featured-gallery__img"
+                            src="{{ block.settings.image | image_url: width: 1200 }}"
+                            srcset="
+                              {{ block.settings.image | image_url: width: 400 }} 400w,
+                              {{ block.settings.image | image_url: width: 700 }} 700w,
+                              {{ block.settings.image | image_url: width: 1000 }} 1000w,
+                              {{ block.settings.image | image_url: width: 1200 }} 1200w
+                            "
+                            sizes="(max-width: 749px) 100vw, {{ section.settings.main_image_width }}px"
+                            alt="{{ slide_alt | escape }}"
+                            width="{{ block.settings.image.width }}"
+                            height="{{ block.settings.image.height }}"
+                            loading="{% if is_first %}eager{% else %}lazy{% endif %}"
+                          >
+                        {%- else -%}
+                          <div class="fe-featured-gallery__img fe-featured-gallery__img--placeholder" aria-hidden="true"></div>
+                        {%- endif -%}
+                        <div class="fe-featured-gallery__overlay" aria-hidden="true"></div>
+                        {%- if block.settings.title != blank or block.settings.subtitle != blank -%}
+                          <div class="fe-featured-gallery__caption">
+                            {%- if block.settings.title != blank -%}
+                              <p class="fe-featured-gallery__caption-title">{{ block.settings.title | escape }}</p>
+                            {%- endif -%}
+                            {%- if block.settings.subtitle != blank -%}
+                              <p class="fe-featured-gallery__caption-sub">{{ block.settings.subtitle | escape }}</p>
+                            {%- endif -%}
+                          </div>
+                        {%- endif -%}
+                      </div>
+                    {%- if slide_link != blank and enable_lightbox == false -%}
+                      </a>
+                    {%- else -%}
+                      </div>
+                    {%- endif -%}
+                  </article>
+                  {%- assign si = si | plus: 1 -%}
+                {%- endif -%}
+              {%- endfor -%}
+            </div>
+          </div>
+
+          {%- if slide_count > 1 -%}
+            <button
+              type="button"
+              class="fe-featured-gallery__arrow fe-featured-gallery__arrow--prev"
+              data-fe-fgc-prev
+              aria-controls="fe-fgc-carousel-{{ sid }}"
+              aria-label="{{ 'general.pagination.previous' | t | default: 'Previous slide' }}"
+            >
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
+                <path d="M15 18l-6-6 6-6" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </button>
+            <button
+              type="button"
+              class="fe-featured-gallery__arrow fe-featured-gallery__arrow--next"
+              data-fe-fgc-next
+              aria-controls="fe-fgc-carousel-{{ sid }}"
+              aria-label="{{ 'general.pagination.next' | t | default: 'Next slide' }}"
+            >
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
+                <path d="M9 18l6-6-6-6" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </button>
+          {%- endif -%}
+        </div>
+
+        {%- if slide_count > 1 -%}
+          <div class="fe-featured-gallery__dots" role="tablist" aria-label="{{ 'general.slider.slideshow' | t | default: 'Slide navigation' }}">
+            {%- assign dot_i = 0 -%}
+            {%- for block in section.blocks -%}
+              {%- if block.type == 'slide' -%}
+                <button
+                  type="button"
+                  class="fe-featured-gallery__dot{% if dot_i == 0 %} is-active{% endif %}"
+                  data-fe-fgc-dot="{{ dot_i }}"
+                  role="tab"
+                  aria-selected="{% if dot_i == 0 %}true{% else %}false{% endif %}"
+                  aria-controls="fe-fgc-slide-{{ sid }}-{{ dot_i }}"
+                  aria-label="{{ 'general.slider.load_slide' | t | default: 'Go to slide' }} {{ dot_i | plus: 1 }}"
+                ></button>
+                {%- assign dot_i = dot_i | plus: 1 -%}
+              {%- endif -%}
+            {%- endfor -%}
+          </div>
+        {%- endif -%}
+      </div>
+
+      {%- if enable_lightbox and slide_count > 0 -%}
+        <div class="fe-featured-gallery__modal" hidden data-fe-fgc-modal aria-hidden="true">
+          <div class="fe-featured-gallery__modal-overlay" data-fe-fgc-modal-close tabindex="-1"></div>
+          <div
+            class="fe-featured-gallery__modal-dialog"
+            role="dialog"
+            aria-modal="true"
+            aria-label="{{ section.settings.heading | default: 'Gallery' | escape }}"
+          >
+            <button
+              type="button"
+              class="fe-featured-gallery__modal-close"
+              data-fe-fgc-modal-close
+              aria-label="{{ 'accessibility.close' | t | default: 'Close' }}"
+            >
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
+                <path d="M18 6L6 18M6 6l12 12" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"/>
+              </svg>
+            </button>
+
+            {%- if slide_count > 1 -%}
+              <button
+                type="button"
+                class="fe-featured-gallery__modal-arrow fe-featured-gallery__modal-arrow--prev"
+                data-fe-fgc-modal-prev
+                aria-label="{{ 'general.pagination.previous' | t | default: 'Previous image' }}"
+              >
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
+                  <path d="M15 18l-6-6 6-6" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </button>
+              <button
+                type="button"
+                class="fe-featured-gallery__modal-arrow fe-featured-gallery__modal-arrow--next"
+                data-fe-fgc-modal-next
+                aria-label="{{ 'general.pagination.next' | t | default: 'Next image' }}"
+              >
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
+                  <path d="M9 18l6-6-6-6" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </button>
+            {%- endif -%}
+
+            <div class="fe-featured-gallery__modal-stage" data-fe-fgc-modal-stage>
+              <div class="fe-featured-gallery__modal-loader" data-fe-fgc-modal-loader aria-hidden="true">
+                <span class="fe-featured-gallery__modal-spinner"></span>
+              </div>
+              <img class="fe-featured-gallery__modal-img" data-fe-fgc-modal-img alt="">
+              <div class="fe-featured-gallery__modal-overlay-caption" aria-hidden="true"></div>
+              <div class="fe-featured-gallery__modal-caption" data-fe-fgc-modal-caption>
+                <p class="fe-featured-gallery__modal-caption-title" data-fe-fgc-modal-title></p>
+                <p class="fe-featured-gallery__modal-caption-sub" data-fe-fgc-modal-subtitle></p>
+              </div>
+            </div>
+          </div>
+        </div>
+      {%- endif -%}
+    {%- endif -%}
+
+    {%- if show_btn -%}
+      <div class="fe-featured-gallery__cta">
+        <a
+          class="fe-featured-gallery__btn fe-featured-gallery__btn--{{ section.settings.button_style }}"
+          href="{{ section.settings.button_link }}"
+        >
+          <span>{{ section.settings.button_label | escape }}</span>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
+            <path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </a>
+      </div>
+    {%- endif -%}
+  </div>
+</section>
+
+<style>
+  .fe-featured-gallery--{{ sid }} {
+    width: 100%;
+    background-color: var(--fe-fgc-bg);
+    color: var(--fe-fgc-text);
+    box-sizing: border-box;
+  }
+
+  .fe-featured-gallery--{{ sid }} .fe-featured-gallery__inner {
+    max-width: var(--fe-fgc-container);
+    margin: 0 auto;
+    padding: 0 20px;
+    box-sizing: border-box;
+  }
+
+  .fe-featured-gallery--{{ sid }} .fe-featured-gallery__intro {
+    text-align: center;
+    max-width: 720px;
+    margin: 0 auto 40px;
+  }
+
+  .fe-featured-gallery--{{ sid }} .fe-featured-gallery__eyebrow {
+    margin: 0 0 12px;
+    font-family: "Plus Jakarta Sans", sans-serif;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--fe-fgc-accent);
+  }
+
+  .fe-featured-gallery--{{ sid }} .fe-featured-gallery__heading {
+    margin: 0;
+    font-family: eidetic-neo, Georgia, "Times New Roman", serif;
+    font-size: clamp(30px, 3.4vw, 44px);
+    font-weight: 400;
+    line-height: 1.12;
+    color: var(--fe-fgc-text);
+  }
+
+  .fe-featured-gallery--{{ sid }} .fe-featured-gallery__divider {
+    display: block;
+    width: 56px;
+    height: 1px;
+    margin: 18px auto 20px;
+    background: var(--fe-fgc-divider);
+  }
+
+  .fe-featured-gallery--{{ sid }} .fe-featured-gallery__description {
+    margin: 0;
+    font-family: "Plus Jakarta Sans", sans-serif;
+    font-size: 15px;
+    line-height: 1.65;
+    color: var(--fe-fgc-text);
+    opacity: 0.9;
+  }
+
+  .fe-featured-gallery--{{ sid }} .fe-featured-gallery__description p {
+    margin: 0;
+  }
+
+  .fe-featured-gallery--{{ sid }} .fe-featured-gallery__description p + p {
+    margin-top: 12px;
+  }
+
+  .fe-featured-gallery--{{ sid }} .fe-featured-gallery__carousel {
+    max-width: var(--fe-fgc-carousel-max);
+    margin: 0 auto;
+  }
+
+  .fe-featured-gallery--{{ sid }} .fe-featured-gallery__carousel-shell {
+    position: relative;
+    width: 100%;
+    max-width: calc(var(--fe-fgc-side-w) * 2 + var(--fe-fgc-main-w) + var(--fe-fgc-gap) * 2);
+    margin: 0 auto;
+  }
+
+  .fe-featured-gallery--{{ sid }} .fe-featured-gallery__viewport {
+    overflow: hidden;
+    width: 100%;
+    margin: 0 auto;
+  }
+
+  .fe-featured-gallery--{{ sid }} .fe-featured-gallery__track {
+    display: flex;
+    align-items: stretch;
+    gap: var(--fe-fgc-gap);
+    will-change: transform;
+    transition: transform 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .fe-featured-gallery--{{ sid }} .fe-featured-gallery__track {
+      transition: none;
+    }
+  }
+
+  .fe-featured-gallery--{{ sid }} .fe-featured-gallery__slide {
+    flex: 0 0 auto;
+    width: var(--fe-fgc-side-w);
+    transition: width 0.55s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.35s ease;
+    opacity: 0.72;
+  }
+
+  .fe-featured-gallery--{{ sid }} .fe-featured-gallery__slide.is-active {
+    width: var(--fe-fgc-main-w);
+    opacity: 1;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .fe-featured-gallery--{{ sid }} .fe-featured-gallery__slide {
+      transition: none;
+    }
+  }
+
+  .fe-featured-gallery--{{ sid }} .fe-featured-gallery__card,
+  .fe-featured-gallery--{{ sid }} .fe-featured-gallery__card--linked {
+    display: block;
+    width: 100%;
+    height: 100%;
+    text-decoration: none;
+    color: inherit;
+  }
+
+  .fe-featured-gallery--{{ sid }} .fe-featured-gallery__media {
+    position: relative;
+    width: 100%;
+    height: var(--fe-fgc-h-desktop);
+    border-radius: var(--fe-fgc-radius);
+    overflow: hidden;
+    background: #d8d6cf;
+  }
+
+  .fe-featured-gallery--{{ sid }} .fe-featured-gallery__img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+  }
+
+  .fe-featured-gallery--{{ sid }} .fe-featured-gallery__img--placeholder {
+    background: linear-gradient(135deg, #d8d6cf 0%, #c5c2b8 100%);
+  }
+
+  .fe-featured-gallery--{{ sid }} .fe-featured-gallery__overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba(0, 0, 0, var(--fe-fgc-overlay)) 0%, rgba(0, 0, 0, 0) 58%);
+    pointer-events: none;
+  }
+
+  .fe-featured-gallery--{{ sid }} .fe-featured-gallery__caption {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    padding: 22px 24px 20px;
+    z-index: 1;
+    pointer-events: none;
+  }
+
+  .fe-featured-gallery--{{ sid }} .fe-featured-gallery__caption-title {
+    margin: 0;
+    font-family: eidetic-neo, Georgia, "Times New Roman", serif;
+    font-size: clamp(18px, 2vw, 24px);
+    font-weight: 400;
+    line-height: 1.2;
+    color: #fff;
+  }
+
+  .fe-featured-gallery--{{ sid }} .fe-featured-gallery__caption-sub {
+    margin: 6px 0 0;
+    font-family: "Plus Jakarta Sans", sans-serif;
+    font-size: 13px;
+    line-height: 1.45;
+    color: rgba(255, 255, 255, 0.92);
+  }
+
+  .fe-featured-gallery--{{ sid }} .fe-featured-gallery__slide:not(.is-active) .fe-featured-gallery__caption {
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  .fe-featured-gallery--{{ sid }} .fe-featured-gallery__slide.is-active .fe-featured-gallery__caption {
+    opacity: 1;
+  }
+
+  .fe-featured-gallery--{{ sid }} .fe-featured-gallery__arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 3;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    padding: 0;
+    border: none;
+    border-radius: 50%;
+    background: #fff;
+    color: #1a1a1a;
+    cursor: pointer;
+    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.12);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  .fe-featured-gallery--{{ sid }} .fe-featured-gallery__arrow:hover {
+    transform: translateY(-50%) scale(1.04);
+    box-shadow: 0 6px 22px rgba(0, 0, 0, 0.16);
+  }
+
+  .fe-featured-gallery--{{ sid }} .fe-featured-gallery__arrow:focus-visible {
+    outline: 2px solid var(--fe-fgc-accent);
+    outline-offset: 2px;
+  }
+
+  .fe-featured-gallery--{{ sid }} .fe-featured-gallery__arrow--prev {
+    left: calc(var(--fe-fgc-side-w) / 2 - 22px);
+  }
+
+  .fe-featured-gallery--{{ sid }} .fe-featured-gallery__arrow--next {
+    right: calc(var(--fe-fgc-side-w) / 2 - 22px);
+  }
+
+  .fe-featured-gallery--{{ sid }} .fe-featured-gallery__dots {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 28px;
+  }
+
+  .fe-featured-gallery--{{ sid }} .fe-featured-gallery__dot {
+    width: 8px;
+    height: 8px;
+    padding: 0;
+    border: none;
+    border-radius: 50%;
+    background: #d3d2cb;
+    cursor: pointer;
+    transition: background 0.25s ease, transform 0.25s ease;
+  }
+
+  .fe-featured-gallery--{{ sid }} .fe-featured-gallery__dot.is-active {
+    background: var(--fe-fgc-accent);
+    transform: scale(1.15);
+  }
+
+  .fe-featured-gallery--{{ sid }} .fe-featured-gallery__dot:focus-visible {
+    outline: 2px solid var(--fe-fgc-accent);
+    outline-offset: 3px;
+  }
+
+  .fe-featured-gallery--{{ sid }} .fe-featured-gallery__card--lightbox {
+    cursor: zoom-in;
+  }
+
+  .fe-featured-gallery--{{ sid }} .fe-featured-gallery__card--lightbox:focus-visible {
+    outline: 2px solid var(--fe-fgc-accent);
+    outline-offset: 3px;
+  }
+
+  .fe-featured-gallery--{{ sid }} .fe-featured-gallery__modal {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    box-sizing: border-box;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.32s ease, visibility 0.32s ease;
+  }
+
+  .fe-featured-gallery--{{ sid }} .fe-featured-gallery__modal.is-open {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  .fe-featured-gallery--{{ sid }} .fe-featured-gallery__modal[hidden] {
+    display: none !important;
+  }
+
+  .fe-featured-gallery--{{ sid }} .fe-featured-gallery__modal-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.88);
+    cursor: pointer;
+    opacity: 0;
+    transition: opacity 0.32s ease;
+  }
+
+  .fe-featured-gallery--{{ sid }} .fe-featured-gallery__modal.is-open .fe-featured-gallery__modal-overlay {
+    opacity: 1;
+  }
+
+  .fe-featured-gallery--{{ sid }} .fe-featured-gallery__modal-dialog {
+    position: relative;
+    z-index: 1;
+    width: min(100%, 1100px);
+    max-height: calc(100vh - 48px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transform: scale(0.97) translateY(8px);
+    opacity: 0;
+    transition: transform 0.38s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.38s ease;
+  }
+
+  .fe-featured-gallery--{{ sid }} .fe-featured-gallery__modal.is-open .fe-featured-gallery__modal-dialog {
+    transform: scale(1) translateY(0);
+    opacity: 1;
+  }
+
+  .fe-featured-gallery--{{ sid }} .fe-featured-gallery__modal-stage {
+    position: relative;
+    width: 100%;
+    max-height: calc(100vh - 48px);
+    min-height: 200px;
+    border-radius: var(--fe-fgc-radius);
+    overflow: hidden;
+    background: #111;
+  }
+
+  .fe-featured-gallery--{{ sid }} .fe-featured-gallery__modal-loader {
+    position: absolute;
+    inset: 0;
+    z-index: 3;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(17, 17, 17, 0.5);
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition: opacity 0.25s ease, visibility 0.25s ease;
+  }
+
+  .fe-featured-gallery--{{ sid }} .fe-featured-gallery__modal-stage.is-loading .fe-featured-gallery__modal-loader {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  .fe-featured-gallery--{{ sid }} .fe-featured-gallery__modal-spinner {
+    width: 42px;
+    height: 42px;
+    border: 3px solid rgba(255, 255, 255, 0.22);
+    border-top-color: #fff;
+    border-radius: 50%;
+    animation: fe-fgc-modal-spin 0.75s linear infinite;
+  }
+
+  @keyframes fe-fgc-modal-spin {
+    to { transform: rotate(360deg); }
+  }
+
+  .fe-featured-gallery--{{ sid }} .fe-featured-gallery__modal-img {
+    display: block;
+    width: 100%;
+    max-height: calc(100vh - 48px);
+    object-fit: contain;
+    object-position: center;
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+    transition: opacity 0.38s cubic-bezier(0.22, 1, 0.36, 1), transform 0.38s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .fe-featured-gallery--{{ sid }} .fe-featured-gallery__modal-img.is-fading-out {
+    opacity: 0;
+    transform: translate3d(var(--fe-fgc-modal-exit-x, 0), 0, 0);
+  }
+
+  .fe-featured-gallery--{{ sid }} .fe-featured-gallery__modal-img.is-fading-in {
+    opacity: 0;
+    transform: translate3d(var(--fe-fgc-modal-enter-x, 0), 0, 0);
+  }
+
+  .fe-featured-gallery--{{ sid }} .fe-featured-gallery__modal-caption {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    padding: 28px 32px 24px;
+    z-index: 1;
+    pointer-events: none;
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+    transition: opacity 0.32s ease, transform 0.32s ease;
+  }
+
+  .fe-featured-gallery--{{ sid }} .fe-featured-gallery__modal-caption.is-fading {
+    opacity: 0;
+    transform: translate3d(0, 8px, 0);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .fe-featured-gallery--{{ sid }} .fe-featured-gallery__modal,
+    .fe-featured-gallery--{{ sid }} .fe-featured-gallery__modal-overlay,
+    .fe-featured-gallery--{{ sid }} .fe-featured-gallery__modal-dialog,
+    .fe-featured-gallery--{{ sid }} .fe-featured-gallery__modal-img,
+    .fe-featured-gallery--{{ sid }} .fe-featured-gallery__modal-caption,
+    .fe-featured-gallery--{{ sid }} .fe-featured-gallery__modal-loader {
+      transition: none;
+      animation: none;
+    }
+
+    .fe-featured-gallery--{{ sid }} .fe-featured-gallery__modal-spinner {
+      animation: none;
+      border-top-color: rgba(255, 255, 255, 0.22);
+    }
+  }
+
+  .fe-featured-gallery--{{ sid }} .fe-featured-gallery__modal-overlay-caption {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba(0, 0, 0, var(--fe-fgc-overlay)) 0%, rgba(0, 0, 0, 0) 58%);
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  .fe-featured-gallery--{{ sid }} .fe-featured-gallery__modal-caption-title {
+    margin: 0;
+    font-family: eidetic-neo, Georgia, "Times New Roman", serif;
+    font-size: clamp(20px, 2.4vw, 28px);
+    font-weight: 400;
+    line-height: 1.2;
+    color: #fff;
+  }
+
+  .fe-featured-gallery--{{ sid }} .fe-featured-gallery__modal-caption-sub {
+    margin: 8px 0 0;
+    font-family: "Plus Jakarta Sans", sans-serif;
+    font-size: 14px;
+    line-height: 1.45;
+    color: rgba(255, 255, 255, 0.92);
+  }
+
+  .fe-featured-gallery--{{ sid }} .fe-featured-gallery__modal-caption-sub:empty,
+  .fe-featured-gallery--{{ sid }} .fe-featured-gallery__modal-caption-title:empty {
+    display: none;
+  }
+
+  .fe-featured-gallery--{{ sid }} .fe-featured-gallery__modal-close {
+    position: absolute;
+    top: 0;
+    right: 0;
+    z-index: 2;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    padding: 0;
+    border: none;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.14);
+    color: #fff;
+    cursor: pointer;
+    transition: background 0.2s ease, transform 0.2s ease;
+  }
+
+  .fe-featured-gallery--{{ sid }} .fe-featured-gallery__modal-close:hover {
+    background: rgba(255, 255, 255, 0.24);
+    transform: scale(1.04);
+  }
+
+  .fe-featured-gallery--{{ sid }} .fe-featured-gallery__modal-close:focus-visible {
+    outline: 2px solid #fff;
+    outline-offset: 2px;
+  }
+
+  .fe-featured-gallery--{{ sid }} .fe-featured-gallery__modal-arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 2;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    padding: 0;
+    border: none;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.92);
+    color: #1a1a1a;
+    cursor: pointer;
+    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.2);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  .fe-featured-gallery--{{ sid }} .fe-featured-gallery__modal-arrow:hover {
+    transform: translateY(-50%) scale(1.04);
+    box-shadow: 0 6px 22px rgba(0, 0, 0, 0.24);
+  }
+
+  .fe-featured-gallery--{{ sid }} .fe-featured-gallery__modal-arrow:focus-visible {
+    outline: 2px solid #fff;
+    outline-offset: 2px;
+  }
+
+  .fe-featured-gallery--{{ sid }} .fe-featured-gallery__modal-arrow:disabled {
+    opacity: 0.45;
+    cursor: wait;
+    pointer-events: none;
+  }
+
+  .fe-featured-gallery--{{ sid }} .fe-featured-gallery__modal-arrow--prev {
+    left: -64px;
+  }
+
+  .fe-featured-gallery--{{ sid }} .fe-featured-gallery__modal-arrow--next {
+    right: -64px;
+  }
+
+  .fe-featured-gallery--{{ sid }} .fe-featured-gallery__cta {
+    display: flex;
+    justify-content: center;
+    margin-top: 32px;
+  }
+
+  .fe-featured-gallery--{{ sid }} .fe-featured-gallery__btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    min-height: 46px;
+    padding: 12px 26px;
+    font-family: "Plus Jakarta Sans", sans-serif;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    text-decoration: none;
+    border-radius: 0;
+    transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+  }
+
+  .fe-featured-gallery--{{ sid }} .fe-featured-gallery__btn--outline {
+    color: var(--fe-fgc-btn-text);
+    background: transparent;
+    border: 1px solid var(--fe-fgc-btn-border);
+  }
+
+  .fe-featured-gallery--{{ sid }} .fe-featured-gallery__btn--outline:hover {
+    background: var(--fe-fgc-btn-border);
+    color: #fff;
+  }
+
+  .fe-featured-gallery--{{ sid }} .fe-featured-gallery__btn--solid {
+    color: var(--fe-fgc-btn-text);
+    background: var(--fe-fgc-btn-bg);
+    border: 1px solid var(--fe-fgc-btn-bg);
+  }
+
+  .fe-featured-gallery--{{ sid }} .fe-featured-gallery__btn--solid:hover {
+    filter: brightness(1.06);
+  }
+
+  @media (max-width: 989px) {
+    .fe-featured-gallery--{{ sid }} .fe-featured-gallery__carousel-shell {
+      max-width: calc(var(--fe-fgc-side-w) * 1.4 + var(--fe-fgc-main-w) + var(--fe-fgc-gap) * 2);
+    }
+
+    .fe-featured-gallery--{{ sid }} .fe-featured-gallery__arrow--prev {
+      left: 8px;
+    }
+
+    .fe-featured-gallery--{{ sid }} .fe-featured-gallery__arrow--next {
+      right: 8px;
+    }
+
+    .fe-featured-gallery--{{ sid }} .fe-featured-gallery__modal-arrow--prev {
+      left: 8px;
+    }
+
+    .fe-featured-gallery--{{ sid }} .fe-featured-gallery__modal-arrow--next {
+      right: 8px;
+    }
+
+    .fe-featured-gallery--{{ sid }} .fe-featured-gallery__modal-close {
+      top: 0;
+      right: 12px;
+      background: rgba(0, 0, 0, 0.45);
+    }
+  }
+
+  @media (max-width: 749px) {
+    .fe-featured-gallery--{{ sid }} .fe-featured-gallery__intro {
+      margin-bottom: 28px;
+    }
+
+    .fe-featured-gallery--{{ sid }} .fe-featured-gallery__carousel-shell {
+      max-width: 100%;
+    }
+
+    .fe-featured-gallery--{{ sid }} .fe-featured-gallery__slide {
+      width: 0;
+      min-width: 0;
+      opacity: 0;
+      pointer-events: none;
+      overflow: hidden;
+    }
+
+    .fe-featured-gallery--{{ sid }} .fe-featured-gallery__slide.is-active {
+      width: 100%;
+      min-width: 100%;
+      opacity: 1;
+      pointer-events: auto;
+      overflow: visible;
+    }
+
+    .fe-featured-gallery--{{ sid }} .fe-featured-gallery__track {
+      gap: 0;
+    }
+
+    .fe-featured-gallery--{{ sid }} .fe-featured-gallery__media {
+      height: var(--fe-fgc-h-mobile);
+    }
+
+    .fe-featured-gallery--{{ sid }} .fe-featured-gallery__slide:not(.is-active) .fe-featured-gallery__caption {
+      opacity: 0;
+    }
+
+    .fe-featured-gallery--{{ sid }} .fe-featured-gallery__arrow {
+      width: 40px;
+      height: 40px;
+    }
+
+    .fe-featured-gallery--{{ sid }} .fe-featured-gallery__arrow--prev {
+      left: 10px;
+    }
+
+    .fe-featured-gallery--{{ sid }} .fe-featured-gallery__arrow--next {
+      right: 10px;
+    }
+
+    .fe-featured-gallery--{{ sid }} .fe-featured-gallery__cta {
+      margin-top: 24px;
+    }
+
+    .fe-featured-gallery--{{ sid }} .fe-featured-gallery__modal {
+      padding: 12px;
+    }
+
+    .fe-featured-gallery--{{ sid }} .fe-featured-gallery__modal-caption {
+      padding: 20px 18px 18px;
+    }
+
+    .fe-featured-gallery--{{ sid }} .fe-featured-gallery__btn {
+      width: 100%;
+      max-width: 320px;
+    }
+  }
+</style>
+
+<script>
+  (function () {
+    var roots = document.querySelectorAll('.fe-featured-gallery--{{ sid }}[data-fe-fgc]');
+    if (!roots.length) return;
+
+    roots.forEach(function (root) {
+      if (root.getAttribute('data-fe-fgc-init') === '1') return;
+      root.setAttribute('data-fe-fgc-init', '1');
+
+      var track = root.querySelector('[data-fe-fgc-track]');
+      var viewport = root.querySelector('[data-fe-fgc-viewport]');
+      if (!track || !viewport) return;
+
+      var realSlides = Array.prototype.slice.call(root.querySelectorAll('[data-fe-fgc-slide]'));
+      var dots = Array.prototype.slice.call(root.querySelectorAll('[data-fe-fgc-dot]'));
+      var prevBtn = root.querySelector('[data-fe-fgc-prev]');
+      var nextBtn = root.querySelector('[data-fe-fgc-next]');
+      var n = realSlides.length;
+      if (!n) return;
+
+      var looping = n > 1;
+      if (looping) {
+        var cloneFirst = realSlides[0].cloneNode(true);
+        var cloneLast = realSlides[n - 1].cloneNode(true);
+        cloneFirst.setAttribute('data-fe-fgc-clone', 'first');
+        cloneLast.setAttribute('data-fe-fgc-clone', 'last');
+        cloneFirst.removeAttribute('id');
+        cloneLast.removeAttribute('id');
+        cloneFirst.classList.remove('is-active');
+        cloneLast.classList.remove('is-active');
+        cloneFirst.setAttribute('aria-hidden', 'true');
+        cloneLast.setAttribute('aria-hidden', 'true');
+        track.insertBefore(cloneLast, realSlides[0]);
+        track.appendChild(cloneFirst);
+      }
+
+      var slides = Array.prototype.slice.call(track.querySelectorAll('[data-fe-fgc-slide]'));
+      var current = looping ? 1 : 0;
+      var autoplayTimer = null;
+      var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      var autoplayEnabled = root.getAttribute('data-fe-fgc-autoplay') === '1' && looping && !reduceMotion;
+      var autoplaySpeed = parseInt(root.getAttribute('data-fe-fgc-autoplay-speed'), 10) || 5000;
+
+      function readPx(varName) {
+        var val = getComputedStyle(root).getPropertyValue(varName).trim();
+        return parseFloat(val) || 0;
+      }
+
+      function getGap() {
+        return readPx('--fe-fgc-gap');
+      }
+
+      function getMainW() {
+        if (window.innerWidth <= 749) return viewport.clientWidth;
+        return readPx('--fe-fgc-main-w');
+      }
+
+      function getSideW() {
+        if (window.innerWidth <= 749) return 0;
+        return readPx('--fe-fgc-side-w');
+      }
+
+      function realIndex() {
+        return looping ? current - 1 : current;
+      }
+
+      function setTransition(enabled) {
+        track.style.transition = enabled ? '' : 'none';
+        slides.forEach(function (slide) {
+          slide.style.transition = enabled ? '' : 'none';
+        });
+        if (!enabled) {
+          void track.offsetWidth;
+        }
+      }
+
+      function updateTransform() {
+        var gap = getGap();
+        var offset = 0;
+        for (var i = 0; i < current; i++) {
+          offset += getSideW() + gap;
+        }
+        var activeW = getMainW();
+        var viewportW = viewport.clientWidth;
+        var tx = (viewportW - activeW) / 2 - offset;
+        track.style.transform = 'translate3d(' + tx + 'px, 0, 0)';
+      }
+
+      function updateState() {
+        slides.forEach(function (slide, idx) {
+          var isClone = slide.hasAttribute('data-fe-fgc-clone');
+          var active = idx === current;
+          slide.classList.toggle('is-active', active);
+          if (isClone) {
+            slide.setAttribute('aria-hidden', 'true');
+          } else {
+            slide.setAttribute('aria-hidden', active ? 'false' : 'true');
+          }
+        });
+
+        dots.forEach(function (dot, idx) {
+          var active = idx === realIndex();
+          dot.classList.toggle('is-active', active);
+          dot.setAttribute('aria-selected', active ? 'true' : 'false');
+        });
+
+        updateTransform();
+      }
+
+      function jumpIfCloneEdge() {
+        if (!looping) return;
+        if (current === 0) {
+          setTransition(false);
+          current = n;
+          updateState();
+        } else if (current === slides.length - 1) {
+          setTransition(false);
+          current = 1;
+          updateState();
+        }
+      }
+
+      function goToRealIndex(index, animate) {
+        var target = looping ? index + 1 : index;
+        if (target === current) return;
+        var shouldAnimate = animate !== false && !reduceMotion;
+        setTransition(shouldAnimate);
+        current = target;
+        updateState();
+        if (!shouldAnimate) jumpIfCloneEdge();
+      }
+
+      function step(delta) {
+        if (!looping) return;
+        setTransition(!reduceMotion);
+        current += delta;
+        updateState();
+        if (reduceMotion) jumpIfCloneEdge();
+      }
+
+      function stopAutoplay() {
+        if (autoplayTimer) {
+          clearInterval(autoplayTimer);
+          autoplayTimer = null;
+        }
+      }
+
+      function startAutoplay() {
+        stopAutoplay();
+        if (!autoplayEnabled) return;
+        autoplayTimer = setInterval(function () {
+          step(1);
+        }, autoplaySpeed);
+      }
+
+      if (prevBtn) {
+        prevBtn.addEventListener('click', function () {
+          step(-1);
+          startAutoplay();
+        });
+      }
+
+      if (nextBtn) {
+        nextBtn.addEventListener('click', function () {
+          step(1);
+          startAutoplay();
+        });
+      }
+
+      track.addEventListener('transitionend', function (e) {
+        if (e.target !== track || e.propertyName !== 'transform') return;
+        jumpIfCloneEdge();
+      });
+
+      dots.forEach(function (dot) {
+        dot.addEventListener('click', function () {
+          var idx = parseInt(dot.getAttribute('data-fe-fgc-dot'), 10);
+          if (isNaN(idx)) return;
+          goToRealIndex(idx, Math.abs(idx - realIndex()) <= 1);
+          startAutoplay();
+        });
+      });
+
+      root.addEventListener('mouseenter', stopAutoplay);
+      root.addEventListener('mouseleave', startAutoplay);
+      root.addEventListener('focusin', stopAutoplay);
+      root.addEventListener('focusout', function (e) {
+        if (!root.contains(e.relatedTarget)) startAutoplay();
+      });
+
+      var resizeTimer;
+      window.addEventListener('resize', function () {
+        clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(function () {
+          setTransition(false);
+          updateState();
+        }, 120);
+      });
+
+      setTransition(false);
+      updateState();
+      startAutoplay();
+
+      var modal = root.querySelector('[data-fe-fgc-modal]');
+      if (modal) {
+        var modalStage = modal.querySelector('[data-fe-fgc-modal-stage]');
+        var modalImg = modal.querySelector('[data-fe-fgc-modal-img]');
+        var modalCaption = modal.querySelector('[data-fe-fgc-modal-caption]');
+        var modalTitle = modal.querySelector('[data-fe-fgc-modal-title]');
+        var modalSubtitle = modal.querySelector('[data-fe-fgc-modal-subtitle]');
+        var modalPrev = modal.querySelector('[data-fe-fgc-modal-prev]');
+        var modalNext = modal.querySelector('[data-fe-fgc-modal-next]');
+        var modalCloseEls = modal.querySelectorAll('[data-fe-fgc-modal-close]');
+        var lightboxIndex = 0;
+        var lastFocus = null;
+        var modalBusy = false;
+        var modalAnimMs = reduceMotion ? 0 : 380;
+        var imageCache = {};
+
+        function lightboxItems() {
+          return realSlides.filter(function (slide) {
+            return slide.hasAttribute('data-fe-fgc-lightbox-src');
+          });
+        }
+
+        function slideMeta(slide) {
+          var imgEl = slide.querySelector('.fe-featured-gallery__img');
+          return {
+            src: slide.getAttribute('data-fe-fgc-lightbox-src'),
+            title: slide.getAttribute('data-fe-fgc-lightbox-title') || '',
+            subtitle: slide.getAttribute('data-fe-fgc-lightbox-subtitle') || '',
+            alt: imgEl ? imgEl.getAttribute('alt') || slide.getAttribute('data-fe-fgc-lightbox-title') || '' : ''
+          };
+        }
+
+        function updateModalCaption(meta) {
+          if (modalTitle) {
+            modalTitle.textContent = meta.title;
+            modalTitle.hidden = meta.title === '';
+          }
+          if (modalSubtitle) {
+            modalSubtitle.textContent = meta.subtitle;
+            modalSubtitle.hidden = meta.subtitle === '';
+          }
+        }
+
+        function preloadImage(src) {
+          if (!src) return Promise.resolve();
+          if (imageCache[src]) return imageCache[src];
+          imageCache[src] = new Promise(function (resolve) {
+            var img = new Image();
+            var done = false;
+            function finish() {
+              if (done) return;
+              done = true;
+              resolve();
+            }
+            img.onload = finish;
+            img.onerror = finish;
+            img.src = src;
+            if (img.complete) finish();
+          });
+          return imageCache[src];
+        }
+
+        function prefetchAdjacent(index) {
+          var items = lightboxItems();
+          if (items.length < 2) return;
+          [-1, 1].forEach(function (offset) {
+            var idx = (index + offset + items.length) % items.length;
+            preloadImage(items[idx].getAttribute('data-fe-fgc-lightbox-src'));
+          });
+        }
+
+        function wait(ms) {
+          return new Promise(function (resolve) {
+            window.setTimeout(resolve, ms);
+          });
+        }
+
+        function setModalNavBusy(busy) {
+          modalBusy = busy;
+          if (modalPrev) modalPrev.disabled = busy;
+          if (modalNext) modalNext.disabled = busy;
+          if (modalStage) modalStage.classList.toggle('is-loading', busy);
+        }
+
+        function applySlideMotion(direction) {
+          if (reduceMotion || !modalImg) return;
+          var offset = direction > 0 ? '32px' : direction < 0 ? '-32px' : '0px';
+          var enterOffset = direction > 0 ? '32px' : direction < 0 ? '-32px' : '0px';
+          modalImg.style.setProperty('--fe-fgc-modal-exit-x', offset);
+          modalImg.style.setProperty('--fe-fgc-modal-enter-x', enterOffset);
+        }
+
+        function clearSlideMotionClasses() {
+          if (!modalImg) return;
+          modalImg.classList.remove('is-fading-out', 'is-fading-in');
+          modalImg.style.removeProperty('--fe-fgc-modal-exit-x');
+          modalImg.style.removeProperty('--fe-fgc-modal-enter-x');
+        }
+
+        function setModalSlide(index, direction) {
+          var items = lightboxItems();
+          if (!items.length || !modalImg || modalBusy) return Promise.resolve();
+
+          var total = items.length;
+          var nextIndex = ((index % total) + total) % total;
+          var slide = items[nextIndex];
+          var meta = slideMeta(slide);
+          var navDirection = typeof direction === 'number' ? direction : 0;
+          var isInitial = !modalImg.getAttribute('data-fe-fgc-current-src');
+          var sameSlide = nextIndex === lightboxIndex && modalImg.getAttribute('data-fe-fgc-current-src') === meta.src;
+
+          if (sameSlide && modalImg.complete && modalImg.naturalWidth > 0) {
+            updateModalCaption(meta);
+            return Promise.resolve();
+          }
+
+          setModalNavBusy(true);
+          applySlideMotion(navDirection);
+
+          return Promise.resolve()
+            .then(function () {
+              if (isInitial || !modalAnimMs) return;
+              if (navDirection !== 0) {
+                modalImg.classList.add('is-fading-out');
+                if (modalCaption) modalCaption.classList.add('is-fading');
+                return wait(modalAnimMs);
+              }
+              modalImg.classList.add('is-fading-out');
+              if (modalCaption) modalCaption.classList.add('is-fading');
+              return wait(Math.min(modalAnimMs, 220));
+            })
+            .then(function () {
+              return preloadImage(meta.src);
+            })
+            .then(function () {
+              lightboxIndex = nextIndex;
+              modalImg.classList.remove('is-fading-out');
+              modalImg.classList.add('is-fading-in');
+              modalImg.src = meta.src;
+              modalImg.alt = meta.alt;
+              modalImg.setAttribute('data-fe-fgc-current-src', meta.src);
+              updateModalCaption(meta);
+
+              return new Promise(function (resolve) {
+                function reveal() {
+                  if (modalCaption) modalCaption.classList.remove('is-fading');
+                  if (!modalAnimMs) {
+                    clearSlideMotionClasses();
+                    resolve();
+                    return;
+                  }
+                  requestAnimationFrame(function () {
+                    modalImg.classList.remove('is-fading-in');
+                    window.setTimeout(function () {
+                      clearSlideMotionClasses();
+                      resolve();
+                    }, modalAnimMs);
+                  });
+                }
+
+                if (modalImg.complete && modalImg.naturalWidth > 0) {
+                  reveal();
+                } else {
+                  modalImg.onload = reveal;
+                  modalImg.onerror = reveal;
+                }
+              });
+            })
+            .then(function () {
+              prefetchAdjacent(lightboxIndex);
+            })
+            .finally(function () {
+              setModalNavBusy(false);
+            });
+        }
+
+        function openModal(index) {
+          var items = lightboxItems();
+          if (!items.length) return;
+          lastFocus = document.activeElement;
+          stopAutoplay();
+          modal.hidden = false;
+          modal.setAttribute('aria-hidden', 'false');
+          document.body.style.overflow = 'hidden';
+          requestAnimationFrame(function () {
+            modal.classList.add('is-open');
+          });
+          setModalSlide(typeof index === 'number' ? index : 0, 0).then(function () {
+            var closeBtn = modal.querySelector('.fe-featured-gallery__modal-close');
+            if (closeBtn) closeBtn.focus();
+          });
+        }
+
+        function closeModal() {
+          modal.classList.remove('is-open');
+          window.setTimeout(function () {
+            modal.hidden = true;
+            modal.setAttribute('aria-hidden', 'true');
+            document.body.style.overflow = '';
+            clearSlideMotionClasses();
+            if (modalCaption) modalCaption.classList.remove('is-fading');
+            if (modalImg) {
+              modalImg.removeAttribute('data-fe-fgc-current-src');
+              modalImg.removeAttribute('src');
+            }
+            setModalNavBusy(false);
+            if (lastFocus && typeof lastFocus.focus === 'function') {
+              lastFocus.focus();
+            }
+            startAutoplay();
+          }, reduceMotion ? 0 : 320);
+        }
+
+        function stepModal(delta) {
+          setModalSlide(lightboxIndex + delta, delta);
+        }
+
+        root.querySelectorAll('[data-fe-fgc-lightbox-trigger]').forEach(function (trigger) {
+          if (trigger.closest('[data-fe-fgc-clone]')) return;
+          trigger.addEventListener('click', function (e) {
+            e.preventDefault();
+            var slide = trigger.closest('[data-fe-fgc-slide]');
+            if (!slide || slide.hasAttribute('data-fe-fgc-clone')) return;
+            var items = lightboxItems();
+            var idx = items.indexOf(slide);
+            if (idx === -1) return;
+            openModal(idx);
+          });
+          trigger.addEventListener('keydown', function (e) {
+            if (e.key === 'Enter' || e.key === ' ') {
+              e.preventDefault();
+              trigger.click();
+            }
+          });
+        });
+
+        modalCloseEls.forEach(function (el) {
+          el.addEventListener('click', closeModal);
+        });
+
+        if (modalPrev) {
+          modalPrev.addEventListener('click', function () {
+            stepModal(-1);
+          });
+        }
+
+        if (modalNext) {
+          modalNext.addEventListener('click', function () {
+            stepModal(1);
+          });
+        }
+
+        modal.addEventListener('keydown', function (e) {
+          if (modal.hidden || modalBusy) return;
+          if (e.key === 'Escape') {
+            e.preventDefault();
+            closeModal();
+          } else if (e.key === 'ArrowLeft' && modalPrev) {
+            e.preventDefault();
+            stepModal(-1);
+          } else if (e.key === 'ArrowRight' && modalNext) {
+            e.preventDefault();
+            stepModal(1);
+          }
+        });
+      }
+    });
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Featured Gallery Carousel",
+  "tag": "section",
+  "class": "fe-featured-gallery-section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "section_id",
+      "label": "Section HTML id",
+      "default": "featured-gallery"
+    },
+    {
+      "type": "header",
+      "content": "Intro content"
+    },
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow text",
+      "default": "Gallery"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "A Glimpse of Frankland Estate"
+    },
+    {
+      "type": "richtext",
+      "id": "description",
+      "label": "Description",
+      "default": "<p>From our windswept vines to the warmth of our cellar door, explore the people, place and moments that make Frankland Estate unique.</p>"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_divider",
+      "label": "Show decorative divider",
+      "default": true
+    },
+    {
+      "type": "color",
+      "id": "divider_color",
+      "label": "Divider color",
+      "default": "#c4b896"
+    },
+    {
+      "type": "header",
+      "content": "Colors & layout"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background color",
+      "default": "#f9f8f3"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color",
+      "default": "#302313"
+    },
+    {
+      "type": "color",
+      "id": "accent_color",
+      "label": "Accent color",
+      "default": "#b8a574"
+    },
+    {
+      "type": "range",
+      "id": "container_width",
+      "min": 900,
+      "max": 1400,
+      "step": 10,
+      "unit": "px",
+      "label": "Container max width",
+      "default": 1200
+    },
+    {
+      "type": "range",
+      "id": "carousel_max_width",
+      "min": 900,
+      "max": 1400,
+      "step": 10,
+      "unit": "px",
+      "label": "Carousel max width",
+      "default": 1100
+    },
+    {
+      "type": "header",
+      "content": "Carousel sizing"
+    },
+    {
+      "type": "range",
+      "id": "main_image_width",
+      "min": 400,
+      "max": 720,
+      "step": 10,
+      "unit": "px",
+      "label": "Main image width (desktop)",
+      "default": 560
+    },
+    {
+      "type": "range",
+      "id": "side_image_width",
+      "min": 120,
+      "max": 320,
+      "step": 10,
+      "unit": "px",
+      "label": "Side image width (desktop)",
+      "default": 220
+    },
+    {
+      "type": "range",
+      "id": "image_height_desktop",
+      "min": 280,
+      "max": 640,
+      "step": 10,
+      "unit": "px",
+      "label": "Image height (desktop)",
+      "default": 420
+    },
+    {
+      "type": "range",
+      "id": "image_height_mobile",
+      "min": 220,
+      "max": 520,
+      "step": 10,
+      "unit": "px",
+      "label": "Image height (mobile)",
+      "default": 320
+    },
+    {
+      "type": "range",
+      "id": "overlay_opacity",
+      "min": 0,
+      "max": 90,
+      "step": 5,
+      "unit": "%",
+      "label": "Image overlay opacity",
+      "default": 55
+    },
+    {
+      "type": "range",
+      "id": "image_border_radius",
+      "min": 0,
+      "max": 32,
+      "step": 2,
+      "unit": "px",
+      "label": "Image border radius",
+      "default": 12
+    },
+    {
+      "type": "header",
+      "content": "Call to action"
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "Button label",
+      "default": "View More Moments"
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "Button link"
+    },
+    {
+      "type": "select",
+      "id": "button_style",
+      "label": "Button style",
+      "options": [
+        { "value": "outline", "label": "Outline" },
+        { "value": "solid", "label": "Solid" }
+      ],
+      "default": "outline"
+    },
+    {
+      "type": "color",
+      "id": "button_text_color",
+      "label": "Button text color",
+      "default": "#302313"
+    },
+    {
+      "type": "color",
+      "id": "button_border_color",
+      "label": "Button border color",
+      "default": "#302313"
+    },
+    {
+      "type": "color",
+      "id": "button_background_color",
+      "label": "Button background color",
+      "default": "#302313"
+    },
+    {
+      "type": "header",
+      "content": "Lightbox"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_lightbox",
+      "label": "Open enlarged image in modal on click",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Autoplay"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_autoplay",
+      "label": "Enable autoplay",
+      "default": false
+    },
+    {
+      "type": "range",
+      "id": "autoplay_speed",
+      "min": 3,
+      "max": 12,
+      "step": 1,
+      "unit": "s",
+      "label": "Autoplay speed",
+      "default": 6
+    },
+    {
+      "type": "header",
+      "content": "Spacing"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 200,
+      "step": 4,
+      "unit": "px",
+      "label": "Padding top",
+      "default": 88
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 200,
+      "step": 4,
+      "unit": "px",
+      "label": "Padding bottom",
+      "default": 88
+    }
+  ],
+  "blocks": [
+    {
+      "type": "slide",
+      "name": "Gallery slide",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Image title",
+          "default": "Our Estate"
+        },
+        {
+          "type": "text",
+          "id": "subtitle",
+          "label": "Image subtitle",
+          "default": "Frankland River, Western Australia"
+        },
+        {
+          "type": "text",
+          "id": "alt",
+          "label": "Alt text"
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": "Optional link"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Featured Gallery Carousel",
+      "blocks": [
+        {
+          "type": "slide",
+          "settings": {
+            "title": "Our Estate",
+            "subtitle": "Frankland River, Western Australia"
+          }
+        },
+        {
+          "type": "slide",
+          "settings": {
+            "title": "Cellar Door",
+            "subtitle": "Experience our wines and hospitality"
+          }
+        },
+        {
+          "type": "slide",
+          "settings": {
+            "title": "Vineyard Moments",
+            "subtitle": "Organic farming in Frankland River"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

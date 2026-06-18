@@ -1,0 +1,604 @@
+{%- liquid
+  assign sid = section.id
+-%}
+
+<section
+  class="fe-distributors fe-distributors--{{ sid }}"
+  style="
+    --fe-dist-bg: {{ section.settings.background_color }};
+    --fe-dist-text: {{ section.settings.text_color }};
+    --fe-dist-heading: {{ section.settings.heading_color | default: section.settings.text_color }};
+    --fe-dist-intro: {{ section.settings.intro_color | default: section.settings.text_color }};
+    --fe-dist-location: {{ section.settings.location_color | default: section.settings.text_color }};
+    --fe-dist-winery: {{ section.settings.winery_color | default: section.settings.text_color }};
+    --fe-dist-contact: {{ section.settings.contact_color | default: section.settings.text_color }};
+    --fe-dist-max: {{ section.settings.max_width }}px;
+    --fe-dist-gap: {{ section.settings.gap }}px;
+    --fe-dist-cols: {{ section.settings.columns_desktop }};
+    --fe-dist-pt: {{ section.settings.padding_top }}px;
+    --fe-dist-pb: {{ section.settings.padding_bottom }}px;
+  "
+>
+  <div class="fe-distributors__inner">
+    {%- if section.settings.heading != blank or section.settings.intro != blank -%}
+      <header class="fe-distributors__header">
+        {%- if section.settings.heading != blank -%}
+          <h2 class="fe-distributors__heading">{{ section.settings.heading | escape }}</h2>
+        {%- endif -%}
+        {%- if section.settings.intro != blank -%}
+          <div class="fe-distributors__intro rte">{{ section.settings.intro }}</div>
+        {%- endif -%}
+      </header>
+    {%- endif -%}
+
+    <div class="fe-distributors__grid" role="list">
+      {%- for block in section.blocks -%}
+        {%- liquid
+          assign phone_value = block.settings.phone | strip
+          assign email_value = block.settings.email | strip
+          assign website_value = block.settings.website | strip
+
+          assign phone_href = phone_value
+          assign phone_href = phone_href | replace: ' ', '' | replace: '-', '' | replace: '(', '' | replace: ')', ''
+
+          assign website_href = website_value
+          if website_href != blank and website_href contains '://'
+            assign website_href = website_href
+          elsif website_href != blank
+            assign website_href = 'https://' | append: website_href
+          endif
+        -%}
+
+        <article class="fe-distributors__item" role="listitem" {{ block.shopify_attributes }}>
+          {%- if block.settings.location != blank -%}
+            <h3 class="fe-distributors__location">{{ block.settings.location | escape }}</h3>
+          {%- endif -%}
+
+          {%- if block.settings.winery_name != blank -%}
+            <p class="fe-distributors__winery">{{ block.settings.winery_name | escape }}</p>
+          {%- endif -%}
+
+          <div class="fe-distributors__meta">
+            {%- if phone_value != blank -%}
+              <p class="fe-distributors__line">
+                <span class="fe-distributors__label">Ph:</span>
+                {%- if section.settings.enable_clickable_phone -%}
+                  <a href="tel:{{ phone_href }}">{{ phone_value | escape }}</a>
+                {%- else -%}
+                  <span>{{ phone_value | escape }}</span>
+                {%- endif -%}
+              </p>
+            {%- endif -%}
+
+            {%- if email_value != blank -%}
+              <p class="fe-distributors__line">
+                <span class="fe-distributors__label">Email:</span>
+                {%- if section.settings.enable_clickable_email -%}
+                  <a href="mailto:{{ email_value }}">{{ email_value | escape }}</a>
+                {%- else -%}
+                  <span>{{ email_value | escape }}</span>
+                {%- endif -%}
+              </p>
+            {%- endif -%}
+
+            {%- if website_value != blank -%}
+              <p class="fe-distributors__line">
+                {%- if section.settings.enable_clickable_website -%}
+                  <a href="{{ website_href }}" target="_blank" rel="noopener noreferrer">{{ website_value | escape }}</a>
+                {%- else -%}
+                  <span>{{ website_value | escape }}</span>
+                {%- endif -%}
+              </p>
+            {%- endif -%}
+          </div>
+        </article>
+      {%- endfor -%}
+    </div>
+  </div>
+</section>
+
+<style>
+  .fe-distributors--{{ sid }} {
+    background: var(--fe-dist-bg);
+    color: var(--fe-dist-text);
+    padding-top: var(--fe-dist-pt);
+    padding-bottom: var(--fe-dist-pb);
+  }
+
+  .fe-distributors--{{ sid }} .fe-distributors__inner {
+    max-width: var(--fe-dist-max);
+    margin: 0 auto;
+    padding: 0 28px;
+    box-sizing: border-box;
+  }
+
+  .fe-distributors--{{ sid }} .fe-distributors__header {
+    margin-bottom: min(56px, var(--fe-dist-gap));
+    text-align: center;
+  }
+
+  .fe-distributors--{{ sid }} .fe-distributors__heading {
+    margin: 0 0 14px;
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: clamp(28px, 3vw, 44px);
+    font-weight: 700;
+    line-height: 1.1;
+    color: var(--fe-dist-heading);
+  }
+
+  .fe-distributors--{{ sid }} .fe-distributors__intro {
+    margin: 0 auto;
+    max-width: 860px;
+    font-family: {% if section.settings.intro_font_family == 'serif' %}Georgia, "Times New Roman", serif{% else %}"Plus Jakarta Sans", sans-serif{% endif %};
+    font-size: {{ section.settings.intro_font_size }}px;
+    font-weight: {{ section.settings.intro_font_weight }};
+    line-height: 1.55;
+    color: var(--fe-dist-intro);
+    opacity: 0.92;
+  }
+
+  .fe-distributors--{{ sid }} .fe-distributors__intro p {
+    margin: 0;
+  }
+
+  .fe-distributors--{{ sid }} .fe-distributors__intro p + p {
+    margin-top: 10px;
+  }
+
+  .fe-distributors--{{ sid }} .fe-distributors__grid {
+    display: grid;
+    grid-template-columns: repeat(var(--fe-dist-cols), minmax(0, 1fr));
+    gap: var(--fe-dist-gap);
+  }
+
+  .fe-distributors--{{ sid }} .fe-distributors__item {
+    min-width: 0;
+  }
+
+  .fe-distributors--{{ sid }} .fe-distributors__location {
+    margin: 0;
+    font-family: {% if section.settings.location_font_family == 'sans' %}"Plus Jakarta Sans", sans-serif{% else %}Georgia, "Times New Roman", serif{% endif %};
+    font-size: {{ section.settings.location_font_size }}px;
+    font-weight: {{ section.settings.location_font_weight }};
+    line-height: 1.2;
+    color: var(--fe-dist-location);
+  }
+
+  .fe-distributors--{{ sid }} .fe-distributors__winery {
+    margin: 18px 0 0;
+    font-family: {% if section.settings.winery_font_family == 'serif' %}Georgia, "Times New Roman", serif{% else %}"Plus Jakarta Sans", sans-serif{% endif %};
+    font-size: {{ section.settings.winery_font_size }}px;
+    font-weight: {{ section.settings.winery_font_weight }};
+    line-height: 1.3;
+    color: var(--fe-dist-winery);
+  }
+
+  .fe-distributors--{{ sid }} .fe-distributors__meta {
+    margin-top: 16px;
+    display: grid;
+    gap: 8px;
+  }
+
+  .fe-distributors--{{ sid }} .fe-distributors__line {
+    margin: 0;
+    font-family: {% if section.settings.contact_font_family == 'serif' %}Georgia, "Times New Roman", serif{% else %}"Plus Jakarta Sans", sans-serif{% endif %};
+    font-size: {{ section.settings.contact_font_size }}px;
+    font-weight: {{ section.settings.contact_font_weight }};
+    line-height: 1.35;
+    color: var(--fe-dist-contact);
+    word-break: break-word;
+  }
+
+  .fe-distributors--{{ sid }} .fe-distributors__label {
+    font-weight: {{ section.settings.contact_font_weight }};
+    margin-right: 4px;
+  }
+
+  .fe-distributors--{{ sid }} .fe-distributors__line a,
+  .fe-distributors--{{ sid }} .fe-distributors__line span {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .fe-distributors--{{ sid }} .fe-distributors__line a:hover {
+    text-decoration: underline;
+    text-underline-offset: 0.12em;
+  }
+
+  @media (max-width: 1024px) {
+    .fe-distributors--{{ sid }} .fe-distributors__grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: min(48px, var(--fe-dist-gap));
+    }
+  }
+
+  @media (max-width: 749px) {
+    .fe-distributors--{{ sid }} .fe-distributors__inner {
+      padding: 0 20px;
+    }
+
+    .fe-distributors--{{ sid }} .fe-distributors__grid {
+      grid-template-columns: 1fr;
+      gap: 34px;
+    }
+
+    .fe-distributors--{{ sid }} .fe-distributors__winery {
+      margin-top: 12px;
+    }
+
+    .fe-distributors--{{ sid }} .fe-distributors__meta {
+      margin-top: 12px;
+      gap: 6px;
+    }
+  }
+</style>
+
+{% schema %}
+{
+  "name": "Distributors Section",
+  "tag": "section",
+  "class": "fe-distributors-section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading text",
+      "default": "Distributors"
+    },
+    {
+      "type": "richtext",
+      "id": "intro",
+      "label": "Intro text"
+    },
+    {
+      "type": "select",
+      "id": "intro_font_family",
+      "label": "Intro font family",
+      "default": "sans",
+      "options": [
+        { "value": "serif", "label": "Serif" },
+        { "value": "sans", "label": "Sans-serif" }
+      ]
+    },
+    {
+      "type": "range",
+      "id": "intro_font_size",
+      "label": "Intro font size",
+      "min": 12,
+      "max": 40,
+      "step": 1,
+      "unit": "px",
+      "default": 18
+    },
+    {
+      "type": "select",
+      "id": "intro_font_weight",
+      "label": "Intro font weight",
+      "default": "400",
+      "options": [
+        { "value": "300", "label": "300" },
+        { "value": "400", "label": "400" },
+        { "value": "500", "label": "500" },
+        { "value": "600", "label": "600" },
+        { "value": "700", "label": "700" }
+      ]
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background color",
+      "default": "#efeee9"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color",
+      "default": "#302313"
+    },
+    {
+      "type": "color",
+      "id": "heading_color",
+      "label": "Heading color",
+      "default": "#302313"
+    },
+    {
+      "type": "color",
+      "id": "intro_color",
+      "label": "Intro color",
+      "default": "#302313"
+    },
+    {
+      "type": "color",
+      "id": "location_color",
+      "label": "Location color",
+      "default": "#302313"
+    },
+    {
+      "type": "color",
+      "id": "winery_color",
+      "label": "Winery color",
+      "default": "#302313"
+    },
+    {
+      "type": "color",
+      "id": "contact_color",
+      "label": "Contact color",
+      "default": "#302313"
+    },
+    {
+      "type": "select",
+      "id": "location_font_family",
+      "label": "Location font family",
+      "default": "serif",
+      "options": [
+        { "value": "serif", "label": "Serif" },
+        { "value": "sans", "label": "Sans-serif" }
+      ]
+    },
+    {
+      "type": "range",
+      "id": "location_font_size",
+      "label": "Location font size",
+      "min": 14,
+      "max": 40,
+      "step": 1,
+      "unit": "px",
+      "default": 28
+    },
+    {
+      "type": "select",
+      "id": "location_font_weight",
+      "label": "Location font weight",
+      "default": "600",
+      "options": [
+        { "value": "300", "label": "300" },
+        { "value": "400", "label": "400" },
+        { "value": "500", "label": "500" },
+        { "value": "600", "label": "600" },
+        { "value": "700", "label": "700" }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "winery_font_family",
+      "label": "Winery name font family",
+      "default": "sans",
+      "options": [
+        { "value": "serif", "label": "Serif" },
+        { "value": "sans", "label": "Sans-serif" }
+      ]
+    },
+    {
+      "type": "range",
+      "id": "winery_font_size",
+      "label": "Winery name font size",
+      "min": 14,
+      "max": 40,
+      "step": 1,
+      "unit": "px",
+      "default": 22
+    },
+    {
+      "type": "select",
+      "id": "winery_font_weight",
+      "label": "Winery name font weight",
+      "default": "600",
+      "options": [
+        { "value": "300", "label": "300" },
+        { "value": "400", "label": "400" },
+        { "value": "500", "label": "500" },
+        { "value": "600", "label": "600" },
+        { "value": "700", "label": "700" }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "contact_font_family",
+      "label": "Contact font family",
+      "default": "sans",
+      "options": [
+        { "value": "serif", "label": "Serif" },
+        { "value": "sans", "label": "Sans-serif" }
+      ]
+    },
+    {
+      "type": "range",
+      "id": "contact_font_size",
+      "label": "Contact font size",
+      "min": 12,
+      "max": 36,
+      "step": 1,
+      "unit": "px",
+      "default": 22
+    },
+    {
+      "type": "select",
+      "id": "contact_font_weight",
+      "label": "Contact font weight",
+      "default": "400",
+      "options": [
+        { "value": "300", "label": "300" },
+        { "value": "400", "label": "400" },
+        { "value": "500", "label": "500" },
+        { "value": "600", "label": "600" },
+        { "value": "700", "label": "700" }
+      ]
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Padding top",
+      "min": 0,
+      "max": 220,
+      "step": 4,
+      "unit": "px",
+      "default": 80
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Padding bottom",
+      "min": 0,
+      "max": 220,
+      "step": 4,
+      "unit": "px",
+      "default": 80
+    },
+    {
+      "type": "range",
+      "id": "max_width",
+      "label": "Max width",
+      "min": 960,
+      "max": 1800,
+      "step": 20,
+      "unit": "px",
+      "default": 1400
+    },
+    {
+      "type": "select",
+      "id": "columns_desktop",
+      "label": "Columns on desktop",
+      "default": "3",
+      "options": [
+        { "value": "2", "label": "2" },
+        { "value": "3", "label": "3" },
+        { "value": "4", "label": "4" }
+      ]
+    },
+    {
+      "type": "range",
+      "id": "gap",
+      "label": "Grid gap",
+      "min": 20,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "default": 72
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_clickable_email",
+      "label": "Enable clickable email",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_clickable_phone",
+      "label": "Enable clickable phone",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_clickable_website",
+      "label": "Enable clickable website",
+      "default": true
+    }
+  ],
+  "blocks": [
+    {
+      "type": "distributor",
+      "name": "Distributor",
+      "settings": [
+        {
+          "type": "text",
+          "id": "location",
+          "label": "Location",
+          "default": "New South Wales & ACT"
+        },
+        {
+          "type": "text",
+          "id": "winery_name",
+          "label": "Winery name",
+          "default": "CellarHand Pty Ltd"
+        },
+        {
+          "type": "text",
+          "id": "phone",
+          "label": "Phone",
+          "default": "0448 921 103"
+        },
+        {
+          "type": "text",
+          "id": "email",
+          "label": "Email",
+          "default": "nevada@cellarhand.com.au"
+        },
+        {
+          "type": "text",
+          "id": "website",
+          "label": "Website",
+          "default": "www.cellarhand.com.au"
+        }
+      ]
+    }
+  ],
+  "max_blocks": 24,
+  "presets": [
+    {
+      "name": "Distributors Section",
+      "blocks": [
+        {
+          "type": "distributor",
+          "settings": {
+            "location": "New South Wales & ACT",
+            "winery_name": "CellarHand Pty Ltd",
+            "phone": "0448 921 103",
+            "email": "nevada@cellarhand.com.au",
+            "website": "www.cellarhand.com.au"
+          }
+        },
+        {
+          "type": "distributor",
+          "settings": {
+            "location": "South Australia",
+            "winery_name": "A Good Bunch",
+            "phone": "0447819049",
+            "email": "steph@agoodbunchdist.com",
+            "website": "www.agoodbunch.net"
+          }
+        },
+        {
+          "type": "distributor",
+          "settings": {
+            "location": "Victoria",
+            "winery_name": "CellarHand Pty Ltd",
+            "phone": "03 9274 8444",
+            "email": "sales@cellarhand.com.au",
+            "website": "www.cellarhand.com.au"
+          }
+        },
+        {
+          "type": "distributor",
+          "settings": {
+            "location": "Queensland",
+            "winery_name": "Cuttings Wines Pty Ltd",
+            "phone": "07 3854 0407",
+            "email": "sales@cuttingswine.com.au",
+            "website": "www.cuttingsqld.com"
+          }
+        },
+        {
+          "type": "distributor",
+          "settings": {
+            "location": "Tasmania",
+            "winery_name": "Frankland Estate",
+            "phone": "08 98551544",
+            "email": "info@franklandestate.com.au",
+            "website": "www.franklandestate.com.au"
+          }
+        },
+        {
+          "type": "distributor",
+          "settings": {
+            "location": "Western Australia",
+            "winery_name": "Dave Mullen Wine Agency",
+            "phone": "08 9204 2911",
+            "email": "sales@davemullenwines.com.au",
+            "website": "www.davemullenwines.com.au"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

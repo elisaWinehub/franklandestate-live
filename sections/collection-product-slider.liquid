@@ -1,0 +1,581 @@
+{%- liquid
+  assign sid                 = section.id
+  assign selected_collection = collections[section.settings.collection]
+  if selected_collection == blank
+    assign selected_collection = collections['featured-products']
+  endif
+  assign limit               = section.settings.product_limit
+  assign pt                  = section.settings.padding_top
+  assign pb                  = section.settings.padding_bottom
+  assign bg                  = section.settings.background_color
+  assign bottle_count        = section.settings.bottle_count
+-%}
+
+<section
+  class="fe-slider fe-slider--{{ sid }}"
+  style="background-color:{{ bg }}; padding-top:{{ pt }}px; padding-bottom:{{ pb }}px;"
+>
+  <div class="fe-slider__inner">
+    {%- if section.settings.heading != blank -%}
+      <h2 class="fe-slider__heading">{{ section.settings.heading | escape }}</h2>
+    {%- endif -%}
+
+    {%- if selected_collection != blank and selected_collection.products_count > 0 -%}
+      <div class="fe-slider__track-wrap" id="fe-slider-wrap-{{ sid }}" role="region" aria-label="{{ selected_collection.title | escape }} products">
+        <button class="fe-slider__arrow fe-slider__arrow--prev" id="fe-prev-{{ sid }}" aria-label="Previous products">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polyline points="15 18 9 12 15 6"/></svg>
+        </button>
+
+        <ul class="fe-slider__track" id="fe-slider-track-{{ sid }}" aria-live="polite">
+          {%- for product in selected_collection.products limit: limit -%}
+            {%- assign slider_variant = product.selected_or_first_available_variant -%}
+            {%- assign bundle_price = product.price | times: bottle_count -%}
+            {%- assign slider_btn = section.settings.button_label | strip -%}
+            {%- assign slider_btn_key = slider_btn | downcase -%}
+            {%- if slider_btn == blank or slider_btn_key == 'view all' -%}
+              {%- assign slider_btn = 'Add To Cart' -%}
+            {%- endif -%}
+            <li class="fe-slide">
+              <article class="fe-product-card">
+                <a href="{{ product.url }}" class="fe-product-card__img-wrap" tabindex="-1" aria-hidden="true">
+                  {%- if product.featured_image != blank -%}
+                    <img
+                      src="{{ product.featured_image | image_url: width: 900 }}"
+                      srcset="
+                        {{ product.featured_image | image_url: width: 420 }} 420w,
+                        {{ product.featured_image | image_url: width: 700 }} 700w,
+                        {{ product.featured_image | image_url: width: 900 }} 900w
+                      "
+                      sizes="(max-width: 749px) 100vw, (max-width: 989px) 50vw, 33vw"
+                      alt="{{ product.featured_image.alt | escape | default: product.title }}"
+                      loading="lazy"
+                    >
+                  {%- else -%}
+                    <div class="fe-product-card__img-placeholder">
+                      {{ 'product-1' | placeholder_svg_tag: 'fe-product-card__placeholder-svg' }}
+                    </div>
+                  {%- endif -%}
+                </a>
+
+                <div class="fe-product-card__info">
+                  <h3 class="fe-product-card__title">
+                    <a href="{{ product.url }}">{{ product.title | escape }}</a>
+                  </h3>
+
+                  <p class="fe-product-card__bundle">
+                    <span>{{ bundle_price | money }} / {{ bottle_count }} Bottles.</span>
+                  </p>
+
+                  <p class="fe-product-card__price-per">{{ product.price | money }}</p>
+
+                  {%- if slider_variant != blank and slider_variant.available -%}
+                    <form
+                      action="{{ routes.cart_add_url }}"
+                      method="post"
+                      class="js-wine-ajax-atc fe-slider-{{ sid }}__atc-form"
+                      data-product-title="{{ product.title | escape }}"
+                    >
+                      <input type="hidden" name="id" value="{{ slider_variant.id }}">
+                      <input type="hidden" name="quantity" value="1">
+                      <button type="submit" class="fe-product-card__atc">
+                        {{ slider_btn | escape }}
+                      </button>
+                    </form>
+                  {%- else -%}
+                    <button type="button" class="fe-product-card__atc" disabled>Sold Out</button>
+                  {%- endif -%}
+                </div>
+              </article>
+            </li>
+          {%- endfor -%}
+        </ul>
+
+        <button class="fe-slider__arrow fe-slider__arrow--next" id="fe-next-{{ sid }}" aria-label="Next products">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polyline points="9 18 15 12 9 6"/></svg>
+        </button>
+      </div>
+
+      <div class="fe-slider__dots" id="fe-dots-{{ sid }}" aria-label="Slider positions"></div>
+    {%- else -%}
+      <p class="fe-slider__empty">
+        {%- if selected_collection == blank -%}
+          Please select a collection in the theme editor.
+        {%- else -%}
+          No products found in this collection.
+        {%- endif -%}
+      </p>
+    {%- endif -%}
+  </div>
+</section>
+
+<style>
+  .fe-slider--{{ sid }} {
+    --slides-per-view: 3;
+    width: 100%;
+  }
+
+  .fe-slider--{{ sid }} .fe-slider__inner {
+    max-width: 1500px;
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+
+  .fe-slider--{{ sid }} .fe-slider__heading {
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: clamp(28px, 2.8vw, 42px);
+    font-weight: 400;
+    text-align: center;
+    color: #32291a;
+    margin: 0 0 48px;
+  }
+
+  .fe-slider--{{ sid }} .fe-slider__track-wrap {
+    position: relative;
+    max-width: 1500px;
+    margin: 0 auto;
+  }
+
+  .fe-slider--{{ sid }} .fe-slider__track {
+    display: flex;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scroll-behavior: smooth;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+
+  .fe-slider--{{ sid }} .fe-slider__track::-webkit-scrollbar {
+    display: none;
+  }
+
+  .fe-slider--{{ sid }} .fe-slide {
+    flex: 0 0 calc(100% / var(--slides-per-view));
+    max-width: calc(100% / var(--slides-per-view));
+    scroll-snap-align: start;
+    min-width: 0;
+  }
+
+  .fe-slider--{{ sid }} .fe-product-card {
+    width: 100%;
+    padding: 0 20px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    align-items: center;
+    height: 100%;
+  }
+
+  .fe-slider--{{ sid }} .fe-product-card__img-wrap {
+    width: 100%;
+    height: 420px;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    background: transparent;
+    margin-bottom: 24px;
+    text-decoration: none;
+  }
+
+  .fe-slider--{{ sid }} .fe-product-card__img-wrap img {
+    width: 100%;
+    height: 100%;
+    max-height: 400px;
+    object-fit: contain;
+    object-position: center bottom;
+    display: block;
+  }
+
+  .fe-slider--{{ sid }} .fe-product-card__img-placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+  }
+
+  .fe-slider--{{ sid }} .fe-product-card__placeholder-svg {
+    width: 58%;
+    height: 58%;
+    opacity: 0.35;
+  }
+
+  .fe-slider--{{ sid }} .fe-product-card__info {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 14px;
+  }
+
+  .fe-slider--{{ sid }} .fe-product-card__title {
+    margin: 0;
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: clamp(18px, 1.8vw, 20px);
+    font-weight: 400;
+    line-height: 1.2;
+    width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .fe-slider--{{ sid }} .fe-product-card__title a {
+    color: #2f2418;
+    text-decoration: none;
+    display: block;
+    width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .fe-slider--{{ sid }} .fe-product-card__bundle {
+    width: 100%;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    font-family: "Plus Jakarta Sans", sans-serif;
+    font-size: 13px;
+    letter-spacing: 0.01em;
+    color: #6c5f54;
+  }
+
+  .fe-slider--{{ sid }} .fe-product-card__bundle::before,
+  .fe-slider--{{ sid }} .fe-product-card__bundle::after {
+    content: "";
+    height: 1px;
+    flex: 1 1 auto;
+    background: rgba(86, 70, 55, 0.28);
+  }
+
+  .fe-slider--{{ sid }} .fe-product-card__bundle span {
+    white-space: nowrap;
+  }
+
+  .fe-slider--{{ sid }} .fe-product-card__price-per {
+    margin: 0;
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: clamp(24px, 3vw, 30px);
+    line-height: 1;
+    color: #2f2418;
+  }
+
+  .fe-slider--{{ sid }} .fe-product-card__atc {
+    margin-top: 4px;
+    border: 0;
+    border-radius: 999px;
+    background: #332215;
+    color: #fff;
+    padding: 12px 34px;
+    font-family: Arial, sans-serif;
+    font-size: 13px;
+    letter-spacing: 0.06em;
+    text-transform: none;
+    cursor: pointer;
+    transition: background 0.2s ease, opacity 0.2s ease;
+  }
+
+  .fe-slider--{{ sid }} .fe-product-card__atc:hover:not(:disabled) {
+    background: #4a3422;
+  }
+
+  .fe-slider--{{ sid }} .fe-product-card__atc:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+  }
+
+  .fe-slider--{{ sid }} .fe-slider__arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    border: 1px solid rgba(49, 35, 23, 0.3);
+    background: rgba(255, 255, 255, 0.9);
+    color: #2f2418;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease, border-color 0.2s ease, background 0.2s ease;
+    z-index: 2;
+  }
+
+  .fe-slider--{{ sid }} .fe-slider__track-wrap:hover .fe-slider__arrow {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .fe-slider--{{ sid }} .fe-slider__arrow--prev { left: 10px; }
+  .fe-slider--{{ sid }} .fe-slider__arrow--next { right: 10px; }
+
+  .fe-slider--{{ sid }} .fe-slider__arrow:hover:not(:disabled) {
+    border-color: rgba(49, 35, 23, 0.7);
+    background: #fff;
+  }
+
+  .fe-slider--{{ sid }} .fe-slider__arrow:disabled {
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .fe-slider--{{ sid }} .fe-slider__dots {
+    margin-top: 30px;
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+  }
+
+  .fe-slider--{{ sid }} .fe-slider__dot {
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    border: 0;
+    background: rgba(50, 36, 24, 0.25);
+    cursor: pointer;
+    padding: 0;
+  }
+
+  .fe-slider--{{ sid }} .fe-slider__dot.is-active {
+    background: #332215;
+  }
+
+  .fe-slider--{{ sid }} .fe-slider__empty {
+    text-align: center;
+    font-family: "Plus Jakarta Sans", sans-serif;
+    font-size: 14px;
+    color: #7a6f6a;
+    padding: 40px 0;
+  }
+
+  @media (max-width: 989px) {
+    .fe-slider--{{ sid }} {
+      --slides-per-view: 2;
+    }
+    .fe-slider--{{ sid }} .fe-product-card {
+      padding: 0 14px;
+    }
+    .fe-slider--{{ sid }} .fe-product-card__img-wrap {
+      height: 340px;
+    }
+  }
+
+  @media (max-width: 749px) {
+    .fe-slider--{{ sid }} {
+      --slides-per-view: 1;
+    }
+    .fe-slider--{{ sid }} .fe-product-card {
+      padding: 0 8px;
+    }
+    .fe-slider--{{ sid }} .fe-product-card__img-wrap {
+      height: 300px;
+    }
+    .fe-slider--{{ sid }} .fe-product-card__title {
+      font-size: 16px;
+    }
+    .fe-slider--{{ sid }} .fe-slider__arrow {
+      display: none;
+    }
+  }
+</style>
+
+<script>
+(function () {
+  var sid = {{ section.id | json }};
+  var wrap = document.getElementById('fe-slider-wrap-' + sid);
+  var track = document.getElementById('fe-slider-track-' + sid);
+  var prev = document.getElementById('fe-prev-' + sid);
+  var next = document.getElementById('fe-next-' + sid);
+  var dotsWrap = document.getElementById('fe-dots-' + sid);
+  if (!wrap || !track || !prev || !next || !dotsWrap) return;
+
+  function getPerView() {
+    if (window.innerWidth <= 749) return 1;
+    if (window.innerWidth <= 989) return 2;
+    return 3;
+  }
+
+  function getCard() {
+    return track.querySelector('.fe-slide');
+  }
+
+  function getCardWidth() {
+    var card = getCard();
+    if (!card) return 0;
+    return card.getBoundingClientRect().width;
+  }
+
+  function getMaxIndex() {
+    var total = track.querySelectorAll('.fe-slide').length;
+    return Math.max(0, total - getPerView());
+  }
+
+  function getCurrentIndex() {
+    var width = getCardWidth();
+    if (!width) return 0;
+    return Math.round(track.scrollLeft / width);
+  }
+
+  function scrollToIndex(index) {
+    var width = getCardWidth();
+    var max = getMaxIndex();
+    var safe = Math.max(0, Math.min(index, max));
+    track.scrollTo({ left: safe * width, behavior: 'smooth' });
+  }
+
+  function renderDots() {
+    var count = getMaxIndex() + 1;
+    dotsWrap.innerHTML = '';
+    for (var i = 0; i < count; i += 1) {
+      var dot = document.createElement('button');
+      dot.type = 'button';
+      dot.className = 'fe-slider__dot';
+      dot.dataset.index = String(i);
+      dot.setAttribute('aria-label', 'Go to position ' + (i + 1));
+      dot.addEventListener('click', function (e) {
+        scrollToIndex(parseInt(e.currentTarget.dataset.index, 10));
+      });
+      dotsWrap.appendChild(dot);
+    }
+  }
+
+  function updateControls() {
+    var idx = getCurrentIndex();
+    var max = getMaxIndex();
+    prev.disabled = idx <= 0;
+    next.disabled = idx >= max;
+
+    var dots = dotsWrap.querySelectorAll('.fe-slider__dot');
+    dots.forEach(function (dot, i) {
+      var active = i === idx;
+      dot.classList.toggle('is-active', active);
+      dot.setAttribute('aria-current', active ? 'true' : 'false');
+    });
+  }
+
+  prev.addEventListener('click', function () {
+    scrollToIndex(getCurrentIndex() - 1);
+  });
+
+  next.addEventListener('click', function () {
+    scrollToIndex(getCurrentIndex() + 1);
+  });
+
+  var touchStartX = 0;
+  track.addEventListener('touchstart', function (e) {
+    touchStartX = e.touches[0].clientX;
+  }, { passive: true });
+  track.addEventListener('touchend', function (e) {
+    var diff = touchStartX - e.changedTouches[0].clientX;
+    if (Math.abs(diff) > 40) {
+      scrollToIndex(getCurrentIndex() + (diff > 0 ? 1 : -1));
+    }
+  });
+
+  track.addEventListener('scroll', function () {
+    window.requestAnimationFrame(updateControls);
+  }, { passive: true });
+
+  var resizeTimer;
+  window.addEventListener('resize', function () {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(function () {
+      renderDots();
+      updateControls();
+    }, 150);
+  });
+
+  renderDots();
+  updateControls();
+})();
+</script>
+
+{% schema %}
+{
+  "name": "Product Slider",
+  "tag": "div",
+  "class": "fe-product-slider-section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Section heading",
+      "default": "Our Wines"
+    },
+    {
+      "type": "collection",
+      "id": "collection",
+      "label": "Collection"
+    },
+    {
+      "type": "range",
+      "id": "product_limit",
+      "min": 2,
+      "max": 24,
+      "step": 1,
+      "label": "Number of products",
+      "default": 6
+    },
+    {
+      "type": "range",
+      "id": "bottle_count",
+      "min": 1,
+      "max": 24,
+      "step": 1,
+      "label": "Bottle count",
+      "default": 6
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "Add to cart button label",
+      "default": "Add To Cart"
+    },
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background color",
+      "default": "#efeee9"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 120,
+      "step": 8,
+      "unit": "px",
+      "label": "Padding top",
+      "default": 80
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 120,
+      "step": 8,
+      "unit": "px",
+      "label": "Padding bottom",
+      "default": 80
+    }
+  ],
+  "presets": [
+    {
+      "name": "Product Slider"
+    }
+  ]
+}
+{% endschema %}

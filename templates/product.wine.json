@@ -1,0 +1,33 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "main": {
+      "type": "wine-product-main",
+      "settings": {
+        "background_color": "#f8f5ef"
+      }
+    },
+    "wine_product_tabs": {
+      "type": "wine-product-tabs",
+      "settings": {
+        "background_color": "#E9E9E2",
+        "container_width": 1110,
+        "padding_top": 80,
+        "padding_bottom": 80,
+        "reviews_initial_count": 2
+      }
+    }
+  },
+  "order": [
+    "main",
+    "wine_product_tabs"
+  ]
+}

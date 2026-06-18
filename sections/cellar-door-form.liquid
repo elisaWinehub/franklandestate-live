@@ -1,0 +1,678 @@
+{% liquid
+  assign sid = section.id
+  assign cw = section.settings.container_width | default: 970
+  assign heading_default = 'Cellar Door Booking Form'
+  assign heading_text = section.settings.heading | default: heading_default
+  assign success_default = 'Thank you. Your booking request has been received.'
+  assign success_text = section.settings.success_message | default: success_default
+%}
+
+<section
+  id="fe-cellar-door-{{ sid }}"
+  class="fe-cellar-door-form fe-cellar-door-form--{{ sid }}"
+  style="
+    --fe-cdf-bg: {{ section.settings.background_color }};
+    --fe-cdf-text: {{ section.settings.text_color }};
+    --fe-cdf-btn-bg: {{ section.settings.button_background_color }};
+    --fe-cdf-btn-text: {{ section.settings.button_text_color }};
+    --fe-cdf-container: {{ cw }}px;
+    padding-top: {{ section.settings.padding_top }}px;
+    padding-bottom: {{ section.settings.padding_bottom }}px;
+  "
+>
+  <div class="fe-cellar-door-form__inner">
+    {% if heading_text != blank %}
+      <h2 class="fe-cellar-door-form__title">{{ heading_text | escape }}</h2>
+    {% endif %}
+
+    {% if section.settings.intro != blank %}
+      <div class="fe-cellar-door-form__intro rte">{{ section.settings.intro }}</div>
+    {% endif %}
+
+    <div
+      class="fe-cellar-door-form__success"
+      id="fe-cdf-success-{{ sid }}"
+      role="status"
+      aria-live="polite"
+      hidden
+    >
+      {{ success_text | escape }}
+    </div>
+
+    <form class="fe-cellar-door-form__form" id="fe-cdf-form-{{ sid }}" novalidate>
+      <div class="fe-cellar-door-form__field" data-cdf-field="first_name">
+        <label class="fe-cellar-door-form__label" for="fe-cdf-fn-{{ sid }}">
+          First Name <abbr class="fe-cellar-door-form__req" title="required">*</abbr>
+        </label>
+        <input
+          id="fe-cdf-fn-{{ sid }}"
+          class="fe-cellar-door-form__input"
+          type="text"
+          name="first_name"
+          autocomplete="given-name"
+        >
+        <p class="fe-cellar-door-form__error" id="fe-cdf-fn-err-{{ sid }}" hidden role="alert"></p>
+      </div>
+
+      <div class="fe-cellar-door-form__field" data-cdf-field="last_name">
+        <label class="fe-cellar-door-form__label" for="fe-cdf-ln-{{ sid }}">
+          Last Name <abbr class="fe-cellar-door-form__req" title="required">*</abbr>
+        </label>
+        <input
+          id="fe-cdf-ln-{{ sid }}"
+          class="fe-cellar-door-form__input"
+          type="text"
+          name="last_name"
+          autocomplete="family-name"
+        >
+        <p class="fe-cellar-door-form__error" id="fe-cdf-ln-err-{{ sid }}" hidden role="alert"></p>
+      </div>
+
+      <div class="fe-cellar-door-form__field" data-cdf-field="phone">
+        <label class="fe-cellar-door-form__label" for="fe-cdf-phone-{{ sid }}">
+          Phone <abbr class="fe-cellar-door-form__req" title="required">*</abbr>
+        </label>
+        <input
+          id="fe-cdf-phone-{{ sid }}"
+          class="fe-cellar-door-form__input"
+          type="tel"
+          name="phone"
+          autocomplete="tel"
+        >
+        <p class="fe-cellar-door-form__error" id="fe-cdf-phone-err-{{ sid }}" hidden role="alert"></p>
+      </div>
+
+      <div class="fe-cellar-door-form__field" data-cdf-field="guests">
+        <label class="fe-cellar-door-form__label" for="fe-cdf-guests-{{ sid }}">
+          Number of guests <abbr class="fe-cellar-door-form__req" title="required">*</abbr>
+        </label>
+        <input
+          id="fe-cdf-guests-{{ sid }}"
+          class="fe-cellar-door-form__input"
+          type="number"
+          name="guests"
+          min="1"
+          step="1"
+          inputmode="numeric"
+        >
+        <p class="fe-cellar-door-form__error" id="fe-cdf-guests-err-{{ sid }}" hidden role="alert"></p>
+      </div>
+
+      <div class="fe-cellar-door-form__field" data-cdf-field="experience">
+        <label class="fe-cellar-door-form__label" for="fe-cdf-exp-{{ sid }}">
+          Experience type <abbr class="fe-cellar-door-form__req" title="required">*</abbr>
+        </label>
+        <select id="fe-cdf-exp-{{ sid }}" class="fe-cellar-door-form__select" name="experience">
+          <option value="">Please select</option>
+          <option value="field_tasting">Field Tasting</option>
+          <option value="beyond_cellar_door">Beyond the Cellar Door Tour</option>
+        </select>
+        <p class="fe-cellar-door-form__error" id="fe-cdf-exp-err-{{ sid }}" hidden role="alert"></p>
+      </div>
+
+      <div class="fe-cellar-door-form__field" data-cdf-field="email">
+        <label class="fe-cellar-door-form__label" for="fe-cdf-email-{{ sid }}">
+          Email <abbr class="fe-cellar-door-form__req" title="required">*</abbr>
+        </label>
+        <input
+          id="fe-cdf-email-{{ sid }}"
+          class="fe-cellar-door-form__input"
+          type="email"
+          name="email"
+          autocomplete="email"
+        >
+        <p class="fe-cellar-door-form__error" id="fe-cdf-email-err-{{ sid }}" hidden role="alert"></p>
+      </div>
+
+      <div class="fe-cellar-door-form__field fe-cellar-door-form__field--checkbox fe-cellar-door-form__field--full">
+        <label class="fe-cellar-door-form__check-label">
+          <input type="checkbox" name="mailing_opt_in" value="yes" class="fe-cellar-door-form__checkbox">
+          <span>Opt into mailing list</span>
+        </label>
+      </div>
+
+      <div class="fe-cellar-door-form__field fe-cellar-door-form__field--full" data-cdf-field="date">
+        <label class="fe-cellar-door-form__label" for="fe-cdf-date-{{ sid }}">
+          Date <abbr class="fe-cellar-door-form__req" title="required">*</abbr>
+        </label>
+        <input id="fe-cdf-date-{{ sid }}" class="fe-cellar-door-form__input" type="date" name="booking_date">
+        <p class="fe-cellar-door-form__error" id="fe-cdf-date-err-{{ sid }}" hidden role="alert"></p>
+      </div>
+
+      <fieldset class="fe-cellar-door-form__fieldset" data-cdf-field="booking_time">
+        <legend class="fe-cellar-door-form__legend">
+          Preferred booking time <abbr class="fe-cellar-door-form__req" title="required">*</abbr>
+        </legend>
+        <div class="fe-cellar-door-form__radio-group">
+          <label class="fe-cellar-door-form__radio-label">
+            <input type="radio" name="booking_time" value="10-11" class="fe-cellar-door-form__radio">
+            <span>10–11am</span>
+          </label>
+          <label class="fe-cellar-door-form__radio-label">
+            <input type="radio" name="booking_time" value="11-12" class="fe-cellar-door-form__radio">
+            <span>11am–12pm</span>
+          </label>
+          <label class="fe-cellar-door-form__radio-label">
+            <input type="radio" name="booking_time" value="13-14" class="fe-cellar-door-form__radio">
+            <span>1pm–2pm</span>
+          </label>
+          <label class="fe-cellar-door-form__radio-label">
+            <input type="radio" name="booking_time" value="14-15" class="fe-cellar-door-form__radio">
+            <span>2pm–3pm</span>
+          </label>
+          <label class="fe-cellar-door-form__radio-label">
+            <input type="radio" name="booking_time" value="15-16" class="fe-cellar-door-form__radio">
+            <span>3pm–4pm</span>
+          </label>
+        </div>
+        <p class="fe-cellar-door-form__error" id="fe-cdf-time-err-{{ sid }}" hidden role="alert"></p>
+      </fieldset>
+
+      <button type="submit" class="fe-cellar-door-form__submit">{{ section.settings.button_label | default: 'Send' | escape }}</button>
+    </form>
+  </div>
+</section>
+
+<script>
+  (function () {
+    var MSG_REQUIRED = 'This field is required';
+    var MSG_EMAIL = 'Please enter a valid email address';
+
+    var root = document.getElementById('fe-cellar-door-{{ sid }}');
+    if (!root || root.dataset.cdfInit === 'true') return;
+    root.dataset.cdfInit = 'true';
+
+    var form = root.querySelector('#fe-cdf-form-{{ sid }}');
+    var successEl = root.querySelector('#fe-cdf-success-{{ sid }}');
+    if (!form || !successEl) return;
+
+    function emailOk(v) {
+      return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(v).trim());
+    }
+
+    function hideErr(el) {
+      if (!el) return;
+      el.textContent = '';
+      el.hidden = true;
+    }
+
+    function showErr(el, msg) {
+      if (!el) return;
+      el.textContent = msg;
+      el.hidden = false;
+    }
+
+    function clearAllErrors() {
+      form.querySelectorAll('.fe-cellar-door-form__error').forEach(function (n) {
+        hideErr(n);
+      });
+      form.querySelectorAll('.fe-cellar-door-form__input, .fe-cellar-door-form__select').forEach(function (n) {
+        n.removeAttribute('aria-invalid');
+      });
+      var fs = form.querySelector('.fe-cellar-door-form__fieldset[data-cdf-field="booking_time"]');
+      if (fs) fs.removeAttribute('aria-invalid');
+    }
+
+    function validate() {
+      clearAllErrors();
+      var ok = true;
+
+      function req(inputId, errId, fieldWrap) {
+        var inp = root.querySelector('#' + inputId);
+        var err = root.querySelector('#' + errId);
+        if (!inp || !err) return;
+        if (!String(inp.value || '').trim()) {
+          showErr(err, MSG_REQUIRED);
+          inp.setAttribute('aria-invalid', 'true');
+          ok = false;
+        }
+      }
+
+      req('fe-cdf-fn-{{ sid }}', 'fe-cdf-fn-err-{{ sid }}');
+      req('fe-cdf-ln-{{ sid }}', 'fe-cdf-ln-err-{{ sid }}');
+      req('fe-cdf-phone-{{ sid }}', 'fe-cdf-phone-err-{{ sid }}');
+
+      var guests = root.querySelector('#fe-cdf-guests-{{ sid }}');
+      var guestsErr = root.querySelector('#fe-cdf-guests-err-{{ sid }}');
+      if (guests && guestsErr) {
+        var gn = parseInt(String(guests.value || '').trim(), 10);
+        if (!guests.value || guests.value === '' || isNaN(gn) || gn < 1) {
+          showErr(guestsErr, MSG_REQUIRED);
+          guests.setAttribute('aria-invalid', 'true');
+          ok = false;
+        }
+      }
+
+      var exp = root.querySelector('#fe-cdf-exp-{{ sid }}');
+      var expErr = root.querySelector('#fe-cdf-exp-err-{{ sid }}');
+      if (exp && expErr && !String(exp.value || '').trim()) {
+        showErr(expErr, MSG_REQUIRED);
+        exp.setAttribute('aria-invalid', 'true');
+        ok = false;
+      }
+
+      var email = root.querySelector('#fe-cdf-email-{{ sid }}');
+      var emailErr = root.querySelector('#fe-cdf-email-err-{{ sid }}');
+      if (email && emailErr) {
+        var ev = String(email.value || '').trim();
+        if (!ev) {
+          showErr(emailErr, MSG_REQUIRED);
+          email.setAttribute('aria-invalid', 'true');
+          ok = false;
+        } else if (!emailOk(ev)) {
+          showErr(emailErr, MSG_EMAIL);
+          email.setAttribute('aria-invalid', 'true');
+          ok = false;
+        }
+      }
+
+      var dateIn = root.querySelector('#fe-cdf-date-{{ sid }}');
+      var dateErr = root.querySelector('#fe-cdf-date-err-{{ sid }}');
+      if (dateIn && dateErr && !String(dateIn.value || '').trim()) {
+        showErr(dateErr, MSG_REQUIRED);
+        dateIn.setAttribute('aria-invalid', 'true');
+        ok = false;
+      }
+
+      var timeChecked = form.querySelector('input[name="booking_time"]:checked');
+      var timeErr = root.querySelector('#fe-cdf-time-err-{{ sid }}');
+      var timeFs = form.querySelector('.fe-cellar-door-form__fieldset[data-cdf-field="booking_time"]');
+      if (!timeChecked && timeErr) {
+        showErr(timeErr, MSG_REQUIRED);
+        if (timeFs) timeFs.setAttribute('aria-invalid', 'true');
+        ok = false;
+      }
+
+      return ok;
+    }
+
+    function clearFieldError(wrap) {
+      if (!wrap) return;
+      var err = wrap.querySelector('.fe-cellar-door-form__error');
+      hideErr(err);
+      wrap.querySelectorAll('[aria-invalid]').forEach(function (n) {
+        n.removeAttribute('aria-invalid');
+      });
+      if (wrap.classList.contains('fe-cellar-door-form__fieldset')) {
+        wrap.removeAttribute('aria-invalid');
+      }
+    }
+
+    form.addEventListener('input', function (e) {
+      var t = e.target;
+      if (!t || !form.contains(t)) return;
+      var wrap = t.closest('.fe-cellar-door-form__field[data-cdf-field]');
+      if (wrap) clearFieldError(wrap);
+    });
+
+    form.addEventListener('change', function (e) {
+      var t = e.target;
+      if (!t || !form.contains(t)) return;
+      if (t.name === 'booking_time') {
+        clearFieldError(form.querySelector('.fe-cellar-door-form__fieldset[data-cdf-field="booking_time"]'));
+        return;
+      }
+      var wrap = t.closest('.fe-cellar-door-form__field[data-cdf-field]');
+      if (wrap) clearFieldError(wrap);
+    });
+
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+      if (!validate()) return;
+      form.setAttribute('hidden', '');
+      successEl.removeAttribute('hidden');
+    });
+  })();
+</script>
+
+{% stylesheet %}
+  .fe-cellar-door-form {
+    background-color: var(--fe-cdf-bg, #e9e9e2);
+    color: var(--fe-cdf-text, #302313);
+    box-sizing: border-box;
+  }
+
+  .fe-cellar-door-form *,
+  .fe-cellar-door-form *::before,
+  .fe-cellar-door-form *::after {
+    box-sizing: border-box;
+  }
+
+  .fe-cellar-door-form__inner {
+    max-width: var(--fe-cdf-container, 970px);
+    margin: 0 auto;
+    padding-inline: clamp(20px, 4vw, 32px);
+  }
+
+  .fe-cellar-door-form__title {
+    margin: 0 0 clamp(12px, 2vw, 20px);
+    text-align: center;
+    font-family: eidetic-neo, Georgia, 'Times New Roman', serif;
+    font-weight: 400;
+    font-size: clamp(26px, 3vw, 36px);
+    line-height: 1.15;
+    color: var(--fe-cdf-text, #302313);
+  }
+
+  .fe-cellar-door-form__intro {
+    margin: 0 auto clamp(28px, 4vw, 40px);
+    max-width: 52ch;
+    text-align: center;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: clamp(14px, 1.25vw, 16px);
+    line-height: 1.65;
+    color: var(--fe-cdf-text, #302313);
+    opacity: 0.92;
+  }
+
+  .fe-cellar-door-form__intro p {
+    margin: 0;
+  }
+
+  .fe-cellar-door-form__intro p + p {
+    margin-top: 0.65em;
+  }
+
+  .fe-cellar-door-form__success {
+    margin-bottom: 28px;
+    padding: 20px 22px;
+    text-align: center;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 17px;
+    line-height: 1.5;
+    color: var(--fe-cdf-text, #302313);
+    border: 1px solid color-mix(in srgb, var(--fe-cdf-text, #302313) 18%, transparent);
+    background: rgb(255 255 255 / 85%);
+    border-radius: 4px;
+  }
+
+  .fe-cellar-door-form__success[hidden],
+  .fe-cellar-door-form__form[hidden] {
+    display: none !important;
+  }
+
+  .fe-cellar-door-form__form {
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: clamp(16px, 3vw, 28px);
+    row-gap: clamp(18px, 2.5vw, 22px);
+    align-items: start;
+  }
+
+  .fe-cellar-door-form__field {
+    margin-bottom: 0;
+    min-width: 0;
+  }
+
+  .fe-cellar-door-form__field--full,
+  .fe-cellar-door-form__fieldset,
+  .fe-cellar-door-form__submit {
+    grid-column: 1 / -1;
+  }
+
+  .fe-cellar-door-form__field--checkbox {
+    margin-bottom: 0;
+  }
+
+  .fe-cellar-door-form__label,
+  .fe-cellar-door-form__legend {
+    display: block;
+    margin-bottom: 8px;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--fe-cdf-text, #302313);
+    text-align: left;
+  }
+
+  .fe-cellar-door-form__fieldset {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    min-width: 0;
+  }
+
+  .fe-cellar-door-form__legend {
+    padding: 0;
+    margin-bottom: 12px;
+    width: 100%;
+  }
+
+  .fe-cellar-door-form__req {
+    color: #c62828;
+    text-decoration: none;
+    font-weight: 700;
+    margin-inline-start: 2px;
+  }
+
+  .fe-cellar-door-form__input,
+  .fe-cellar-door-form__select {
+    width: 100%;
+    min-height: 44px;
+    padding: 10px 14px;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 15px;
+    line-height: 1.35;
+    color: var(--fe-cdf-text, #302313);
+    background: #ffffff;
+    border: 1px solid #d2cfc7;
+    border-radius: 4px;
+    transition: border-color 0.15s ease;
+  }
+
+  .fe-cellar-door-form__input:focus,
+  .fe-cellar-door-form__select:focus {
+    outline: none;
+    border-color: color-mix(in srgb, var(--fe-cdf-text, #302313) 35%, #d2cfc7);
+  }
+
+  .fe-cellar-door-form__input[aria-invalid='true'],
+  .fe-cellar-door-form__select[aria-invalid='true'] {
+    border-color: #c62828;
+  }
+
+  .fe-cellar-door-form__fieldset[aria-invalid='true'] .fe-cellar-door-form__radio-label {
+    outline-offset: 2px;
+  }
+
+  .fe-cellar-door-form__select {
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23504540' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 14px center;
+    padding-right: 40px;
+    cursor: pointer;
+  }
+
+  .fe-cellar-door-form__radio-group {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding-top: 2px;
+  }
+
+  .fe-cellar-door-form__radio-label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 15px;
+    cursor: pointer;
+    color: var(--fe-cdf-text, #302313);
+  }
+
+  .fe-cellar-door-form__radio {
+    width: 18px;
+    height: 18px;
+    accent-color: var(--fe-cdf-text, #302313);
+    flex-shrink: 0;
+  }
+
+  .fe-cellar-door-form__check-label {
+    display: inline-flex;
+    align-items: flex-start;
+    gap: 10px;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 15px;
+    cursor: pointer;
+    color: var(--fe-cdf-text, #302313);
+    text-align: left;
+  }
+
+  .fe-cellar-door-form__checkbox {
+    width: 18px;
+    height: 18px;
+    margin-top: 3px;
+    accent-color: var(--fe-cdf-text, #302313);
+    flex-shrink: 0;
+  }
+
+  .fe-cellar-door-form__error {
+    margin: 8px 0 0;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 13px;
+    line-height: 1.4;
+    color: #c62828;
+  }
+
+  .fe-cellar-door-form__error[hidden] {
+    display: none !important;
+  }
+
+  .fe-cellar-door-form__submit {
+    margin-top: clamp(4px, 1vw, 10px);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 48px;
+    padding: 12px 40px;
+    width: 100%;
+    max-width: 280px;
+    margin-inline: auto;
+    justify-self: center;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    background: var(--fe-cdf-btn-bg, #32291a);
+    color: var(--fe-cdf-btn-text, #ffffff);
+    transition: opacity 0.2s ease;
+  }
+
+  .fe-cellar-door-form__submit:hover {
+    opacity: 0.92;
+  }
+
+  .fe-cellar-door-form__submit:focus-visible {
+    outline: 2px solid var(--fe-cdf-text, #302313);
+    outline-offset: 3px;
+  }
+
+  @media screen and (max-width: 749px) {
+    .fe-cellar-door-form__form {
+      grid-template-columns: 1fr;
+    }
+
+    .fe-cellar-door-form__submit {
+      max-width: none;
+      width: 100%;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Cellar Door Form",
+  "tag": "section",
+  "class": "fe-cellar-door-form-root",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading text",
+      "default": "Cellar Door Booking Form"
+    },
+    {
+      "type": "richtext",
+      "id": "intro",
+      "label": "Intro text",
+      "info": "Optional text shown below the heading."
+    },
+    {
+      "type": "textarea",
+      "id": "success_message",
+      "label": "Success message",
+      "default": "Thank you. Your booking request has been received."
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "Submit button label",
+      "default": "Send"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background color",
+      "default": "#E9E9E2"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color",
+      "default": "#302313"
+    },
+    {
+      "type": "color",
+      "id": "button_background_color",
+      "label": "Button background color",
+      "default": "#32291a"
+    },
+    {
+      "type": "color",
+      "id": "button_text_color",
+      "label": "Button text color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "range",
+      "id": "container_width",
+      "label": "Container width",
+      "min": 700,
+      "max": 1200,
+      "step": 10,
+      "unit": "px",
+      "default": 970
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Padding top",
+      "min": 0,
+      "max": 160,
+      "step": 4,
+      "unit": "px",
+      "default": 72
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Padding bottom",
+      "min": 0,
+      "max": 160,
+      "step": 4,
+      "unit": "px",
+      "default": 72
+    }
+  ],
+  "presets": [
+    {
+      "name": "Cellar Door Form"
+    }
+  ]
+}
+{% endschema %}

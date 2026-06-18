@@ -1,0 +1,102 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "hero": {
+      "type": "page-hero-banner",
+      "settings": {
+        "heading": "Who We Are",
+        "text_vertical_position": "lower-center",
+        "text_color": "#ffffff",
+        "image": "shopify://shop_images/Who_We_Are_Banner.jpg",
+        "background_position": "center center",
+        "background_color": "#efeee9",
+        "desktop_height": 560,
+        "mobile_height": 360,
+        "overlay_opacity": 25
+      }
+    },
+    "text_image_column_qVVBHQ": {
+      "type": "text-image-column",
+      "name": "Text + Image",
+      "settings": {
+        "heading": "Frankland Estate is a second-generation winery run by brother and sister Hunter and Elizabeth Smith, with Elizabeth’s husband Brian Kent at the winemaking helm since 2010.",
+        "body": "",
+        "button_label": "",
+        "button_link": "",
+        "image_url": "",
+        "text_alignment": "center",
+        "background_color": "#d8cec0",
+        "padding_top": 80,
+        "padding_bottom": 80
+      }
+    },
+    "main": {
+      "type": "main-page",
+      "settings": {}
+    },
+    "alt_1": {
+      "type": "alternating-content",
+      "settings": {
+        "image": "shopify://shop_images/Our_Family_2.jpg",
+        "heading": "",
+        "body": "<p>Our upbringing on Isolation Ridge gives incredible collective insight into the wines as they make their way from vine to barrel, bottle to glass. We are free to offer opinions and challenge convention, which is vital when you strive to make the best of what you have. We owe an enormous debt to our parents, Judi Cullam and the late Barrie Smith, for their faith and vision in planting vines on Isolation Ridge way back in 1988. They set the tone for the integrity, character and respect for place that are at the heart of all we do.<br/><br/></p>",
+        "button_label": "",
+        "button_link": "",
+        "image_position": "image_right",
+        "background_color": "#efeee9",
+        "padding_top": 80,
+        "padding_bottom": 80,
+        "divider_position": "none"
+      }
+    },
+    "alt_2": {
+      "type": "alternating-content",
+      "settings": {
+        "image": "shopify://shop_images/A_Natural_Haven.jpg",
+        "heading": "",
+        "body": "<p>We live on this land, and this entails all sorts of privileges, benefits and responsibilities. Raising a family here is just one reason to maintain this natural haven. We will pass on this land in even better condition than we found it. Not only that, but in order to oversee the natural balance of the vines – to pay attention to their needs so they yield the most impeccable fruit – you need to be immersed in them, as deeply and constantly as possible. This is the only way to see a simple and seamless transition from beautiful fruit to beautiful wine. The past decade has seen a host of those small, patient, painstaking tweaks in the vineyard and winery that, we hope, make Frankland Estate inimitable and unmissable.<br/><br/></p>",
+        "button_label": "",
+        "button_link": "",
+        "image_position": "image_left",
+        "background_color": "#efeee9",
+        "padding_top": 80,
+        "padding_bottom": 80,
+        "divider_position": "none"
+      }
+    },
+    "banner_1": {
+      "type": "fullwidth-image-banner",
+      "settings": {
+        "image_url": "https://www.franklandestate.com.au/dist/images/sitegates/content/background.jpg",
+        "mobile_image_url": "https://www.franklandestate.com.au/dist/images/sitegates/signup/background.jpg",
+        "title": "",
+        "subtitle": "",
+        "button_label": "",
+        "button_link": "",
+        "text_alignment": "center",
+        "background_color": "#efeee9",
+        "padding_top": 80,
+        "padding_bottom": 80,
+        "section_height": 55,
+        "mobile_height": 40,
+        "overlay_opacity": 20
+      }
+    }
+  },
+  "order": [
+    "hero",
+    "text_image_column_qVVBHQ",
+    "main",
+    "alt_1",
+    "alt_2",
+    "banner_1"
+  ]
+}

@@ -1,0 +1,55 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "hero": {
+      "type": "page-hero-banner",
+      "settings": {
+        "heading": "",
+        "text_vertical_position": "lower-center",
+        "text_color": "#ffffff",
+        "image": "shopify://shop_images/SHOTBYTHOM-09619_1.jpg",
+        "background_position": "center center",
+        "background_color": "#efeee9",
+        "desktop_height": 560,
+        "mobile_height": 360,
+        "overlay_opacity": 25
+      }
+    },
+    "main": {
+      "type": "main-page",
+      "settings": {}
+    },
+    "text_image_column_NPAb78": {
+      "type": "text-image-column",
+      "name": "Text + Image",
+      "settings": {
+        "heading": "",
+        "heading_font_size": 32,
+        "heading_font_family": "serif",
+        "heading_font_weight": "400",
+        "body": "<p>Welcome to the Frankland Estate website. If you continue to browse and use this website, you are agreeing to comply with and be bound by the following terms and conditions of use, which together with our privacy policy govern <strong>Frankland Estate</strong> relationship with you in the context of this website.</p><p>The term \"<strong>Frankland Estate</strong>\" or \"us\" or \"we\" refers to the owner of the website. The term \"you\" refers to the user or viewer of our website.</p><p>The use of this website is subject to the following terms of use:</p><p>The content of the pages of this website is for your general information and use only. It is subject to change without notice.</p><p>Neither we nor any third parties provide any warranty or guarantee as to the accuracy, timeliness, performance, completeness or suitability of the information and materials found or offered on this website for any particular purpose. You acknowledge that such information and materials may contain inaccuracies or errors and we expressly exclude liability for any such inaccuracies or errors to the fullest extent permitted by law.</p><p>Your use of any information or materials on this website is entirely at your own risk, for which we shall not be liable. It shall be your own responsibility to ensure that any products, services or information available through this website meet your specific requirements.</p><p>This website contains material which is owned by or licensed to us. This material includes, but is not limited to, the design, layout, look, appearance and graphics. Reproduction is prohibited other than in accordance with the copyright notice, which forms part of these terms and conditions.</p><p>All trademarks reproduced in this website which are not the property of, or licensed to, the operator are acknowledged on the website.</p><p>Unauthorized use of this website may give rise to a claim for damages and/or be a criminal offence. From time to time, this website may also include links to other websites. These links are provided for your convenience to provide further information. They do not signify that we endorse the website(s). We have no responsibility for the content of the linked website(s).</p><p>Your use of this website and any dispute arising out of such use of the website is subject to the laws of the Australian Consumer and privacy Laws.</p><h3>Wine-Specific Conditions</h3><p><strong>Legal Requirements</strong></p><p>You must be 18 years of age or older, to order or receive alcoholic beverages from Frankland Estate including through this website. Receipt of shipments containing alcoholic beverages requires the signature of an adult (a person 18 years of age or older). Wines purchased from Frankland Estate are not for resale, and are for personal consumption only. It is an offence to obtain liquor on behalf of a person under the age of 18 years. By purchasing any of our wines, you warrant that you and the recipient of this order are at least 18 years of age.</p><p><strong>Credit Card Charges</strong></p><p>Orders are by credit card only. We accept Visa, MasterCard, and American Express. International payments cannot and will not be processed through our website and will need to be made via phone order on +61 8 9855 1544.</p><p><strong>Minimum Purchase</strong></p><p>Wine purchases through our website must be a minimum of 6 bottles and purchased in multiples of 6 bottles.</p><p><strong>Shipping</strong></p><p>Shipping is only available to Australian residents, we ship to all Australian states and territories. Shipping is free on all orders of 12 bottles (a case) or more. Shipping charges apply for orders of less than 12 bottles (please note: minimum order is 6 bottles):</p><p><strong>Shipping Charges:</strong></p><p>Australia Wide: $15 on under 12 bottles, Free Freight on 12 bottlesor more. Free shipping also applies to Magnum bottle purchases.</p><p><strong>We use Australia Post delivery service.</strong></p><p>Due to the fact that international freight charges can be very expensive because of government regulations, duties and taxes along with differing laws in different countries, we cannot accept or ship</p><p>If you would like to enquire about international shipping please contact Frankland Estate on +61 8 9855 1544. We also encourage you to contact our distributor in the country you seek to export wine to.</p><p>We aim to ship all orders within 24 hours of being received, or next business day if order placed on Saturday or Sunday. However occasionally this time frame cannot be met. All orders will be processed no later than 3 business days after payment has cleared. If you require your wine to arrive before a certain date please allow a minimum of 3 working days from clearance of payment and at least 7 working days for your order to be delivered. Frankland Estate cannot hold any responsibility for delivery times.</p><p>Australia Post is the carrier used within Australia. Please provide instructions for delivery if you are not home as delivery is between normal business hours, in the event that no alternative instructions for delivery is advised the wine will be carded and returned to the nearest Australia Post Office for collection.</p><p>Deliveries cannot be made on weekends or public holidays.</p><p>If your wine does not arrive within 10 working days of your order being received please email <a href=\"mailto:info@franklandestate.com.au\" target=\"_blank\">info@franklandestate.com.au</a> or call the office on <a href=\"tel: +61 8 9855 1544\" target=\"_blank\">+61 8 9855 1544</a>.</p><h3>Wine is a Delicate Commodity</h3><p>Wine is a perishable commodity. Wine does not like extremes of temperature: hot humid summer and cold winter weather may adversely affect the condition of your wine during shipment. Frankland Estate is not responsible for, and will not replace wine that is damaged by extreme weather conditions during shipment. When your wine order is picked up by Australia Post for delivery, responsibility for the wine becomes the responsibility of the purchaser.</p>",
+        "button_label": "",
+        "button_link": "",
+        "image_url": "",
+        "text_alignment": "left",
+        "text_container_width": "normal",
+        "background_color": "#e9e9e2",
+        "padding_top": 80,
+        "padding_bottom": 80
+      }
+    }
+  },
+  "order": [
+    "hero",
+    "main",
+    "text_image_column_NPAb78"
+  ]
+}

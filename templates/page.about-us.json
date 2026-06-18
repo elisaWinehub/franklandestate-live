@@ -1,0 +1,495 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "about_us_hero": {
+      "type": "about-us-hero",
+      "settings": {
+        "section_id": "our-place-hero",
+        "desktop_image": "shopify://shop_images/208_20260422_FRANKLAND_ESTATE_Winery_Portraits_Processing_Vineyard.jpg",
+        "fallback_background_color": "#2a241c",
+        "overlay_color": "#000000",
+        "overlay_opacity": 35,
+        "heading": "About Us",
+        "body": "<p>A family winery shaped by land, people, and organic farming in Frankland River.</p>",
+        "body_margin_top": 0,
+        "body_margin_right": 0,
+        "body_margin_bottom": 0,
+        "body_margin_left": 0,
+        "link_1_label": "Who We Are",
+        "link_1_url": "#who-we-are",
+        "link_2_label": "Where We Live",
+        "link_2_url": "#where-we-live",
+        "link_3_label": "Olmo’s Reward",
+        "link_3_url": "#olmos-reward",
+        "link_4_label": "Visit",
+        "link_4_url": "#visit-explore",
+        "show_arrow": true,
+        "arrow_link": "#intro",
+        "arrow_label": "Scroll to intro",
+        "hero_height_desktop": 560,
+        "hero_height_mobile": 420,
+        "content_max_width": 1100,
+        "heading_color": "#ffffff",
+        "text_color": "#ffffff",
+        "padding_top": 56,
+        "padding_bottom": 56
+      }
+    },
+    "about_intro": {
+      "type": "alternating-content",
+      "settings": {
+        "section_anchor_id": "intro",
+        "image": "shopify://shop_images/097_20260422_FRANKLAND_ESTATE_Portraits_Garden_Family_Home_Old_Cellar.jpg",
+        "heading": "Our Story",
+        "heading_font_size": 44,
+        "body": "<p>Frankland Estate is a second-generation, family-run winery led by siblings Hunter and Elizabeth Smith, alongside Elizabeth’s husband, Brian Kent, who has guided winemaking since 2010.</p><p>Having grown up on Isolation Ridge, we share a deep, intuitive understanding of the vineyard and its wines - from vine to barrel, bottle to glass. That closeness gives us the confidence to question, refine and evolve, always in pursuit of expressing the site at its best.</p><p>We owe much to our parents, Judi Cullam and the late Barrie Smith, who first planted vines here in 1988. Their vision established the foundations of integrity, character and respect for place that continue to shape everything we do.</p><p>Living on the land brings both privilege and responsibility. It is where we raise our families, and it drives our commitment to care for the vineyard in a way that will leave it in better condition for the next generation. Daily immersion in the vineyard allows us to respond to the subtle needs of the vines, guiding them towards producing fruit of clarity and balance - the essential starting point for great wine.</p><p>Over time, it Is the accumulation of small, thoughtful decisions in both vineyard and winery that defines our wines and sets them apart.</p>",
+        "enable_read_more": true,
+        "read_more_label": "Read More",
+        "read_less_label": "Read Less",
+        "button_label": "",
+        "button_link": "",
+        "image_position": "image_left",
+        "background_color": "#efeee9",
+        "padding_top": 80,
+        "padding_bottom": 40,
+        "show_border_top": false,
+        "show_border_bottom": false,
+        "border_color": "#d3d2cb",
+        "content_font_size": 16,
+        "divider_position": "none"
+      }
+    },
+    "about_team": {
+      "type": "about-us-team",
+      "blocks": {
+        "member_hs": {
+          "type": "member",
+          "settings": {
+            "profile_image": "shopify://shop_images/team2.png",
+            "name": "Hunter Smith",
+            "role": "Viticulture",
+            "bio": "<p>Hunter became a full-time member of the Frankland Estate team in 1999 after gaining his Bachelor of Business (Agricultural Management) degree from Marcus Oldham College in Victoria. Working in lockstep with brother-in-law Brian Kent, he applies his breadth of knowledge to every aspect of winery operations. </p>",
+            "image_alt": ""
+          }
+        },
+        "member_es": {
+          "type": "member",
+          "settings": {
+            "profile_image": "shopify://shop_images/team1.png",
+            "name": "Elizabeth Smith",
+            "role": "Operations",
+            "bio": "<p>Elizabeth attended the University of Western Australia and graduated with a Bachelor of Science (Honours) in Agriculture Science in 1998, before furthering her studies in Viticulture at Charles Sturt University. Elizabeth gained further experience by working vintages in the wine regions of California, Spain and New Zealand. </p>",
+            "image_alt": ""
+          }
+        },
+        "member_bk": {
+          "type": "member",
+          "settings": {
+            "profile_image": "shopify://shop_images/team3.png",
+            "name": "Brian Kent",
+            "role": "Winemaker",
+            "bio": "<p>Brian grew up in Perth and has a background in Biology, along with a postgraduate degree in Viticulture and Oenology from Lincoln University in Christchurch, New Zealand. In his early years he worked vintages in California’s Russian River, and Rías Baixas in northwest Spain. He worked as a winemaker in Frankland River for several years before joining the family business at Frankland Estate in 2010.</p>",
+            "image_alt": ""
+          }
+        },
+        "member_js": {
+          "type": "member",
+          "settings": {
+            "profile_image": "shopify://shop_images/team4.png",
+            "name": "Judi Cullam",
+            "role": "Founders",
+            "bio": "<p>Judi Cullam co-founded Frankland Estate with late husband Barrie Smith in 1988, in a move to diversify their long-established wool-growing interests in the Frankland River region.</p><p>Judi has been integral to the success and growth of Frankland Estate within Australia and into major export markets. A tireless contributor to the Australian wine scene, she was awarded the Len Evans Award for Leadership by Gourmet Traveller WINE magazine in 2018.</p><p>Barrie, meanwhile, was raised in a wine-producing region and was renowned for his deep respect for the land. Over more than 30 vintages at Frankland Estate, he was instrumental in pushing the potential of the Isolation Ridge vineyard.</p>",
+            "image_alt": ""
+          }
+        },
+        "member_gl": {
+          "type": "member",
+          "settings": {
+            "profile_image": "shopify://shop_images/Gladys_1.jpg",
+            "name": "Gladys",
+            "role": "Chief of Security",
+            "bio": "<p>Although Gladys isn’t exactly human, she still remains a vital member of our management team and family. As queen of our flock of guinea fowl, Gladys leads her loyal subjects out into the vineyard every day to eat bugs and pests that otherwise might damage our vines. She is sensitive, caring and - like all of us at Frankland Estate - strongly committed to organic viticulture.</p>",
+            "image_alt": ""
+          }
+        }
+      },
+      "block_order": [
+        "member_hs",
+        "member_es",
+        "member_bk",
+        "member_js",
+        "member_gl"
+      ],
+      "settings": {
+        "section_id": "who-we-are",
+        "section_number": "01",
+        "heading": "Who We Are",
+        "body": "<p>We are a close-knit family team guided by curiosity, respect for place, and the belief that great wine begins long before harvest.</p>",
+        "enable_read_more": false,
+        "read_more_label": "Read More",
+        "read_less_label": "Read Less",
+        "body_font_size": 16,
+        "button_label": "Meet The Family",
+        "button_link": "",
+        "feature_image": "shopify://shop_images/272_20260422_FRANKLAND_ESTATE_Winery_Portraits_Processing_Vineyard.jpg",
+        "background_color": "#efeee9",
+        "text_color": "#302313",
+        "padding_top": 40,
+        "padding_bottom": 40,
+        "container_width": 1110,
+        "profiles_per_row": 5,
+        "avatar_size": 168,
+        "modal_strip_color": "#e8e8e8",
+        "divider_color": "#d8d2c8"
+      }
+    },
+    "about_where": {
+      "type": "about-us-where-we-live",
+      "blocks": {
+        "gallery_image_jQCe3f": {
+          "type": "gallery_image",
+          "settings": {
+            "image": "shopify://shop_images/ThirdEye-106.jpg",
+            "alt": ""
+          }
+        },
+        "feat_1": {
+          "type": "feature",
+          "settings": {
+            "icon_svg": "",
+            "icon_alt": "",
+            "title": "Isolation Ridge",
+            "description": "Ancient soils and steady winds define our flagship vineyard site."
+          }
+        },
+        "feat_2": {
+          "type": "feature",
+          "settings": {
+            "icon_svg": "",
+            "icon_alt": "",
+            "title": "Southern Ocean",
+            "description": "Cool maritime air lengthens ripening and preserves natural acidity."
+          }
+        },
+        "feat_3": {
+          "type": "feature",
+          "settings": {
+            "icon_svg": "",
+            "icon_alt": "",
+            "title": "Certified Organic",
+            "description": "Healthier vines, biodiverse rows, and farming that thinks in decades."
+          }
+        },
+        "feat_4": {
+          "type": "feature",
+          "settings": {
+            "icon_svg": "",
+            "icon_alt": "",
+            "title": "Premium Region",
+            "description": "Frankland River’s reputation for structured, age-worthy wines worldwide."
+          }
+        }
+      },
+      "block_order": [
+        "gallery_image_jQCe3f",
+        "feat_1",
+        "feat_2",
+        "feat_3",
+        "feat_4"
+      ],
+      "settings": {
+        "section_id": "where-we-live",
+        "section_number": "02",
+        "heading": "Where We Live",
+        "body": "<p>Isolation Ridge sits where continental climate meets Southern Ocean influence—creating wines of tension, perfume, and enduring structure.</p>",
+        "background_color": "#efeee9",
+        "text_color": "#302313",
+        "divider_color": "#d3d2cb",
+        "padding_top": 40,
+        "padding_bottom": 40,
+        "container_width": 1110
+      }
+    },
+    "featured_gallery_carousel_VreEqQ": {
+      "type": "featured-gallery-carousel",
+      "blocks": {
+        "slide_LLRpFm": {
+          "type": "slide",
+          "settings": {
+            "image": "shopify://shop_images/202_20260422_FRANKLAND_ESTATE_Winery_Portraits_Processing_Vineyard.jpg",
+            "title": "Our Estate",
+            "subtitle": "Frankland River, Western Australia",
+            "alt": "",
+            "link": ""
+          }
+        },
+        "slide_eAerRC": {
+          "type": "slide",
+          "settings": {
+            "image": "shopify://shop_images/272_20260422_FRANKLAND_ESTATE_Winery_Portraits_Processing_Vineyard.jpg",
+            "title": "Our Estate",
+            "subtitle": "Frankland River, Western Australia",
+            "alt": "",
+            "link": ""
+          }
+        },
+        "slide_FUwYfw": {
+          "type": "slide",
+          "settings": {
+            "image": "shopify://shop_images/ThirdEye-100.jpg",
+            "title": "Our Estate",
+            "subtitle": "Frankland River, Western Australia",
+            "alt": "",
+            "link": ""
+          }
+        },
+        "slide_pRiMWT": {
+          "type": "slide",
+          "settings": {
+            "image": "shopify://shop_images/167_20260422_FRANKLAND_ESTATE_Winery_Portraits_Processing_Vineyard.jpg",
+            "title": "Our Estate",
+            "subtitle": "Frankland River, Western Australia",
+            "alt": "",
+            "link": ""
+          }
+        },
+        "slide_Hrk7Ek": {
+          "type": "slide",
+          "settings": {
+            "image": "shopify://shop_images/ThirdEye-188_1.jpg",
+            "title": "Cellar Door",
+            "subtitle": "Experience our wines and hospitality",
+            "alt": "",
+            "link": ""
+          }
+        },
+        "slide_qpXc69": {
+          "type": "slide",
+          "settings": {
+            "image": "shopify://shop_images/ThirdEye-209.jpg",
+            "title": "Vineyard Moments",
+            "subtitle": "Organic farming in Frankland River",
+            "alt": "",
+            "link": ""
+          }
+        },
+        "slide_3Rt3Ry": {
+          "type": "slide",
+          "settings": {
+            "image": "shopify://shop_images/ThirdEye-190.jpg",
+            "title": "Our Estate",
+            "subtitle": "Frankland River, Western Australia",
+            "alt": "",
+            "link": ""
+          }
+        },
+        "slide_jXL6J7": {
+          "type": "slide",
+          "settings": {
+            "image": "shopify://shop_images/ThirdEye-213.jpg",
+            "title": "Our Estate",
+            "subtitle": "Frankland River, Western Australia",
+            "alt": "",
+            "link": ""
+          }
+        },
+        "slide_cqeFcB": {
+          "type": "slide",
+          "settings": {
+            "image": "shopify://shop_images/101_20260422_FRANKLAND_ESTATE_Portraits_Garden_Family_Home_Old_Cellar_1.jpg",
+            "title": "Our Estate",
+            "subtitle": "Frankland River, Western Australia",
+            "alt": "",
+            "link": ""
+          }
+        },
+        "slide_i6jFBN": {
+          "type": "slide",
+          "settings": {
+            "image": "shopify://shop_images/ThirdEye-146.jpg",
+            "title": "Our Estate",
+            "subtitle": "Frankland River, Western Australia",
+            "alt": "",
+            "link": ""
+          }
+        }
+      },
+      "block_order": [
+        "slide_LLRpFm",
+        "slide_eAerRC",
+        "slide_FUwYfw",
+        "slide_pRiMWT",
+        "slide_Hrk7Ek",
+        "slide_qpXc69",
+        "slide_3Rt3Ry",
+        "slide_jXL6J7",
+        "slide_cqeFcB",
+        "slide_i6jFBN"
+      ],
+      "name": "Featured Gallery Carousel",
+      "settings": {
+        "section_id": "featured-gallery",
+        "eyebrow": "Gallery",
+        "heading": "A Glimpse of Frankland Estate",
+        "description": "<p>From our windswept vines to the warmth of our cellar door, explore the people, place and moments that make Frankland Estate unique.</p>",
+        "show_divider": true,
+        "divider_color": "#c4b896",
+        "background_color": "#f9f8f3",
+        "text_color": "#302313",
+        "accent_color": "#b8a574",
+        "container_width": 1200,
+        "carousel_max_width": 1100,
+        "main_image_width": 560,
+        "side_image_width": 220,
+        "image_height_desktop": 420,
+        "image_height_mobile": 320,
+        "overlay_opacity": 55,
+        "image_border_radius": 4,
+        "button_label": "View More Moments",
+        "button_link": "",
+        "button_style": "outline",
+        "button_text_color": "#302313",
+        "button_border_color": "#302313",
+        "button_background_color": "#302313",
+        "enable_autoplay": false,
+        "autoplay_speed": 6,
+        "padding_top": 88,
+        "padding_bottom": 88
+      }
+    },
+    "about_olmo_banner": {
+      "type": "about-us-feature-banner",
+      "settings": {
+        "section_id": "olmos-reward",
+        "background_image": "shopify://shop_images/ChatGPT_Image_May_12_2026_12_46_44_PM.png",
+        "enable_parallax": true,
+        "background_color_fallback": "#1a1510",
+        "overlay_color": "#000000",
+        "overlay_opacity": 55,
+        "content_position": "right",
+        "text_alignment": "left",
+        "row_max_width": 1110,
+        "content_max_width": 560,
+        "section_number": "03",
+        "heading": "The Story of Olmo’s Reward",
+        "body": "<p>Olmo’s Reward honours Professor Harold Olmo’s belief in this region’s potential—a wine built on conviction, patience, and purity of fruit.</p>",
+        "quote": "“A benchmark wine that captures the essence of Frankland River.”",
+        "quote_author": "Andrew Caillard MW",
+        "button_label": "Discover Olmo’s Reward",
+        "button_link": "https://franklandestate-dev.myshopify.com/collections/smithcullam-olmos-reward",
+        "button_style": "outline",
+        "subscribe_box_mode": "none",
+        "subscribe_heading": "Join our mailing list",
+        "subscribe_name_placeholder": "Name",
+        "subscribe_email_placeholder": "Email",
+        "subscribe_button_label": "Subscribe",
+        "subscribe_success_message": "Thanks — you are on the list.",
+        "klaviyo_custom_liquid": "",
+        "heading_color": "#ffffff",
+        "text_color": "#ffffff",
+        "button_background_color": "#32291a",
+        "button_label_color": "#ffffff",
+        "button_border_color": "#ffffff",
+        "height_desktop": 560,
+        "height_mobile": 460,
+        "padding_top": 80,
+        "padding_bottom": 80
+      }
+    },
+    "about_farming_banner": {
+      "type": "about-us-feature-banner",
+      "settings": {
+        "section_id": "farming-purpose",
+        "background_image": "shopify://shop_images/ThirdEye-213.jpg",
+        "enable_parallax": true,
+        "background_color_fallback": "#d8d4cb",
+        "overlay_color": "#000000",
+        "overlay_opacity": 40,
+        "content_position": "left",
+        "text_alignment": "left",
+        "row_max_width": 1110,
+        "content_max_width": 520,
+        "section_number": "",
+        "heading": "Farming With Purpose",
+        "body": "<p>Guinea fowl, compost, cover crops, and careful observation replace shortcuts. Organic farming here is not marketing—it is how we protect the land our children will inherit.</p>",
+        "quote": "",
+        "quote_author": "",
+        "button_label": "Learn About Organics",
+        "button_link": "shopify://pages/growing-organically",
+        "button_style": "dark",
+        "subscribe_box_mode": "none",
+        "subscribe_heading": "Join our mailing list",
+        "subscribe_name_placeholder": "Name",
+        "subscribe_email_placeholder": "Email",
+        "subscribe_button_label": "Subscribe",
+        "subscribe_success_message": "Thanks — you are on the list.",
+        "klaviyo_custom_liquid": "",
+        "heading_color": "#ffffff",
+        "text_color": "#ffffff",
+        "button_background_color": "#32291a",
+        "button_label_color": "#ffffff",
+        "button_border_color": "#32291a",
+        "height_desktop": 480,
+        "height_mobile": 420,
+        "padding_top": 72,
+        "padding_bottom": 72
+      }
+    },
+    "about_visit_cards": {
+      "type": "two-card-overlay-section",
+      "blocks": {
+        "visit_card": {
+          "type": "card",
+          "settings": {
+            "image": "shopify://shop_images/ThirdEye-180.jpg",
+            "image_url": "",
+            "title": "Visit the Cellar Door",
+            "subtitle": "Taste limited releases and museum vintages with our team.",
+            "link": "shopify://pages/visit-our-cellar-door"
+          }
+        },
+        "shop_card": {
+          "type": "card",
+          "settings": {
+            "image": "shopify://shop_images/ThirdEye-114_1.jpg",
+            "image_url": "",
+            "title": "Explore Our Wines",
+            "subtitle": "Shop Frankland Estate classics and single-vineyard expressions.",
+            "link": "shopify://collections/all-wines"
+          }
+        }
+      },
+      "block_order": [
+        "visit_card",
+        "shop_card"
+      ],
+      "settings": {
+        "section_anchor_id": "visit-explore",
+        "section_heading": "Visit & Explore",
+        "top_quote": "",
+        "top_attribution": "",
+        "background_color": "#efeee9",
+        "padding_top": 88,
+        "padding_bottom": 88
+      }
+    }
+  },
+  "order": [
+    "about_us_hero",
+    "about_intro",
+    "about_team",
+    "about_where",
+    "featured_gallery_carousel_VreEqQ",
+    "about_olmo_banner",
+    "about_farming_banner",
+    "about_visit_cards"
+  ]
+}

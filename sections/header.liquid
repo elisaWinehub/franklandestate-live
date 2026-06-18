@@ -1,0 +1,1086 @@
+{%- liquid
+  assign sid      = section.id
+  assign show_bar = section.settings.show_announcement_bar
+  assign show_desktop_hamburger = section.settings.show_desktop_hamburger
+  assign menu_hdl = section.settings.main_menu | default: 'frankland-main-menu'
+  assign main_menu = linklists[menu_hdl]
+  assign overlay_menu_1_handle = section.settings.overlay_menu_1
+  if overlay_menu_1_handle == blank
+    assign overlay_menu_1_handle = 'our-wines'
+  endif
+  assign overlay_menu_1 = linklists[overlay_menu_1_handle]
+
+  assign overlay_menu_2_handle = section.settings.overlay_menu_2
+  if overlay_menu_2_handle == blank
+    assign overlay_menu_2_handle = 'wine-club'
+  endif
+  assign overlay_menu_2 = linklists[overlay_menu_2_handle]
+
+  assign overlay_menu_3_handle = section.settings.overlay_menu_3
+  if overlay_menu_3_handle == blank
+    assign overlay_menu_3_handle = 'about'
+  endif
+  assign overlay_menu_3 = linklists[overlay_menu_3_handle]
+  assign overlay_contact_href = section.settings.overlay_contact_url | default: '/pages/contact'
+  assign bar_top  = 0
+  assign is_solid_header_page = false
+  if request.page_type == 'product' or request.page_type == 'cart'
+    assign is_solid_header_page = true
+  endif
+  if show_bar
+    assign bar_top = 48
+  endif
+-%}
+
+{%- comment -%}────────────────────────────────────────────────
+  ANNOUNCEMENT BAR
+────────────────────────────────────────────────{%- endcomment -%}
+{%- if show_bar -%}
+<div
+  id="fe-bar-{{ sid }}"
+  class="fe-bar-{{ sid }} announcement-bar"
+  role="region"
+  aria-label="Announcement"
+  style="background:{{ section.settings.bar_bg }};color:{{ section.settings.bar_color }};"
+>
+  <span class="fe-bar-{{ sid }}__icon" aria-hidden="true">
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 91 91"
+      class="fe-bar-{{ sid }}__truck-svg"
+      fill="currentColor"
+      aria-hidden="true"
+      focusable="false"
+    >
+      <g>
+        <path d="M90.214,49.246L78.578,30.501c-0.383-0.617-1.058-0.993-1.784-0.993H60.406c-0.197-1.728-0.869-4.729-3.135-7.054   c-2.05-2.104-4.871-3.172-8.385-3.172H17.822c-1.16,0-2.1,0.94-2.1,2.101v5.164h-6.24c-1.16,0-2.1,0.94-2.1,2.1   c0,1.16,0.939,2.101,2.1,2.101h21.84c1.16,0,2.1-0.94,2.1-2.101c0-1.159-0.939-2.1-2.1-2.1h-11.4v-3.064h28.965   c2.324,0,4.126,0.633,5.354,1.881c2.073,2.105,2.047,5.398,2.046,5.476v34.268c0,0-15.4,0.026-15.562,0.066   c-1.458-3.818-5.149-6.542-9.476-6.542c-4.299,0-7.973,2.692-9.449,6.476h-1.879v-9.021c0-1.159-0.939-2.1-2.1-2.1H4.569   c-1.16,0-2.1,0.94-2.1,2.1c0,1.16,0.939,2.101,2.1,2.101h11.153v9.021c0,1.159,0.939,2.1,2.1,2.1h3.309   c0.277,5.348,4.703,9.617,10.119,9.617c5.418,0,9.845-4.27,10.123-9.617h20.318c0.278,5.348,4.704,9.617,10.12,9.617   c5.415,0,9.839-4.27,10.116-9.617h6.502c1.16,0,2.1-0.94,2.1-2.1V50.354C90.529,49.963,90.42,49.579,90.214,49.246z M31.25,74.725   c-3.279,0-5.947-2.668-5.947-5.947s2.668-5.946,5.947-5.946c3.28,0,5.95,2.667,5.95,5.946S34.53,74.725,31.25,74.725z   M71.812,74.725c-3.279,0-5.947-2.668-5.947-5.947s2.668-5.946,5.947-5.946c3.277,0,5.944,2.667,5.944,5.946   S75.089,74.725,71.812,74.725z M81.258,65.106c-1.475-3.783-5.148-6.476-9.446-6.476c-4.3,0-7.974,2.692-9.448,6.476h-1.877   V33.709h15.14l8.441,13.599H68.977v-6.108h3.474c1.16,0,2.1-0.939,2.1-2.1S73.61,37,72.45,37h-5.573c-1.16,0-2.1,0.939-2.1,2.1   v10.309c0,1.159,0.939,2.1,2.1,2.1H86.33v13.599H81.258z"></path>
+        <path d="M17.822,33.826c-1.16,0-2.1,0.941-2.1,2.101v8.819H8c-1.16,0-2.1,0.941-2.1,2.101S6.84,48.947,8,48.947h17.078   c1.16,0,2.1-0.941,2.1-2.101s-0.939-2.101-2.1-2.101h-5.156v-8.819C19.922,34.768,18.982,33.826,17.822,33.826z"></path>
+        <path d="M4.569,38.027h6.16c1.16,0,2.1-0.941,2.1-2.101s-0.939-2.101-2.1-2.101h-6.16c-1.16,0-2.1,0.941-2.1,2.101   S3.409,38.027,4.569,38.027z"></path>
+        <path d="M4.639,46.847c0-1.159-0.939-2.101-2.1-2.101H2.4c-1.16,0-2.1,0.941-2.1,2.101s0.939,2.101,2.1,2.101h0.14   C3.7,48.947,4.639,48.006,4.639,46.847z"></path>
+      </g>
+    </svg>
+  </span>
+  <span class="fe-bar-{{ sid }}__text">{{ section.settings.bar_text }}</span>
+</div>
+{%- endif -%}
+
+{%- comment -%}────────────────────────────────────────────────
+  HEADER
+────────────────────────────────────────────────{%- endcomment -%}
+<header
+  class="fe-hdr-{{ sid }} header{% if is_solid_header_page %} fe-hdr--product-page header--solid{% endif %}"
+  id="fe-hdr-{{ sid }}"
+  role="banner"
+  style="
+    top: {{ bar_top }}px;
+    --fe-text-def: {{ section.settings.header_text_default }};
+    --fe-text-alt: {{ section.settings.header_text_alt }};
+    --fe-bg-alt:   {{ section.settings.header_bg_alt }};
+    --fe-logo-w:   {{ section.settings.logo_width }}px;
+  "
+>
+  {%- comment -%} Gradient — fades out on scroll / menu-open {%- endcomment -%}
+  <span class="fe-hdr__grad" aria-hidden="true"></span>
+
+  {%- comment -%} LOGO {%- endcomment -%}
+  <a href="{{ routes.root_url }}" class="fe-hdr__logo-link" aria-label="{{ shop.name | escape }}">
+    <img
+      id="fe-logo-{{ sid }}"
+      class="fe-hdr__logo-img"
+      src="{{ 'logo.svg' | asset_url }}"
+      data-src-default="{{ 'logo.svg' | asset_url }}"
+      data-src-colored="{{ 'logo-menu.svg' | asset_url }}"
+      alt="{{ shop.name | escape }}"
+      width="{{ section.settings.logo_width }}"
+      loading="eager"
+      fetchpriority="high"
+    >
+  </a>
+
+  {%- comment -%} DESKTOP NAV {%- endcomment -%}
+  <nav class="fe-hdr__nav" aria-label="Main navigation">
+    {%- for link in main_menu.links -%}
+      <div class="fe-hdr__nav-item">
+        <a class="fe-hdr__nav-link" href="{{ link.url }}">
+          {{ link.title }}
+          {%- if link.links.size > 0 -%}
+            <span class="fe-hdr__caret" aria-hidden="true">▼</span>
+          {%- endif -%}
+        </a>
+
+        {%- if link.links.size > 0 -%}
+          <div class="fe-hdr__dropdown">
+            <ul class="fe-hdr__dropdown-list" role="list">
+              {%- for child in link.links -%}
+                <li class="fe-hdr__dropdown-item">
+                  <a class="fe-hdr__dropdown-link" href="{{ child.url }}">{{ child.title }}</a>
+                  {%- if child.links.size > 0 -%}
+                    <ul class="fe-hdr__dropdown-sublist" role="list">
+                      {%- for grandchild in child.links -%}
+                        <li>
+                          <a class="fe-hdr__dropdown-sublink" href="{{ grandchild.url }}">{{ grandchild.title }}</a>
+                        </li>
+                      {%- endfor -%}
+                    </ul>
+                  {%- endif -%}
+                </li>
+              {%- endfor -%}
+            </ul>
+          </div>
+        {%- endif -%}
+      </div>
+    {%- endfor -%}
+  </nav>
+
+  {%- comment -%} ACTION ICONS {%- endcomment -%}
+  <div class="fe-hdr__actions">
+
+    {%- comment -%} Cart {%- endcomment -%}
+    <a href="{{ routes.cart_url }}" class="fe-hdr__action-btn" aria-label="Cart ({{ cart.item_count }} {{ cart.item_count | pluralize: 'item', 'items' }})">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
+        <path d="M6 2 3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/>
+      </svg>
+      {%- if cart.item_count > 0 -%}
+        <span class="fe-cart-count" aria-hidden="true">{{ cart.item_count }}</span>
+      {%- endif -%}
+    </a>
+
+    {%- comment -%} Account {%- endcomment -%}
+    {%- if shop.customer_accounts_enabled -%}
+      <a
+        href="{%- if customer -%}{{ routes.account_url }}{%- else -%}{{ routes.account_login_url }}{%- endif -%}"
+        class="fe-hdr__action-btn"
+        aria-label="{%- if customer -%}My account{%- else -%}Log in{%- endif -%}"
+      >
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
+          <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/>
+        </svg>
+      </a>
+    {%- endif -%}
+
+    {%- comment -%} Burger {%- endcomment -%}
+    <button
+      id="fe-burger-{{ sid }}"
+      class="fe-hdr__burger{% unless show_desktop_hamburger %} fe-hdr__burger--desktop-hidden{% endunless %}"
+      aria-expanded="false"
+      aria-controls="fe-overlay-{{ sid }}"
+      aria-label="Open navigation menu"
+    >
+      <span class="fe-burger__bar fe-burger__bar--top"></span>
+      <span class="fe-burger__bar fe-burger__bar--mid"></span>
+      <span class="fe-burger__bar fe-burger__bar--bot"></span>
+      <span class="fe-burger__label fe-burger__label--menu">Menu</span>
+      <span class="fe-burger__label fe-burger__label--close">Close</span>
+    </button>
+
+  </div>
+</header>
+
+{%- comment -%}────────────────────────────────────────────────
+  FULL-SCREEN OVERLAY MENU
+────────────────────────────────────────────────{%- endcomment -%}
+<div
+  id="fe-overlay-{{ sid }}"
+  class="fe-overlay-{{ sid }}"
+  role="dialog"
+  aria-modal="true"
+  aria-label="Navigation menu"
+  hidden
+>
+  <div class="fe-overlay__inner">
+    <div class="fe-overlay__body">
+      <div class="fe-overlay__grid">
+        <div class="fe-overlay__col">
+          <h2 class="fe-overlay__heading">{{ overlay_menu_1.title | default: 'Our Wines' }}</h2>
+          <ul class="fe-overlay__list" role="list">
+            {%- for link in overlay_menu_1.links -%}
+              <li class="fe-overlay__item">
+                <a class="fe-overlay__link" href="{{ link.url }}">{{ link.title }}</a>
+                {%- if link.links.size > 0 -%}
+                  <ul class="fe-overlay__sublist" role="list">
+                    {%- for child in link.links -%}
+                      <li><a class="fe-overlay__sublink" href="{{ child.url }}">{{ child.title }}</a></li>
+                    {%- endfor -%}
+                  </ul>
+                {%- endif -%}
+              </li>
+            {%- endfor -%}
+          </ul>
+        </div>
+
+        <div class="fe-overlay__col">
+          <h2 class="fe-overlay__heading">{{ overlay_menu_2.title | default: 'Wine Club' }}</h2>
+          <ul class="fe-overlay__list" role="list">
+            {%- for link in overlay_menu_2.links -%}
+              <li class="fe-overlay__item">
+                <a class="fe-overlay__link" href="{{ link.url }}">{{ link.title }}</a>
+                {%- if link.links.size > 0 -%}
+                  <ul class="fe-overlay__sublist" role="list">
+                    {%- for child in link.links -%}
+                      <li><a class="fe-overlay__sublink" href="{{ child.url }}">{{ child.title }}</a></li>
+                    {%- endfor -%}
+                  </ul>
+                {%- endif -%}
+              </li>
+            {%- endfor -%}
+          </ul>
+        </div>
+
+        <div class="fe-overlay__col">
+          <h2 class="fe-overlay__heading">{{ overlay_menu_3.title | default: 'About' }}</h2>
+          <ul class="fe-overlay__list" role="list">
+            {%- for link in overlay_menu_3.links -%}
+              <li class="fe-overlay__item">
+                <a class="fe-overlay__link" href="{{ link.url }}">{{ link.title }}</a>
+                {%- if link.links.size > 0 -%}
+                  <ul class="fe-overlay__sublist" role="list">
+                    {%- for child in link.links -%}
+                      <li><a class="fe-overlay__sublink" href="{{ child.url }}">{{ child.title }}</a></li>
+                    {%- endfor -%}
+                  </ul>
+                {%- endif -%}
+              </li>
+            {%- endfor -%}
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="fe-overlay__footer">
+      <div class="fe-overlay__social">
+        {%- if section.settings.social_facebook != blank -%}
+          <a href="{{ section.settings.social_facebook }}" target="_blank" rel="noopener noreferrer" aria-label="Facebook">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
+          </a>
+        {%- endif -%}
+        {%- if section.settings.social_twitter != blank -%}
+          <a href="{{ section.settings.social_twitter }}" target="_blank" rel="noopener noreferrer" aria-label="X / Twitter">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+          </a>
+        {%- endif -%}
+        {%- if section.settings.social_pinterest != blank -%}
+          <a href="{{ section.settings.social_pinterest }}" target="_blank" rel="noopener noreferrer" aria-label="Pinterest">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 0C5.373 0 0 5.373 0 12c0 5.084 3.163 9.426 7.627 11.174-.105-.949-.2-2.405.042-3.441.218-.937 1.407-5.965 1.407-5.965s-.359-.719-.359-1.782c0-1.668.967-2.914 2.171-2.914 1.023 0 1.518.769 1.518 1.69 0 1.029-.655 2.568-.994 3.995-.283 1.194.599 2.169 1.777 2.169 2.133 0 3.772-2.249 3.772-5.495 0-2.873-2.064-4.882-5.012-4.882-3.414 0-5.418 2.561-5.418 5.207 0 1.031.397 2.138.893 2.738a.336.336 0 0 1 .083.345l-.333 1.36c-.053.22-.174.267-.402.161-1.499-.698-2.436-2.889-2.436-4.649 0-3.785 2.75-7.262 7.929-7.262 4.163 0 7.398 2.967 7.398 6.931 0 4.136-2.607 7.464-6.227 7.464-1.216 0-2.359-.632-2.75-1.378l-.748 2.853c-.271 1.043-1.002 2.35-1.492 3.146C9.57 23.812 10.763 24 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0z"/></svg>
+          </a>
+        {%- endif -%}
+        {%- if section.settings.social_instagram != blank -%}
+          <a href="{{ section.settings.social_instagram }}" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+          </a>
+        {%- endif -%}
+      </div>
+
+      <a class="fe-overlay__contact" href="{{ overlay_contact_href }}">
+        {{ section.settings.overlay_contact_label | default: 'Contact Us' | escape }}
+      </a>
+    </div>
+  </div>
+</div>
+
+<style>
+  body.fe-menu-open {
+    overflow: hidden;
+  }
+
+  .fe-bar-{{ sid }} {
+    position: relative;
+    z-index: 30;
+    min-height: 42px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 8px 10px;
+    row-gap: 8px;
+    font-family: Arial, sans-serif;
+    font-size: 13px;
+    padding: 10px 20px;
+    text-align: center;
+    letter-spacing: 0.02em;
+  }
+
+  .fe-bar-{{ sid }}__icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    color: inherit;
+    line-height: 0;
+  }
+
+  .fe-bar-{{ sid }}__truck-svg {
+    width: 20px;
+    height: 20px;
+    display: block;
+    vertical-align: middle;
+  }
+
+  @media (min-width: 380px) {
+    .fe-bar-{{ sid }}__truck-svg {
+      width: 22px;
+      height: 22px;
+    }
+  }
+
+  .fe-bar-{{ sid }}__text {
+    flex: 0 1 auto;
+    max-width: min(920px, 100%);
+    text-align: center;
+    line-height: 1.35;
+  }
+
+  .fe-hdr-{{ sid }} {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 48px;
+    z-index: 40;
+    min-height: 88px;
+    padding: 18px 6%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 18px;
+    color: var(--fe-text-def, #ffffff);
+    background: transparent;
+    transition: background-color 0.35s ease, color 0.35s ease, box-shadow 0.35s ease;
+  }
+
+  .fe-hdr-{{ sid }}.fe-hdr--product-page {
+    position: relative;
+    top: 0 !important;
+    background: #e9e9e2;
+    color: var(--fe-text-alt, #534846);
+    box-shadow: none;
+  }
+
+  .fe-hdr-{{ sid }}.fe-hdr--product-page .fe-hdr__grad {
+    opacity: 0;
+  }
+
+  .fe-hdr-{{ sid }} .fe-hdr__grad {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(0, 0, 0, 0.52) 0%, rgba(0, 0, 0, 0) 100%);
+    pointer-events: none;
+    transition: opacity 0.35s ease;
+    z-index: 0;
+  }
+
+  .fe-hdr-{{ sid }} > *:not(.fe-hdr__grad) {
+    position: relative;
+    z-index: 1;
+  }
+
+  .fe-hdr-{{ sid }}:not(.fe-hdr--product-page).fe-scrolled {
+    position: fixed;
+    top: 0 !important;
+    background: #e9e9e2;
+    color: var(--fe-text-alt, #534846);
+    box-shadow: 0 2px 18px rgba(0, 0, 0, 0.08);
+  }
+
+  .fe-hdr-{{ sid }}:not(.fe-hdr--product-page).fe-scrolled .fe-hdr__grad {
+    opacity: 0;
+  }
+
+  body.fe-menu-open .fe-hdr-{{ sid }}:not(.fe-hdr--product-page) {
+    position: fixed;
+    background: #e9e9e2;
+    color: var(--fe-text-alt, #534846);
+    box-shadow: none;
+  }
+
+  body.fe-menu-open .fe-hdr-{{ sid }}:not(.fe-hdr--product-page) .fe-hdr__grad {
+    opacity: 0;
+  }
+
+  .fe-hdr__logo-link {
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+  }
+
+  .fe-hdr__logo-img {
+    width: var(--fe-logo-w, 180px);
+    height: auto;
+    display: block;
+    transition: opacity 0.2s ease;
+  }
+
+  .fe-hdr__nav {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 22px;
+    flex: 1 1 auto;
+  }
+
+  .fe-hdr__nav-item {
+    position: relative;
+  }
+
+  .fe-hdr__nav-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-family: Arial, sans-serif;
+    font-size: 15px;
+    color: inherit;
+    text-decoration: none;
+    opacity: 0.92;
+    transition: opacity 0.2s ease;
+  }
+
+  .fe-hdr__nav-link:hover {
+    opacity: 1;
+  }
+
+  .fe-hdr__caret {
+    font-size: 9px;
+    line-height: 1;
+    opacity: 0.8;
+    transform: translateY(1px);
+  }
+
+  .fe-hdr__dropdown {
+    position: absolute;
+    left: 50%;
+    top: calc(100% + 12px);
+    transform: translateX(-50%) translateY(4px);
+    min-width: 300px;
+    max-width: 420px;
+    background: #e9e9e9;
+    color: var(--fe-text-alt, #534846);
+    border: 0;
+    box-shadow: 0 6px 14px rgba(0, 0, 0, 0.28);
+    padding: 18px 20px 16px;
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition: opacity 0.2s ease, visibility 0.2s ease, transform 0.2s ease;
+    z-index: 20;
+  }
+
+  .fe-hdr__dropdown::before {
+    content: "";
+    position: absolute;
+    top: -16px;
+    left: 0;
+    right: 0;
+    height: 16px;
+  }
+
+  .fe-hdr__dropdown::after {
+    content: "";
+    position: absolute;
+    top: -8px;
+    left: 50%;
+    width: 16px;
+    height: 16px;
+    background: #e9e9e9;
+    transform: translateX(-50%) rotate(45deg);
+    box-shadow: -2px -2px 4px rgba(0, 0, 0, 0.06);
+  }
+
+  .fe-hdr__nav-item:hover .fe-hdr__dropdown,
+  .fe-hdr__nav-item:focus-within .fe-hdr__dropdown {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+    transform: translateX(-50%) translateY(0);
+  }
+
+  .fe-hdr__dropdown-list,
+  .fe-hdr__dropdown-sublist {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .fe-hdr__dropdown-item + .fe-hdr__dropdown-item {
+    margin-top: 10px;
+  }
+
+  .fe-hdr__dropdown-link {
+    font-family: Arial, sans-serif;
+    font-size: 16px;
+    line-height: 1.34;
+    color: #534846;
+    text-decoration: none;
+    display: inline-block;
+  }
+
+  .fe-hdr__dropdown-link:hover {
+    opacity: 0.7;
+  }
+
+  .fe-hdr__dropdown-sublist {
+    margin-top: 6px;
+    padding-left: 12px;
+  }
+
+  .fe-hdr__dropdown-sublist li + li {
+    margin-top: 5px;
+  }
+
+  .fe-hdr__dropdown-sublink {
+    font-family: Arial, sans-serif;
+    font-size: 13px;
+    color: rgba(83, 72, 70, 0.85);
+    text-decoration: none;
+  }
+
+  .fe-hdr__dropdown-sublink:hover {
+    opacity: 0.7;
+  }
+
+  .fe-hdr__actions {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-shrink: 0;
+  }
+
+  .fe-hdr__action-btn {
+    position: relative;
+    width: 38px;
+    height: 38px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: inherit;
+    text-decoration: none;
+    background: none;
+    border: 0;
+    padding: 0;
+  }
+
+  .fe-hdr__action-btn:hover {
+    opacity: 0.75;
+  }
+
+  .fe-cart-count {
+    position: absolute;
+    top: 3px;
+    right: 2px;
+    width: 16px;
+    height: 16px;
+    border-radius: 999px;
+    background: var(--fe-text-def, #ffffff);
+    color: var(--fe-bg-alt, #534846);
+    font-size: 10px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+  }
+
+  .fe-hdr-{{ sid }}.fe-scrolled .fe-cart-count,
+  body.fe-menu-open .fe-hdr-{{ sid }} .fe-cart-count {
+    background: var(--fe-text-alt, #534846);
+    color: var(--fe-bg-alt, #efeee9);
+  }
+
+  .fe-hdr__burger {
+    width: 56px;
+    min-height: 52px;
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 4px;
+    background: none;
+    border: 0;
+    color: inherit;
+    cursor: pointer;
+    padding: 0;
+  }
+
+  @media (min-width: 841px) {
+    .fe-hdr-{{ sid }} .fe-hdr__burger.fe-hdr__burger--desktop-hidden {
+      display: none !important;
+    }
+  }
+
+  @media (max-width: 840px) {
+    .fe-hdr-{{ sid }} .fe-hdr__burger.fe-hdr__burger--desktop-hidden {
+      display: inline-flex !important;
+    }
+  }
+
+  .fe-burger__bar {
+    display: block;
+    width: 22px;
+    height: 1.5px;
+    background: currentColor;
+    border-radius: 2px;
+    transform-origin: center;
+    transition: transform 0.3s ease, opacity 0.3s ease;
+  }
+
+  .fe-burger__label {
+    font-family: Arial, sans-serif;
+    font-size: 12px;
+    line-height: 1.1;
+    letter-spacing: 0.01em;
+    margin-top: 4px;
+  }
+
+  .fe-burger__label--close {
+    display: none;
+  }
+
+  body.fe-menu-open .fe-burger__bar--top {
+    transform: translateY(5.5px) rotate(45deg);
+  }
+
+  body.fe-menu-open .fe-burger__bar--mid {
+    opacity: 0;
+    transform: scaleX(0);
+  }
+
+  body.fe-menu-open .fe-burger__bar--bot {
+    transform: translateY(-5.5px) rotate(-45deg);
+  }
+
+  body.fe-menu-open .fe-burger__label--menu {
+    display: none;
+  }
+
+  body.fe-menu-open .fe-burger__label--close {
+    display: block;
+  }
+
+  .fe-overlay-{{ sid }} {
+    position: fixed;
+    left: 0;
+    right: 0;
+    top: calc(var(--fe-bar-height, 0px) + var(--fe-header-height, 88px));
+    height: calc(100vh - var(--fe-bar-height, 0px) - var(--fe-header-height, 88px));
+    z-index: 340;
+    background: var(--fe-bg-alt, #efeee9);
+    color: var(--fe-text-alt, #534846);
+    border-top: 1px solid rgba(83, 72, 70, 0.2);
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .fe-overlay-{{ sid }}[hidden] {
+    display: none;
+  }
+
+  .fe-overlay__inner {
+    max-width: 1180px;
+    margin: 0 auto;
+    min-height: 100%;
+    padding: clamp(32px, 5vw, 56px) clamp(20px, 4vw, 44px) clamp(22px, 4vw, 36px);
+    display: flex;
+    flex-direction: column;
+  }
+
+  .fe-overlay__body {
+    flex: 1 1 auto;
+    border-bottom: 1px solid rgba(83, 72, 70, 0.2);
+    padding-bottom: clamp(28px, 5vw, 48px);
+  }
+
+  .fe-overlay__grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 34px clamp(32px, 4vw, 64px);
+  }
+
+  .fe-overlay__col {
+    min-width: 0;
+  }
+
+  .fe-overlay__heading {
+    margin: 0 0 16px;
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: clamp(28px, 2.8vw, 32px);
+    line-height: 1.1;
+    font-weight: 400;
+    color: #534846;
+  }
+
+  .fe-overlay__list,
+  .fe-overlay__sublist {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .fe-overlay__item + .fe-overlay__item {
+    margin-top: 10px;
+  }
+
+  .fe-overlay__link {
+    display: inline-block;
+    font-family: Arial, sans-serif;
+    font-size: clamp(18px, 1.9vw, 22px);
+    line-height: 1.35;
+    color: #534846;
+    text-decoration: none;
+  }
+
+  .fe-overlay__link:hover {
+    opacity: 0.7;
+  }
+
+  .fe-overlay__sublist {
+    margin-top: 8px;
+    padding-left: 16px;
+  }
+
+  .fe-overlay__sublist li + li {
+    margin-top: 6px;
+  }
+
+  .fe-overlay__sublink {
+    font-family: Arial, sans-serif;
+    font-size: 16px;
+    color: rgba(83, 72, 70, 0.82);
+    text-decoration: none;
+  }
+
+  .fe-overlay__sublink:hover {
+    opacity: 0.7;
+  }
+
+  .fe-overlay__footer {
+    padding-top: clamp(18px, 3vw, 28px);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+  }
+
+  .fe-overlay__social {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .fe-overlay__social a {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    border: 1px solid rgba(83, 72, 70, 0.34);
+    color: #534846;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    transition: border-color 0.2s ease, opacity 0.2s ease;
+  }
+
+  .fe-overlay__social a:hover {
+    border-color: rgba(83, 72, 70, 0.62);
+    opacity: 0.85;
+  }
+
+  .fe-overlay__contact {
+    font-family: Arial, sans-serif;
+    font-size: 22px;
+    color: #534846;
+    text-decoration: none;
+    line-height: 1.2;
+  }
+
+  .fe-overlay__contact:hover {
+    opacity: 0.7;
+  }
+
+  @media (max-width: 1024px) {
+    .fe-hdr__nav {
+      gap: 16px;
+    }
+
+    .fe-hdr__nav-link {
+      font-size: 14px;
+    }
+  }
+
+  @media (max-width: 840px) {
+    .fe-hdr-{{ sid }} {
+      padding: 14px 18px;
+      min-height: 76px;
+    }
+
+    .fe-hdr__nav {
+      display: none;
+    }
+
+    .fe-overlay__grid {
+      grid-template-columns: 1fr;
+      gap: 22px;
+    }
+
+    .fe-overlay__heading {
+      margin-bottom: 10px;
+    }
+
+    .fe-overlay__footer {
+      flex-direction: column;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .fe-overlay__contact {
+      font-size: 20px;
+    }
+  }
+</style>
+
+<script>
+(function () {
+  'use strict';
+
+  var SID       = {{ section.id | json }};
+  var THRESHOLD = 60;
+  var FORCE_SOLID = {{ is_solid_header_page | json }};
+
+  var bar     = document.getElementById('fe-bar-' + SID);
+  var header  = document.getElementById('fe-hdr-'     + SID);
+  var burger  = document.getElementById('fe-burger-'  + SID);
+  var overlay = document.getElementById('fe-overlay-' + SID);
+  var logo    = document.getElementById('fe-logo-'    + SID);
+
+  if (!header || !burger || !overlay) return;
+
+  var menuOpen   = false;
+  var srcDefault = logo ? logo.dataset.srcDefault : '';
+  var srcColored = logo ? logo.dataset.srcColored : '';
+
+  /* ─── Logo swap ──────────────────────────────────────── *
+   *  colored = true  →  logo-menu.svg  (scrolled / menu open)
+   *  colored = false →  logo.svg       (transparent / top of page)
+   * ──────────────────────────────────────────────────────── */
+  function setLogo(colored) {
+    if (!logo) return;
+    logo.src = colored ? srcColored : srcDefault;
+  }
+
+  function setLayoutVars() {
+    var barHeight = bar ? bar.offsetHeight : 0;
+    var headerHeight = header.offsetHeight;
+    document.documentElement.style.setProperty('--fe-bar-height', barHeight + 'px');
+    document.documentElement.style.setProperty('--fe-header-height', headerHeight + 'px');
+    if (!menuOpen) {
+      if (FORCE_SOLID) {
+        header.style.top = '0px';
+      } else {
+        header.style.top = window.scrollY > THRESHOLD ? '0px' : (barHeight + 'px');
+      }
+    }
+  }
+
+  /* ─── Scroll state ───────────────────────────────────── */
+  function applyScrollState() {
+    if (menuOpen) return;
+    if (FORCE_SOLID) {
+      header.classList.remove('fe-scrolled');
+      setLogo(true);
+      return;
+    }
+    var scrolled = FORCE_SOLID || window.scrollY > THRESHOLD;
+    header.classList.toggle('fe-scrolled', scrolled);
+    /* scrolled → logo-menu.svg, at top → logo.svg */
+    setLogo(scrolled);
+  }
+
+  setLayoutVars();
+  window.addEventListener('resize', setLayoutVars);
+  window.addEventListener('scroll', applyScrollState, { passive: true });
+  applyScrollState();
+
+  /* ─── Open menu ──────────────────────────────────────── */
+  function openMenu() {
+    menuOpen = true;
+    overlay.removeAttribute('hidden');
+    document.body.classList.add('fe-menu-open');
+    if (!FORCE_SOLID) {
+      header.classList.remove('fe-scrolled');
+      header.style.top = window.scrollY > THRESHOLD ? '0px' : 'var(--fe-bar-height, 0px)';
+    } else {
+      header.style.top = '0px';
+    }
+    burger.setAttribute('aria-expanded', 'true');
+    burger.setAttribute('aria-label', 'Close navigation menu');
+    setLogo(true); /* always logo-menu.svg when overlay is open */
+    var first = overlay.querySelector('a[href]');
+    if (first) first.focus();
+  }
+
+  /* ─── Close menu ─────────────────────────────────────── */
+  function closeMenu() {
+    menuOpen = false;
+    overlay.setAttribute('hidden', '');
+    document.body.classList.remove('fe-menu-open');
+    burger.setAttribute('aria-expanded', 'false');
+    burger.setAttribute('aria-label', 'Open navigation menu');
+    setLayoutVars();
+    applyScrollState(); /* restore correct scroll-based logo + header */
+    burger.focus();
+  }
+
+  /* ─── Toggles ────────────────────────────────────────── */
+  burger.addEventListener('click', function () {
+    overlay.hasAttribute('hidden') ? openMenu() : closeMenu();
+  });
+
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape' && !overlay.hasAttribute('hidden')) closeMenu();
+  });
+})();
+</script>
+
+{% schema %}
+{
+  "name": "Frankland Header",
+  "tag": "div",
+  "class": "frankland-header-section",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Announcement bar"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_announcement_bar",
+      "label": "Show announcement bar",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "bar_text",
+      "label": "Announcement text",
+      "default": "Free Shipping and 10% off RRP on dozen purchases — login to your account."
+    },
+    {
+      "type": "color",
+      "id": "bar_bg",
+      "label": "Bar background color",
+      "default": "#b3833d"
+    },
+    {
+      "type": "color",
+      "id": "bar_color",
+      "label": "Bar text color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "header",
+      "content": "Logo"
+    },
+    {
+      "type": "range",
+      "id": "logo_width",
+      "min": 80,
+      "max": 360,
+      "step": 10,
+      "unit": "px",
+      "label": "Logo width",
+      "default": 200
+    },
+    {
+      "type": "header",
+      "content": "Navigation"
+    },
+    {
+      "type": "link_list",
+      "id": "main_menu",
+      "label": "Main menu"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_desktop_hamburger",
+      "label": "Show hamburger menu on desktop",
+      "default": false
+    },
+    {
+      "type": "header",
+      "content": "Header colors"
+    },
+    {
+      "type": "color",
+      "id": "header_text_default",
+      "label": "Text color — transparent state",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "header_bg_alt",
+      "label": "Background color — scrolled / menu open",
+      "default": "#efeee9"
+    },
+    {
+      "type": "color",
+      "id": "header_text_alt",
+      "label": "Text color — scrolled / menu open",
+      "default": "#534846"
+    },
+    {
+      "type": "header",
+      "content": "Overlay menu"
+    },
+    {
+      "type": "link_list",
+      "id": "overlay_menu_1",
+      "label": "Overlay menu column 1"
+    },
+    {
+      "type": "link_list",
+      "id": "overlay_menu_2",
+      "label": "Overlay menu column 2"
+    },
+    {
+      "type": "link_list",
+      "id": "overlay_menu_3",
+      "label": "Overlay menu column 3"
+    },
+    {
+      "type": "url",
+      "id": "overlay_contact_url",
+      "label": "Contact link URL"
+    },
+    {
+      "type": "text",
+      "id": "overlay_contact_label",
+      "label": "Contact link label",
+      "default": "Contact Us"
+    },
+    {
+      "type": "header",
+      "content": "Social media"
+    },
+    {
+      "type": "url",
+      "id": "social_instagram",
+      "label": "Instagram URL"
+    },
+    {
+      "type": "url",
+      "id": "social_facebook",
+      "label": "Facebook URL"
+    },
+    {
+      "type": "url",
+      "id": "social_twitter",
+      "label": "X / Twitter URL"
+    },
+    {
+      "type": "url",
+      "id": "social_pinterest",
+      "label": "Pinterest URL"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Frankland Header"
+    }
+  ]
+}
+{% endschema %}

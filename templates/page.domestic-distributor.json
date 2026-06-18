@@ -1,0 +1,141 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "hero": {
+      "type": "page-hero-banner",
+      "settings": {
+        "heading": "",
+        "text_vertical_position": "lower-center",
+        "text_color": "#ffffff",
+        "image": "shopify://shop_images/Domestic_Retailers_Banner.jpg",
+        "background_position": "center center",
+        "background_color": "#efeee9",
+        "desktop_height": 560,
+        "mobile_height": 360,
+        "overlay_opacity": 25
+      }
+    },
+    "main": {
+      "type": "main-page",
+      "settings": {}
+    },
+    "distributors_section_R3C89a": {
+      "type": "distributors-section",
+      "blocks": {
+        "distributor_gKTPGg": {
+          "type": "distributor",
+          "settings": {
+            "location": "New South Wales & ACT",
+            "winery_name": "CellarHand Pty Ltd",
+            "phone": "0448 921 103",
+            "email": "nevada@cellarhand.com.au",
+            "website": "www.cellarhand.com.au"
+          }
+        },
+        "distributor_H87Ld7": {
+          "type": "distributor",
+          "settings": {
+            "location": "South Australia",
+            "winery_name": "A Good Bunch",
+            "phone": "0447819049",
+            "email": "steph@agoodbunchdist.com",
+            "website": "www.agoodbunch.net"
+          }
+        },
+        "distributor_GpchJn": {
+          "type": "distributor",
+          "settings": {
+            "location": "Victoria",
+            "winery_name": "CellarHand Pty Ltd",
+            "phone": "03 9274 8444",
+            "email": "sales@cellarhand.com.au",
+            "website": "www.cellarhand.com.au"
+          }
+        },
+        "distributor_Bfqmee": {
+          "type": "distributor",
+          "settings": {
+            "location": "Queensland",
+            "winery_name": "Cuttings Wines Pty Ltd",
+            "phone": "07 3854 0407",
+            "email": "sales@cuttingswine.com.au",
+            "website": "www.cuttingsqld.com"
+          }
+        },
+        "distributor_XxUJpK": {
+          "type": "distributor",
+          "settings": {
+            "location": "Tasmania",
+            "winery_name": "Frankland Estate",
+            "phone": "08 98551544",
+            "email": "info@franklandestate.com.au",
+            "website": "www.franklandestate.com.au"
+          }
+        },
+        "distributor_k3pN6T": {
+          "type": "distributor",
+          "settings": {
+            "location": "Western Australia",
+            "winery_name": "Dave Mullen Wine Agency",
+            "phone": "08 9204 2911",
+            "email": "sales@davemullenwines.com.au",
+            "website": "www.davemullenwines.com.au"
+          }
+        }
+      },
+      "block_order": [
+        "distributor_gKTPGg",
+        "distributor_H87Ld7",
+        "distributor_GpchJn",
+        "distributor_Bfqmee",
+        "distributor_XxUJpK",
+        "distributor_k3pN6T"
+      ],
+      "name": "Distributors Section",
+      "settings": {
+        "heading": "",
+        "intro": "<p>For all trade enquiries please contact</p><p>Hunter Smith | hunter@franklandestate.com.au | +61428551544</p>",
+        "intro_font_family": "serif",
+        "intro_font_size": 20,
+        "intro_font_weight": "400",
+        "background_color": "#efeee9",
+        "text_color": "#302313",
+        "heading_color": "#302313",
+        "intro_color": "#302313",
+        "location_color": "#302313",
+        "winery_color": "#302313",
+        "contact_color": "#302313",
+        "location_font_family": "serif",
+        "location_font_size": 19,
+        "location_font_weight": "600",
+        "winery_font_family": "sans",
+        "winery_font_size": 15,
+        "winery_font_weight": "600",
+        "contact_font_family": "sans",
+        "contact_font_size": 16,
+        "contact_font_weight": "400",
+        "padding_top": 80,
+        "padding_bottom": 80,
+        "max_width": 1400,
+        "columns_desktop": "3",
+        "gap": 72,
+        "enable_clickable_email": true,
+        "enable_clickable_phone": true,
+        "enable_clickable_website": true
+      }
+    }
+  },
+  "order": [
+    "hero",
+    "main",
+    "distributors_section_R3C89a"
+  ]
+}

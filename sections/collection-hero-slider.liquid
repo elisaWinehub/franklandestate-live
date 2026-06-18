@@ -1,0 +1,607 @@
+{%- liquid
+  assign sid = section.id
+  assign meta_slides = collection.metafields.custom.hero_slides.value
+  assign slides_count = section.blocks.size
+  assign use_meta_slides = false
+  if meta_slides != blank and meta_slides.size > 0
+    assign use_meta_slides = true
+    assign slides_count = meta_slides.size
+  endif
+  assign overlay_opacity = section.settings.overlay_opacity | divided_by: 100.0
+-%}
+
+<section
+  id="fe-collection-hero-{{ sid }}"
+  class="fe-collection-hero fe-collection-hero--{{ sid }}"
+  style="
+    --fe-hero-height-desktop: {{ section.settings.desktop_height }}px;
+    --fe-hero-height-mobile: {{ section.settings.mobile_height }}px;
+    --fe-hero-overlay-opacity: {{ overlay_opacity }};
+    --fe-hero-text-color: {{ section.settings.text_color }};
+    --fe-hero-content-max-width: {{ section.settings.content_max_width | default: 1110 }}px;
+    --fe-hero-heading-size: {{ section.settings.heading_font_size | default: 48 }}px;
+    --fe-hero-text-size: {{ section.settings.text_font_size | default: 19 }}px;
+  "
+  aria-label="{{ section.settings.accessibility_label | default: 'Collection hero slider' | escape }}"
+>
+  <div class="fe-collection-hero__viewport" data-slider-viewport>
+    <div class="fe-collection-hero__track" data-slider-track>
+      {%- if use_meta_slides -%}
+        {%- for slide in meta_slides -%}
+          {%- liquid
+            assign desktop_image = slide.desktop_image.value | default: slide.desktop_image
+            assign mobile_image = slide.mobile_image.value | default: slide.mobile_image
+            assign heading = slide.heading.value | default: slide.heading
+            assign body_text_field = slide.text
+            assign button_label = slide.button_label.value | default: slide.button_label
+            assign button_url_source = slide.button_url.value | default: slide.button_url
+            assign button_url = button_url_source.url | default: button_url_source
+          -%}
+          <article
+            class="fe-collection-hero__slide fe-collection-hero__slide--meta-{{ forloop.index0 }}{% if mobile_image != blank %} fe-collection-hero__slide--has-mobile{% endif %}"
+            data-slide
+            data-index="{{ forloop.index0 }}"
+            {% if forloop.index0 != 0 %}aria-hidden="true"{% endif %}
+          >
+            <div class="fe-collection-hero__media">
+              {%- if desktop_image != blank -%}
+                <img
+                  class="fe-collection-hero__image fe-collection-hero__image--desktop"
+                  src="{{ desktop_image | image_url: width: 2200 }}"
+                  srcset="{{ desktop_image | image_url: width: 1200 }} 1200w, {{ desktop_image | image_url: width: 1600 }} 1600w, {{ desktop_image | image_url: width: 2200 }} 2200w"
+                  sizes="100vw"
+                  alt="{{ desktop_image.alt | escape | default: heading }}"
+                  loading="{% if forloop.first %}eager{% else %}lazy{% endif %}"
+                  fetchpriority="{% if forloop.first %}high{% else %}auto{% endif %}"
+                >
+              {%- endif -%}
+
+              {%- if mobile_image != blank -%}
+                <img
+                  class="fe-collection-hero__image fe-collection-hero__image--mobile"
+                  src="{{ mobile_image | image_url: width: 1200 }}"
+                  srcset="{{ mobile_image | image_url: width: 700 }} 700w, {{ mobile_image | image_url: width: 1000 }} 1000w, {{ mobile_image | image_url: width: 1200 }} 1200w"
+                  sizes="100vw"
+                  alt="{{ mobile_image.alt | escape | default: heading }}"
+                  loading="{% if forloop.first %}eager{% else %}lazy{% endif %}"
+                >
+              {%- endif -%}
+
+              <div class="fe-collection-hero__overlay"></div>
+            </div>
+
+            <div class="fe-collection-hero__content-wrap fe-pos-lower-center">
+              <div class="fe-collection-hero__content fe-align-left">
+                {%- if heading != blank -%}
+                  <h2 class="fe-collection-hero__heading">{{ heading | escape }}</h2>
+                {%- endif -%}
+
+                {%- if body_text_field != blank -%}
+                  <div class="fe-collection-hero__subheading rte">{{ body_text_field | metafield_tag }}</div>
+                {%- endif -%}
+
+                {%- if button_label != blank and button_url != blank -%}
+                  <a class="fe-collection-hero__button" href="{{ button_url }}">{{ button_label | escape }}</a>
+                {%- endif -%}
+              </div>
+            </div>
+          </article>
+        {%- endfor -%}
+      {%- else -%}
+        {%- for block in section.blocks -%}
+          <article
+            class="fe-collection-hero__slide fe-collection-hero__slide--{{ block.id }}{% if block.settings.mobile_image != blank %} fe-collection-hero__slide--has-mobile{% endif %}"
+            data-slide
+            data-index="{{ forloop.index0 }}"
+            {% if forloop.index0 != 0 %}aria-hidden="true"{% endif %}
+            {{ block.shopify_attributes }}
+          >
+            <div class="fe-collection-hero__media">
+              {%- if block.settings.desktop_image != blank -%}
+                <img
+                  class="fe-collection-hero__image fe-collection-hero__image--desktop"
+                  src="{{ block.settings.desktop_image | image_url: width: 2200 }}"
+                  srcset="{{ block.settings.desktop_image | image_url: width: 1200 }} 1200w, {{ block.settings.desktop_image | image_url: width: 1600 }} 1600w, {{ block.settings.desktop_image | image_url: width: 2200 }} 2200w"
+                  sizes="100vw"
+                  alt="{{ block.settings.desktop_image.alt | escape | default: block.settings.heading }}"
+                  loading="{% if forloop.first %}eager{% else %}lazy{% endif %}"
+                  fetchpriority="{% if forloop.first %}high{% else %}auto{% endif %}"
+                >
+              {%- endif -%}
+
+              {%- if block.settings.mobile_image != blank -%}
+                <img
+                  class="fe-collection-hero__image fe-collection-hero__image--mobile"
+                  src="{{ block.settings.mobile_image | image_url: width: 1200 }}"
+                  srcset="{{ block.settings.mobile_image | image_url: width: 700 }} 700w, {{ block.settings.mobile_image | image_url: width: 1000 }} 1000w, {{ block.settings.mobile_image | image_url: width: 1200 }} 1200w"
+                  sizes="100vw"
+                  alt="{{ block.settings.mobile_image.alt | escape | default: block.settings.heading }}"
+                  loading="{% if forloop.first %}eager{% else %}lazy{% endif %}"
+                >
+              {%- endif -%}
+
+              <div class="fe-collection-hero__overlay"></div>
+            </div>
+
+            <div class="fe-collection-hero__content-wrap fe-pos-{{ block.settings.text_position | default: 'lower-center' }}">
+              <div class="fe-collection-hero__content fe-align-left">
+                {%- if block.settings.heading != blank -%}
+                  <h2 class="fe-collection-hero__heading">{{ block.settings.heading | escape }}</h2>
+                {%- endif -%}
+
+                {%- if block.settings.subheading != blank -%}
+                  <div class="fe-collection-hero__subheading rte">{{ block.settings.subheading }}</div>
+                {%- endif -%}
+
+                {%- if block.settings.button_label != blank and block.settings.button_link != blank -%}
+                  <a class="fe-collection-hero__button" href="{{ block.settings.button_link }}">{{ block.settings.button_label | escape }}</a>
+                {%- endif -%}
+              </div>
+            </div>
+          </article>
+        {%- endfor -%}
+      {%- endif -%}
+    </div>
+
+    {%- if section.settings.show_arrows and slides_count > 1 -%}
+      <button type="button" class="fe-collection-hero__arrow fe-collection-hero__arrow--prev" data-slider-prev aria-label="Previous slide"><span aria-hidden="true">&#10094;</span></button>
+      <button type="button" class="fe-collection-hero__arrow fe-collection-hero__arrow--next" data-slider-next aria-label="Next slide"><span aria-hidden="true">&#10095;</span></button>
+    {%- endif -%}
+
+    {%- if section.settings.show_dots and slides_count > 1 -%}
+      <div class="fe-collection-hero__dots" data-slider-dots role="tablist" aria-label="Slide navigation">
+        {%- if use_meta_slides -%}
+          {%- for slide in meta_slides -%}
+            <button type="button" class="fe-collection-hero__dot{% if forloop.first %} is-active{% endif %}" data-dot-index="{{ forloop.index0 }}" role="tab" aria-label="Go to slide {{ forloop.index }}" aria-selected="{% if forloop.first %}true{% else %}false{% endif %}"></button>
+          {%- endfor -%}
+        {%- else -%}
+          {%- for block in section.blocks -%}
+            <button type="button" class="fe-collection-hero__dot{% if forloop.first %} is-active{% endif %}" data-dot-index="{{ forloop.index0 }}" role="tab" aria-label="Go to slide {{ forloop.index }}" aria-selected="{% if forloop.first %}true{% else %}false{% endif %}"></button>
+          {%- endfor -%}
+        {%- endif -%}
+      </div>
+    {%- endif -%}
+  </div>
+</section>
+
+<style>
+  .fe-collection-hero--{{ sid }} { width: 100%; position: relative; overflow: hidden; color: var(--fe-hero-text-color); }
+  .fe-collection-hero--{{ sid }} .fe-collection-hero__viewport { position: relative; width: 100%; height: var(--fe-hero-height-desktop); min-height: 320px; }
+  .fe-collection-hero--{{ sid }} .fe-collection-hero__track { display: flex; width: 100%; height: 100%; transition: transform 0.45s ease; will-change: transform; }
+  .fe-collection-hero--{{ sid }} .fe-collection-hero__slide { position: relative; min-width: 100%; width: 100%; height: 100%; overflow: hidden; }
+  .fe-collection-hero--{{ sid }} .fe-collection-hero__media { position: absolute; inset: 0; z-index: 0; }
+  .fe-collection-hero--{{ sid }} .fe-collection-hero__image { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center center; display: block; }
+  .fe-collection-hero--{{ sid }} .fe-collection-hero__image--mobile { display: none; }
+  .fe-collection-hero--{{ sid }} .fe-collection-hero__overlay { position: absolute; inset: 0; background: #000; opacity: var(--fe-hero-overlay-opacity); pointer-events: none; }
+
+  .fe-collection-hero--{{ sid }} .fe-collection-hero__content-wrap {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    padding: max(140px, calc(var(--fe-header-height, 0px) + 44px)) 24px 80px;
+    box-sizing: border-box;
+  }
+
+  .fe-collection-hero--{{ sid }} .fe-collection-hero__content {
+    width: min(100%, var(--fe-hero-content-max-width));
+    max-width: 1110px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    color: var(--fe-hero-text-color);
+  }
+
+  .fe-collection-hero--{{ sid }} .fe-collection-hero__heading {
+    margin: 0;
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: var(--fe-hero-heading-size);
+    line-height: 1.05;
+    font-weight: 400;
+  }
+
+  .fe-collection-hero--{{ sid }} .fe-collection-hero__subheading {
+    margin: 0;
+    font-family: "Plus Jakarta Sans", sans-serif;
+    font-size: var(--fe-hero-text-size);
+    line-height: 1.5;
+    max-width: min(100%, var(--fe-hero-content-max-width));
+  }
+
+  .fe-collection-hero--{{ sid }} .fe-collection-hero__subheading p { margin: 0; }
+  .fe-collection-hero--{{ sid }} .fe-collection-hero__subheading p + p { margin-top: 0.8em; }
+
+  .fe-collection-hero--{{ sid }} .fe-collection-hero__button {
+    display: inline-block;
+    width: fit-content;
+    margin-top: 24px;
+    padding: 12px 24px;
+    border: 1px solid rgba(255, 255, 255, 0.92);
+    color: #fff;
+    text-decoration: none;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 13px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    transition: background-color 0.2s ease, color 0.2s ease;
+  }
+  .fe-collection-hero--{{ sid }} .fe-collection-hero__button:hover { background: #fff; color: #302313; }
+
+  .fe-collection-hero--{{ sid }} .fe-align-left { text-align: left; align-items: flex-start; }
+  .fe-collection-hero--{{ sid }} .fe-align-center { text-align: center; align-items: center; }
+  .fe-collection-hero--{{ sid }} .fe-align-right { text-align: right; align-items: flex-end; }
+
+  .fe-collection-hero--{{ sid }} .fe-pos-upper-left { align-items: flex-start; justify-content: flex-start; }
+  .fe-collection-hero--{{ sid }} .fe-pos-upper-center { align-items: flex-start; justify-content: center; }
+  .fe-collection-hero--{{ sid }} .fe-pos-upper-right { align-items: flex-start; justify-content: flex-end; }
+  .fe-collection-hero--{{ sid }} .fe-pos-middle-left { align-items: center; justify-content: flex-start; }
+  .fe-collection-hero--{{ sid }} .fe-pos-middle-center { align-items: center; justify-content: center; }
+  .fe-collection-hero--{{ sid }} .fe-pos-middle-right { align-items: center; justify-content: flex-end; }
+  .fe-collection-hero--{{ sid }} .fe-pos-lower-left { align-items: flex-end; justify-content: flex-start; padding-bottom: 52px; }
+  .fe-collection-hero--{{ sid }} .fe-pos-lower-center { align-items: flex-end; justify-content: center; padding-bottom: 52px; }
+  .fe-collection-hero--{{ sid }} .fe-pos-lower-right { align-items: flex-end; justify-content: flex-end; padding-bottom: 52px; }
+
+  .fe-collection-hero--{{ sid }} .fe-collection-hero__arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 2;
+    width: 44px;
+    height: 44px;
+    border-radius: 999px;
+    border: 1px solid rgba(255, 255, 255, 0.6);
+    background: rgba(0, 0, 0, 0.24);
+    color: #fff;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background-color 0.2s ease, border-color 0.2s ease;
+  }
+  .fe-collection-hero--{{ sid }} .fe-collection-hero__arrow:hover { background: rgba(0, 0, 0, 0.42); border-color: rgba(255, 255, 255, 0.95); }
+  .fe-collection-hero--{{ sid }} .fe-collection-hero__arrow--prev { left: 18px; }
+  .fe-collection-hero--{{ sid }} .fe-collection-hero__arrow--next { right: 18px; }
+
+  .fe-collection-hero--{{ sid }} .fe-collection-hero__dots {
+    position: absolute;
+    z-index: 2;
+    left: 50%;
+    bottom: 18px;
+    transform: translateX(-50%);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .fe-collection-hero--{{ sid }} .fe-collection-hero__dot { width: 10px; height: 10px; border-radius: 999px; border: 1px solid rgba(255, 255, 255, 0.9); background: transparent; cursor: pointer; padding: 0; }
+  .fe-collection-hero--{{ sid }} .fe-collection-hero__dot.is-active { background: #fff; }
+  .fe-collection-hero--{{ sid }} .fe-collection-hero__arrow:focus-visible,
+  .fe-collection-hero--{{ sid }} .fe-collection-hero__dot:focus-visible,
+  .fe-collection-hero--{{ sid }} .fe-collection-hero__button:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
+
+  {%- if use_meta_slides -%}
+    {%- for hero in meta_slides -%}
+      .fe-collection-hero--{{ sid }} .fe-collection-hero__slide--meta-{{ forloop.index0 }} .fe-collection-hero__image { object-position: center center; }
+    {%- endfor -%}
+  {%- else -%}
+    {%- for block in section.blocks -%}
+      .fe-collection-hero--{{ sid }} .fe-collection-hero__slide--{{ block.id }} .fe-collection-hero__image { object-position: {{ block.settings.background_position }}; }
+    {%- endfor -%}
+  {%- endif -%}
+
+  @media (max-width: 768px) {
+    .fe-collection-hero--{{ sid }} .fe-collection-hero__viewport { height: var(--fe-hero-height-mobile); min-height: 280px; }
+    .fe-collection-hero--{{ sid }} .fe-collection-hero__content-wrap { padding: max(108px, calc(var(--fe-header-height, 0px) + 30px)) 18px 30px; }
+    .fe-collection-hero--{{ sid }} .fe-pos-lower-left,
+    .fe-collection-hero--{{ sid }} .fe-pos-lower-center,
+    .fe-collection-hero--{{ sid }} .fe-pos-lower-right { padding-bottom: 36px; }
+    .fe-collection-hero--{{ sid }} .fe-collection-hero__heading { font-size: min(2rem, var(--fe-hero-heading-size)); }
+    .fe-collection-hero--{{ sid }} .fe-collection-hero__subheading { font-size: min(1em, var(--fe-hero-text-size)); }
+    .fe-collection-hero--{{ sid }} .fe-collection-hero__arrow { width: 38px; height: 38px; }
+    .fe-collection-hero--{{ sid }} .fe-collection-hero__arrow--prev { left: 10px; }
+    .fe-collection-hero--{{ sid }} .fe-collection-hero__arrow--next { right: 10px; }
+    .fe-collection-hero--{{ sid }} .fe-collection-hero__image--mobile { display: block; }
+    .fe-collection-hero--{{ sid }} .fe-collection-hero__slide--has-mobile .fe-collection-hero__image--desktop { display: none; }
+  }
+</style>
+
+<script>
+  (function () {
+    var root = document.getElementById('fe-collection-hero-{{ sid }}');
+    if (!root) return;
+
+    var track = root.querySelector('[data-slider-track]');
+    var slides = root.querySelectorAll('[data-slide]');
+    var prevBtn = root.querySelector('[data-slider-prev]');
+    var nextBtn = root.querySelector('[data-slider-next]');
+    var dotsWrap = root.querySelector('[data-slider-dots]');
+    var dots = dotsWrap ? dotsWrap.querySelectorAll('[data-dot-index]') : [];
+    var total = slides.length;
+    var index = 0;
+    var autoplayEnabled = {{ section.settings.autoplay | json }};
+    var autoplayMs = {{ section.settings.autoplay_speed | json }};
+    var timer = null;
+    var paused = false;
+
+    if (!track || total === 0) return;
+
+    function updateSlides() {
+      track.style.transform = 'translateX(' + (-index * 100) + '%)';
+      slides.forEach(function (slide, i) {
+        slide.setAttribute('aria-hidden', i === index ? 'false' : 'true');
+      });
+      if (!dots.length) return;
+      dots.forEach(function (dot, i) {
+        var active = i === index;
+        dot.classList.toggle('is-active', active);
+        dot.setAttribute('aria-selected', active ? 'true' : 'false');
+      });
+    }
+
+    function stopAutoplay() {
+      if (timer) {
+        clearInterval(timer);
+        timer = null;
+      }
+    }
+
+    function startAutoplay() {
+      stopAutoplay();
+      if (!autoplayEnabled || total <= 1 || paused) return;
+      timer = setInterval(function () {
+        goTo((index + 1) % total);
+      }, autoplayMs);
+    }
+
+    function goTo(nextIndex) {
+      index = (nextIndex + total) % total;
+      updateSlides();
+    }
+
+    if (prevBtn) prevBtn.addEventListener('click', function () { goTo(index - 1); });
+    if (nextBtn) nextBtn.addEventListener('click', function () { goTo(index + 1); });
+
+    if (dots.length) {
+      dots.forEach(function (dot) {
+        dot.addEventListener('click', function () {
+          var dotIndex = parseInt(dot.getAttribute('data-dot-index'), 10);
+          if (!isNaN(dotIndex)) goTo(dotIndex);
+        });
+      });
+    }
+
+    root.addEventListener('mouseenter', function () { paused = true; stopAutoplay(); });
+    root.addEventListener('mouseleave', function () { paused = false; startAutoplay(); });
+    root.addEventListener('focusin', function () { paused = true; stopAutoplay(); });
+    root.addEventListener('focusout', function () {
+      var activeWithin = root.contains(document.activeElement);
+      if (!activeWithin) {
+        paused = false;
+        startAutoplay();
+      }
+    });
+
+    if (total <= 1) {
+      if (prevBtn) prevBtn.style.display = 'none';
+      if (nextBtn) nextBtn.style.display = 'none';
+      if (dotsWrap) dotsWrap.style.display = 'none';
+    } else {
+      updateSlides();
+      startAutoplay();
+    }
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Collection Hero Slider",
+  "tag": "section",
+  "class": "fe-collection-hero-slider-section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "accessibility_label",
+      "label": "Accessibility label",
+      "default": "Collection hero slider"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "range",
+      "id": "content_max_width",
+      "label": "Content max width",
+      "min": 600,
+      "max": 1600,
+      "step": 10,
+      "unit": "px",
+      "default": 1110
+    },
+    {
+      "type": "range",
+      "id": "heading_font_size",
+      "label": "Heading font size",
+      "min": 20,
+      "max": 80,
+      "step": 1,
+      "unit": "px",
+      "default": 48
+    },
+    {
+      "type": "range",
+      "id": "text_font_size",
+      "label": "Body text font size",
+      "min": 12,
+      "max": 40,
+      "step": 1,
+      "unit": "px",
+      "default": 19
+    },
+    {
+      "type": "range",
+      "id": "overlay_opacity",
+      "label": "Overlay opacity",
+      "min": 0,
+      "max": 80,
+      "step": 5,
+      "unit": "%",
+      "default": 30
+    },
+    {
+      "type": "range",
+      "id": "desktop_height",
+      "label": "Desktop height",
+      "min": 360,
+      "max": 900,
+      "step": 10,
+      "unit": "px",
+      "default": 560
+    },
+    {
+      "type": "range",
+      "id": "mobile_height",
+      "label": "Mobile height",
+      "min": 260,
+      "max": 760,
+      "step": 10,
+      "unit": "px",
+      "default": 420
+    },
+    {
+      "type": "checkbox",
+      "id": "autoplay",
+      "label": "Enable autoplay",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "autoplay_speed",
+      "label": "Autoplay speed",
+      "min": 2000,
+      "max": 9500,
+      "step": 500,
+      "unit": "ms",
+      "default": 5000
+    },
+    {
+      "type": "checkbox",
+      "id": "show_arrows",
+      "label": "Show arrows",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_dots",
+      "label": "Show dots",
+      "default": true
+    }
+  ],
+  "blocks": [
+    {
+      "type": "slide",
+      "name": "Slide",
+      "limit": 10,
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "desktop_image",
+          "label": "Desktop image"
+        },
+        {
+          "type": "image_picker",
+          "id": "mobile_image",
+          "label": "Mobile image (optional)"
+        },
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "Heading",
+          "default": "Isolation Ridge"
+        },
+        {
+          "type": "richtext",
+          "id": "subheading",
+          "label": "Subheading",
+          "default": "<p>The Organic Certification of both the winery and vineyards in 2009 speaks to the attention to detail that possesses every part of this family-owned winery.</p>"
+        },
+        {
+          "type": "text",
+          "id": "button_label",
+          "label": "Button label"
+        },
+        {
+          "type": "url",
+          "id": "button_link",
+          "label": "Button link"
+        },
+        {
+          "type": "select",
+          "id": "text_alignment",
+          "label": "Text alignment",
+          "default": "center",
+          "options": [
+            { "value": "left", "label": "Left" },
+            { "value": "center", "label": "Center" },
+            { "value": "right", "label": "Right" }
+          ]
+        },
+        {
+          "type": "select",
+          "id": "text_position",
+          "label": "Text position",
+          "default": "lower-center",
+          "options": [
+            { "value": "upper-left", "label": "Upper left" },
+            { "value": "upper-center", "label": "Upper center" },
+            { "value": "upper-right", "label": "Upper right" },
+            { "value": "middle-left", "label": "Middle left" },
+            { "value": "middle-center", "label": "Middle center" },
+            { "value": "middle-right", "label": "Middle right" },
+            { "value": "lower-left", "label": "Lower left" },
+            { "value": "lower-center", "label": "Lower center" },
+            { "value": "lower-right", "label": "Lower right" }
+          ]
+        },
+        {
+          "type": "select",
+          "id": "background_position",
+          "label": "Background image position",
+          "default": "center center",
+          "options": [
+            { "value": "left top", "label": "Left top" },
+            { "value": "center top", "label": "Top center" },
+            { "value": "right top", "label": "Right top" },
+            { "value": "left center", "label": "Left center" },
+            { "value": "center center", "label": "Center center" },
+            { "value": "right center", "label": "Right center" },
+            { "value": "left bottom", "label": "Left bottom" },
+            { "value": "center bottom", "label": "Bottom center" },
+            { "value": "right bottom", "label": "Right bottom" }
+          ]
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Collection Hero Slider",
+      "blocks": [
+        {
+          "type": "slide",
+          "settings": {
+            "heading": "Isolation Ridge",
+            "subheading": "<p>The Organic Certification of both the winery and vineyards in 2009 speaks to the attention to detail that possesses every part of this family-owned winery.</p>",
+            "text_alignment": "center",
+            "text_position": "lower-center",
+            "background_position": "center center"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

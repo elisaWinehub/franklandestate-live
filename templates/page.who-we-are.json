@@ -1,0 +1,194 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "hero": {
+      "type": "page-hero-banner",
+      "settings": {
+        "heading": "Who We Are",
+        "text_vertical_position": "lower-center",
+        "text_color": "#ffffff",
+        "image": "shopify://shop_images/Who_We_Are_Banner.jpg",
+        "background_position": "center center",
+        "background_color": "#efeee9",
+        "desktop_height": 560,
+        "mobile_height": 360,
+        "overlay_opacity": 25
+      }
+    },
+    "text_image_column_qVVBHQ": {
+      "type": "text-image-column",
+      "name": "Text + Image",
+      "settings": {
+        "heading": "Frankland Estate is a second-generation winery run by brother and sister Hunter and Elizabeth Smith, with Elizabeth’s husband Brian Kent at the winemaking helm since 2010.",
+        "heading_font_size": 24,
+        "heading_font_family": "serif",
+        "heading_font_weight": "400",
+        "body": "",
+        "button_label": "",
+        "button_link": "",
+        "image_url": "",
+        "text_alignment": "left",
+        "text_container_width": "normal",
+        "background_color": "#e9e9e2",
+        "padding_top": 80,
+        "padding_bottom": 80
+      }
+    },
+    "main": {
+      "type": "main-page",
+      "settings": {}
+    },
+    "alt_1": {
+      "type": "alternating-content",
+      "settings": {
+        "image": "shopify://shop_images/Our_Family_2.jpg",
+        "heading": "",
+        "body": "<p>Having grown up on Isolation Ridge, we share a deep, intuitive understanding of the vineyard and its wines - from vine to barrel, bottle to glass. That closeness gives us the confidence to question, refine and evolve, always in pursuit of expressing the site at its best.</p><p>We owe much to our parents, Judi Cullam and the late Barrie Smith, who first planted vines here in 1988. Their vision established the foundations of integrity, character and respect for place that continue to shape everything we do.</p>",
+        "button_label": "",
+        "button_link": "",
+        "image_position": "image_right",
+        "background_color": "#e9e9e2",
+        "padding_top": 80,
+        "padding_bottom": 80,
+        "show_border_top": false,
+        "show_border_bottom": false,
+        "border_color": "#d3d2cb",
+        "content_font_size": 16,
+        "divider_position": "none"
+      }
+    },
+    "alt_2": {
+      "type": "alternating-content",
+      "settings": {
+        "image": "shopify://shop_images/A_Natural_Haven.jpg",
+        "heading": "",
+        "body": "<p>Living on the land brings both privilege and responsibility. It is where we raise our families, and it drives our commitment to care for the vineyard in a way that will leave it in better condition for the next generation. Daily immersion in the vineyard allows us to respond to the subtle needs of the vines, guiding them towards producing fruit of clarity and balance - the essential starting point for great wine.</p><p>Over time, it Is the accumulation of small, thoughtful decisions in both vineyard and winery that defines our wines and sets them apart.</p>",
+        "button_label": "",
+        "button_link": "",
+        "image_position": "image_left",
+        "background_color": "#e9e9e2",
+        "padding_top": 80,
+        "padding_bottom": 80,
+        "show_border_top": false,
+        "show_border_bottom": false,
+        "border_color": "#d3d2cb",
+        "content_font_size": 16,
+        "divider_position": "none"
+      }
+    },
+    "team_profile_circles_GLmPUq": {
+      "type": "team-profile-circles",
+      "blocks": {
+        "profile_DrEdbh": {
+          "type": "profile",
+          "settings": {
+            "profile_image": "shopify://shop_images/Hunter.jpg",
+            "name": "Hunter Smith",
+            "role": "Winemaker",
+            "bio": "<p>Hunter became a full-time member of the Frankland Estate team in 1999 after gaining his Bachelor of Business (Agricultural Management) degree from Marcus Oldham College in Victoria. Working in lockstep with brother-in-law Brian Kent, he applies his breadth of knowledge to every aspect of winery operations. </p>",
+            "image_alt": "Portrait placeholder for Hunter Smith"
+          }
+        },
+        "profile_DP7Jra": {
+          "type": "profile",
+          "settings": {
+            "profile_image": "shopify://shop_images/Elizabeth.jpg",
+            "name": "Elizabeth Smith",
+            "role": "",
+            "bio": "<p>Elizabeth attended the University of Western Australia and graduated with a Bachelor of Science (Honours) in Agriculture Science in 1998, before furthering her studies in Viticulture at Charles Sturt University. Elizabeth gained further experience by working vintages in the wine regions of California, Spain and New Zealand.</p>",
+            "image_alt": "Portrait placeholder for Judi Cullam"
+          }
+        },
+        "profile_XANPFe": {
+          "type": "profile",
+          "settings": {
+            "profile_image": "shopify://shop_images/BrianHeadshot.jpg",
+            "name": "Brian Kent",
+            "role": "",
+            "bio": "<p>Brian grew up in Perth and has a background in Biology, along with a postgraduate degree in Viticulture and Oenology from Lincoln University in Christchurch, New Zealand. In his early years he worked vintages in California’s Russian River, and Rías Baixas in northwest Spain. He worked as a winemaker in Frankland River for several years before joining the family business at Frankland Estate in 2010.</p>",
+            "image_alt": "Portrait placeholder for Barrie Smith"
+          }
+        },
+        "profile_dKfddM": {
+          "type": "profile",
+          "settings": {
+            "profile_image": "shopify://shop_images/Judi_and_Barrie_Headshot.jpg",
+            "name": "Judi Cullam",
+            "role": "",
+            "bio": "<p>Judi Cullam co-founded Frankland Estate with late husband Barrie Smith in 1988, in a move to diversify their long-established wool-growing interests in the Frankland River region. Judi has been integral to the success and growth of Frankland Estate within Australia and into major export markets. A tireless contributor to the Australian wine scene, she was awarded the Len Evans Award for Leadership by Gourmet Traveller WINE magazine in 2018. Barrie, meanwhile, was raised in a wine-producing region and was renowned for his deep respect for the land. Over more than 30 vintages at Frankland Estate, he was instrumental in pushing the potential of the Isolation Ridge vineyard.</p>",
+            "image_alt": "Portrait placeholder for cellar team"
+          }
+        },
+        "profile_UeqqQi": {
+          "type": "profile",
+          "settings": {
+            "profile_image": "shopify://shop_images/Gladys_1.jpg",
+            "name": "Gladys",
+            "role": "",
+            "bio": "<p>Although Gladys isn’t exactly human, she still remains a vital member of our management team and family. As queen of our flock of guinea fowl, Gladys leads her loyal subjects out into the vineyard every day to eat bugs and pests that otherwise might damage our vines. She is sensitive, caring and - like all of us at Frankland Estate - strongly committed to organic viticulture.</p>",
+            "image_alt": ""
+          }
+        }
+      },
+      "block_order": [
+        "profile_DrEdbh",
+        "profile_DP7Jra",
+        "profile_XANPFe",
+        "profile_dKfddM",
+        "profile_UeqqQi"
+      ],
+      "name": "Team Profile Circles",
+      "settings": {
+        "heading": "",
+        "intro": "",
+        "background_color": "#e9e9e2",
+        "text_color": "#302313",
+        "padding_top": 80,
+        "padding_bottom": 80,
+        "image_size": 180,
+        "modal_background_color": "#e8e8e8",
+        "divider_color": "#d8d2c8"
+      }
+    },
+    "banner_1": {
+      "type": "fullwidth-image-banner",
+      "settings": {
+        "image": "shopify://shop_images/Frankland_Estate_Come_and_Visit.jpg",
+        "image_url": "",
+        "mobile_image_url": "",
+        "title": "Come & Visit",
+        "subtitle": "Take a trip to our Cellar Door for a unique discovery into what makes our wines consistently awarded as some of Australia's best.",
+        "button_label": "Shop Now",
+        "button_link": "#",
+        "text_alignment": "left",
+        "button_bg_color": "#ffffff",
+        "button_text_color": "#302313",
+        "button_hover_bg_color": "#302313",
+        "button_hover_text_color": "#ffffff",
+        "background_color": "#e9e9e2",
+        "padding_top": 80,
+        "padding_bottom": 80,
+        "section_height": 55,
+        "mobile_height": 40,
+        "overlay_opacity": 20
+      }
+    }
+  },
+  "order": [
+    "hero",
+    "text_image_column_qVVBHQ",
+    "main",
+    "alt_1",
+    "alt_2",
+    "team_profile_circles_GLmPUq",
+    "banner_1"
+  ]
+}

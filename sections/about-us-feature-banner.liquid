@@ -1,0 +1,945 @@
+{%- liquid
+  assign sid = section.id
+  assign op = section.settings.overlay_opacity | times: 1.0 | divided_by: 100.0
+  assign row_pos = section.settings.content_position | default: 'center'
+  assign row_justify = 'center'
+  if row_pos == 'left'
+    assign row_justify = 'flex-start'
+  elsif row_pos == 'right'
+    assign row_justify = 'flex-end'
+  endif
+  assign text_align = section.settings.text_alignment | default: 'center'
+  assign subscribe_mode = section.settings.subscribe_box_mode | default: 'none'
+  assign fe_afb_use_parallax = false
+  if section.settings.enable_parallax and section.settings.background_image != blank
+    assign fe_afb_use_parallax = true
+  endif
+-%}
+
+<section
+  id="{{ section.settings.section_id | default: 'feature-banner' | handleize }}"
+  class="fe-about-feature-banner fe-about-feature-banner--{{ sid }}{% if fe_afb_use_parallax %} fe-about-feature-banner--parallax{% endif %}"
+  style="
+    --fe-afb-h-desktop: {{ section.settings.height_desktop }}px;
+    --fe-afb-h-mobile: {{ section.settings.height_mobile }}px;
+    --fe-afb-row-max: {{ section.settings.row_max_width }}px;
+    --fe-afb-content-max: {{ section.settings.content_max_width }}px;
+  "
+>
+  <div class="fe-about-feature-banner__media">
+    {%- if fe_afb_use_parallax -%}
+      <div
+        class="fe-about-feature-banner__parallax fe-about-feature-banner__img--desktop"
+        role="img"
+        aria-label="{{ section.settings.background_image.alt | escape | default: section.settings.heading }}"
+        style="background-image: url('{{ section.settings.background_image | image_url: width: 2400 }}');"
+      ></div>
+    {%- elsif section.settings.background_image != blank -%}
+      <img
+        class="fe-about-feature-banner__img fe-about-feature-banner__img--desktop"
+        src="{{ section.settings.background_image | image_url: width: 2400 }}"
+        srcset="
+          {{ section.settings.background_image | image_url: width: 900 }} 900w,
+          {{ section.settings.background_image | image_url: width: 1400 }} 1400w,
+          {{ section.settings.background_image | image_url: width: 2000 }} 2000w,
+          {{ section.settings.background_image | image_url: width: 2400 }} 2400w
+        "
+        sizes="100vw"
+        alt="{{ section.settings.background_image.alt | escape | default: section.settings.heading }}"
+        loading="lazy"
+      >
+    {%- endif -%}
+
+    {%- if section.settings.mobile_background_image != blank -%}
+      <img
+        class="fe-about-feature-banner__img fe-about-feature-banner__img--mobile"
+        src="{{ section.settings.mobile_background_image | image_url: width: 1200 }}"
+        srcset="
+          {{ section.settings.mobile_background_image | image_url: width: 600 }} 600w,
+          {{ section.settings.mobile_background_image | image_url: width: 900 }} 900w,
+          {{ section.settings.mobile_background_image | image_url: width: 1200 }} 1200w
+        "
+        sizes="100vw"
+        alt="{{ section.settings.mobile_background_image.alt | escape | default: section.settings.heading }}"
+        loading="lazy"
+      >
+    {%- endif -%}
+
+    <div
+      class="fe-about-feature-banner__overlay"
+      style="background-color: {{ section.settings.overlay_color }}; opacity: {{ op }};"
+    ></div>
+  </div>
+
+  <div class="fe-about-feature-banner__wrap">
+    <div
+      class="fe-about-feature-banner__inner"
+      style="
+        max-width: var(--fe-afb-row-max);
+        margin-left: auto;
+        margin-right: auto;
+        justify-content: {{ row_justify }};
+        color: {{ section.settings.text_color }};
+        padding-top: {{ section.settings.padding_top }}px;
+        padding-bottom: {{ section.settings.padding_bottom }}px;
+      "
+    >
+      <div
+        class="fe-about-feature-banner__content"
+        style="
+          max-width: var(--fe-afb-content-max);
+          text-align: {{ text_align }};
+        "
+      >
+        {%- if section.settings.section_number != blank -%}
+          <p class="fe-about-feature-banner__eyebrow" style="color: {{ section.settings.heading_color }};">{{ section.settings.section_number | escape }}</p>
+        {%- endif -%}
+        {%- if section.settings.heading != blank -%}
+          <h2 class="fe-about-feature-banner__title" style="color: {{ section.settings.heading_color }};">{{ section.settings.heading | escape }}</h2>
+        {%- endif -%}
+        {%- if section.settings.body != blank -%}
+          <div class="fe-about-feature-banner__body rte">{{ section.settings.body }}</div>
+        {%- endif -%}
+
+        {%- if section.settings.quote != blank -%}
+          <blockquote class="fe-about-feature-banner__quote">
+            <p>{{ section.settings.quote | escape }}</p>
+            {%- if section.settings.quote_author != blank -%}
+              <cite class="fe-about-feature-banner__quote-cite">{{ section.settings.quote_author | escape }}</cite>
+            {%- endif -%}
+          </blockquote>
+        {%- endif -%}
+
+        {%- if section.settings.button_label != blank and section.settings.button_link != blank -%}
+          <a
+            class="fe-about-feature-banner__btn fe-about-feature-banner__btn--{{ section.settings.button_style }}"
+            href="{{ section.settings.button_link }}"
+          >
+            {{ section.settings.button_label | escape }}
+          </a>
+        {%- endif -%}
+
+        {%- if subscribe_mode != 'none' -%}
+          <div class="fe-about-feature-banner__subscribe fe-about-feature-banner__subscribe--{{ text_align }}">
+            {%- if section.settings.subscribe_heading != blank -%}
+              <p class="fe-about-feature-banner__subscribe-heading">{{ section.settings.subscribe_heading | escape }}</p>
+            {%- endif -%}
+
+            {%- if subscribe_mode == 'klaviyo_embed' -%}
+              {%- if section.settings.klaviyo_custom_liquid != blank -%}
+                <div class="fe-about-feature-banner__subscribe-embed rte">
+                  {{ section.settings.klaviyo_custom_liquid }}
+                </div>
+              {%- elsif request.design_mode -%}
+                <p class="fe-about-feature-banner__subscribe-placeholder">
+                  Add Klaviyo embed code under <strong>Subscribe box → Klaviyo embed (Custom Liquid)</strong>.
+                </p>
+              {%- endif -%}
+            {%- elsif subscribe_mode == 'static_form' -%}
+              <form
+                class="fe-about-feature-banner__subscribe-form"
+                data-fe-afb-static-newsletter="1"
+                novalidate
+              >
+                <div class="fe-about-feature-banner__subscribe-fields" data-fe-afb-newsletter-fields>
+                  <div class="fe-about-feature-banner__subscribe-field" data-fe-afb-nw-field>
+                    <label class="visually-hidden" for="fe-afb-sub-name-{{ sid }}">{{ section.settings.subscribe_name_placeholder | default: 'Name' | escape }} (required)</label>
+                    <input
+                      type="text"
+                      id="fe-afb-sub-name-{{ sid }}"
+                      class="fe-about-feature-banner__subscribe-input"
+                      name="fullname"
+                      autocomplete="name"
+                      required
+                      placeholder="{{ section.settings.subscribe_name_placeholder | default: 'Name' | escape }} *"
+                      aria-required="true"
+                      aria-describedby="fe-afb-sub-name-{{ sid }}-err"
+                    >
+                    <span id="fe-afb-sub-name-{{ sid }}-err" class="fe-about-feature-banner__subscribe-error" role="alert"></span>
+                  </div>
+                  <div class="fe-about-feature-banner__subscribe-field" data-fe-afb-nw-field>
+                    <label class="visually-hidden" for="fe-afb-sub-email-{{ sid }}">{{ section.settings.subscribe_email_placeholder | default: 'Email' | escape }} (required)</label>
+                    <input
+                      type="email"
+                      id="fe-afb-sub-email-{{ sid }}"
+                      class="fe-about-feature-banner__subscribe-input"
+                      name="email"
+                      autocomplete="email"
+                      required
+                      placeholder="{{ section.settings.subscribe_email_placeholder | default: 'Email' | escape }} *"
+                      aria-required="true"
+                      aria-describedby="fe-afb-sub-email-{{ sid }}-err"
+                    >
+                    <span id="fe-afb-sub-email-{{ sid }}-err" class="fe-about-feature-banner__subscribe-error" role="alert"></span>
+                  </div>
+                  <button type="submit" class="fe-about-feature-banner__subscribe-submit">
+                    {{ section.settings.subscribe_button_label | default: 'Subscribe' | escape }}
+                  </button>
+                </div>
+                <p class="fe-about-feature-banner__subscribe-success" data-fe-afb-newsletter-success hidden role="status">
+                  {{- section.settings.subscribe_success_message | default: 'Thanks — you are on the list.' | escape | newline_to_br -}}
+                </p>
+              </form>
+            {%- endif -%}
+          </div>
+        {%- endif -%}
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .fe-about-feature-banner--{{ sid }} {
+    position: relative;
+    width: 100%;
+    min-height: var(--fe-afb-h-desktop);
+    overflow: hidden;
+    background-color: {{ section.settings.background_color_fallback }};
+    box-sizing: border-box;
+  }
+
+  .fe-about-feature-banner--{{ sid }} .fe-about-feature-banner__media {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+  }
+
+  .fe-about-feature-banner--{{ sid }} .fe-about-feature-banner__img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    display: block;
+  }
+
+  .fe-about-feature-banner--{{ sid }} .fe-about-feature-banner__parallax {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-attachment: scroll;
+    display: block;
+    z-index: 0;
+  }
+
+  @media (min-width: 990px) {
+    .fe-about-feature-banner--{{ sid }}.fe-about-feature-banner--parallax .fe-about-feature-banner__parallax {
+      background-attachment: fixed;
+    }
+  }
+
+  @media (max-width: 989px) {
+    .fe-about-feature-banner--{{ sid }}.fe-about-feature-banner--parallax .fe-about-feature-banner__parallax {
+      background-attachment: scroll;
+    }
+  }
+
+  .fe-about-feature-banner--{{ sid }} .fe-about-feature-banner__img--mobile {
+    display: none;
+  }
+
+  .fe-about-feature-banner--{{ sid }} .fe-about-feature-banner__overlay {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+  }
+
+  .fe-about-feature-banner--{{ sid }} .fe-about-feature-banner__wrap {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    min-height: inherit;
+    align-items: center;
+    box-sizing: border-box;
+  }
+
+  .fe-about-feature-banner--{{ sid }} .fe-about-feature-banner__inner {
+    width: 100%;
+    display: flex;
+    padding: 0 24px;
+    box-sizing: border-box;
+  }
+
+  .fe-about-feature-banner--{{ sid }} .fe-about-feature-banner__content {
+    width: 100%;
+    flex: 0 1 auto;
+    box-sizing: border-box;
+  }
+
+  .fe-about-feature-banner--{{ sid }} .fe-about-feature-banner__eyebrow {
+    margin: 0 0 12px;
+    font-family: "Plus Jakarta Sans", sans-serif;
+    font-size: 12px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    opacity: 0.82;
+  }
+
+  .fe-about-feature-banner--{{ sid }} .fe-about-feature-banner__title {
+    margin: 0;
+    font-family: eidetic-neo, Georgia, "Times New Roman", serif;
+    font-size: clamp(28px, 3.6vw, 46px);
+    font-weight: 400;
+    line-height: 1.12;
+  }
+
+  .fe-about-feature-banner--{{ sid }} .fe-about-feature-banner__body {
+    margin: 18px 0 0;
+    font-family: "Plus Jakarta Sans", sans-serif;
+    font-size: clamp(15px, 1.45vw, 17px);
+    line-height: 1.65;
+    opacity: 0.95;
+  }
+
+  .fe-about-feature-banner--{{ sid }} .fe-about-feature-banner__body p {
+    margin: 0;
+  }
+
+  .fe-about-feature-banner--{{ sid }} .fe-about-feature-banner__body p + p {
+    margin-top: 12px;
+  }
+
+  .fe-about-feature-banner--{{ sid }} .fe-about-feature-banner__quote {
+    margin: 26px 0 0;
+    padding: 0;
+    border: 0;
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: clamp(17px, 2vw, 22px);
+    font-style: italic;
+    line-height: 1.55;
+    opacity: 0.96;
+  }
+
+  .fe-about-feature-banner--{{ sid }} .fe-about-feature-banner__quote p {
+    margin: 0;
+  }
+
+  .fe-about-feature-banner--{{ sid }} .fe-about-feature-banner__quote-cite {
+    display: block;
+    margin-top: 14px;
+    font-family: "Plus Jakarta Sans", sans-serif;
+    font-size: 11px;
+    font-style: normal;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    opacity: 0.85;
+  }
+
+  .fe-about-feature-banner--{{ sid }} .fe-about-feature-banner__btn {
+    margin-top: 26px;
+    display: inline-block;
+    font-family: Arial, sans-serif;
+    font-size: 12px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 12px 26px;
+    text-decoration: none;
+    border-radius: 0;
+    transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+    border: 1px solid transparent;
+  }
+
+  .fe-about-feature-banner--{{ sid }} .fe-about-feature-banner__btn--outline {
+    border-color: {{ section.settings.button_border_color }};
+    background: transparent;
+    color: {{ section.settings.button_label_color }};
+  }
+
+  .fe-about-feature-banner--{{ sid }} .fe-about-feature-banner__btn--outline:hover {
+    background: rgba(255, 255, 255, 0.12);
+  }
+
+  .fe-about-feature-banner--{{ sid }} .fe-about-feature-banner__btn--dark {
+    background: {{ section.settings.button_background_color }};
+    color: {{ section.settings.button_label_color }};
+    border-color: {{ section.settings.button_border_color }};
+  }
+
+  .fe-about-feature-banner--{{ sid }} .fe-about-feature-banner__btn--dark:hover {
+    filter: brightness(1.08);
+  }
+
+  .fe-about-feature-banner--{{ sid }} .fe-about-feature-banner__btn--light {
+    background: {{ section.settings.button_background_color }};
+    color: {{ section.settings.button_label_color }};
+    border-color: {{ section.settings.button_border_color }};
+  }
+
+  .fe-about-feature-banner--{{ sid }} .fe-about-feature-banner__btn--light:hover {
+    filter: brightness(0.96);
+  }
+
+  .fe-about-feature-banner--{{ sid }} .fe-about-feature-banner__subscribe {
+    margin-top: 28px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+    max-width: 100%;
+  }
+
+  .fe-about-feature-banner--{{ sid }} .fe-about-feature-banner__subscribe--left {
+    align-items: flex-start;
+    text-align: left;
+  }
+
+  .fe-about-feature-banner--{{ sid }} .fe-about-feature-banner__subscribe--center {
+    align-items: center;
+    text-align: center;
+  }
+
+  .fe-about-feature-banner--{{ sid }} .fe-about-feature-banner__subscribe--right {
+    align-items: flex-end;
+    text-align: right;
+  }
+
+  .fe-about-feature-banner--{{ sid }} .fe-about-feature-banner__subscribe-heading {
+    margin: 0 0 12px;
+    font-family: "Plus Jakarta Sans", sans-serif;
+    font-size: 12px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    opacity: 0.9;
+    color: inherit;
+  }
+
+  .fe-about-feature-banner--{{ sid }} .fe-about-feature-banner__subscribe-form {
+    width: 100%;
+    max-width: 480px;
+  }
+
+  .fe-about-feature-banner--{{ sid }} .fe-about-feature-banner__subscribe--left .fe-about-feature-banner__subscribe-form,
+  .fe-about-feature-banner--{{ sid }} .fe-about-feature-banner__subscribe--right .fe-about-feature-banner__subscribe-form {
+    max-width: 520px;
+  }
+
+  .fe-about-feature-banner--{{ sid }} .fe-about-feature-banner__subscribe-fields {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-items: flex-start;
+    justify-content: center;
+    width: 100%;
+  }
+
+  .fe-about-feature-banner--{{ sid }} .fe-about-feature-banner__subscribe--left .fe-about-feature-banner__subscribe-fields {
+    justify-content: flex-start;
+  }
+
+  .fe-about-feature-banner--{{ sid }} .fe-about-feature-banner__subscribe--right .fe-about-feature-banner__subscribe-fields {
+    justify-content: flex-end;
+  }
+
+  .fe-about-feature-banner--{{ sid }} .fe-about-feature-banner__subscribe-field {
+    flex: 1 1 140px;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .fe-about-feature-banner--{{ sid }} .fe-about-feature-banner__subscribe-input {
+    width: 100%;
+    margin: 0;
+    padding: 11px 12px;
+    border: 1px solid rgba(255, 255, 255, 0.35);
+    background: rgba(255, 255, 255, 0.12);
+    font-family: "Plus Jakarta Sans", sans-serif;
+    font-size: 14px;
+    line-height: 1.45;
+    color: inherit;
+    border-radius: 0;
+    box-sizing: border-box;
+    transition: border-color 0.2s ease, background 0.2s ease;
+  }
+
+  .fe-about-feature-banner--{{ sid }} .fe-about-feature-banner__subscribe-input::placeholder {
+    color: inherit;
+    opacity: 0.55;
+  }
+
+  .fe-about-feature-banner--{{ sid }} .fe-about-feature-banner__subscribe-input:focus {
+    outline: none;
+    border-color: {{ section.settings.button_border_color }};
+    background: rgba(255, 255, 255, 0.18);
+  }
+
+  .fe-about-feature-banner--{{ sid }} .fe-about-feature-banner__subscribe-field.is-invalid .fe-about-feature-banner__subscribe-input {
+    border-color: #e57373;
+  }
+
+  .fe-about-feature-banner--{{ sid }} .fe-about-feature-banner__subscribe-error {
+    display: block;
+    min-height: 0;
+    font-family: "Plus Jakarta Sans", sans-serif;
+    font-size: 12px;
+    line-height: 1.35;
+    color: #ffcdd2;
+    text-align: left;
+  }
+
+  .fe-about-feature-banner--{{ sid }} .fe-about-feature-banner__subscribe-error:empty {
+    display: none;
+  }
+
+  .fe-about-feature-banner--{{ sid }} .fe-about-feature-banner__subscribe-submit {
+    flex: 0 0 auto;
+    margin-top: 0;
+    align-self: flex-end;
+    cursor: pointer;
+    border: 1px solid {{ section.settings.button_border_color }};
+    background: {{ section.settings.button_background_color }};
+    color: {{ section.settings.button_label_color }};
+    font-family: "Plus Jakarta Sans", sans-serif;
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 12px 22px;
+    border-radius: 0;
+    transition: filter 0.2s ease, background 0.2s ease;
+    white-space: nowrap;
+    box-sizing: border-box;
+    min-height: 44px;
+  }
+
+  .fe-about-feature-banner--{{ sid }} .fe-about-feature-banner__subscribe-submit:hover {
+    filter: brightness(1.08);
+  }
+
+  .fe-about-feature-banner--{{ sid }} .fe-about-feature-banner__subscribe-success {
+    margin: 14px 0 0;
+    font-family: "Plus Jakarta Sans", sans-serif;
+    font-size: 14px;
+    line-height: 1.55;
+    color: inherit;
+    opacity: 0.96;
+    text-align: inherit;
+    width: 100%;
+    max-width: 480px;
+  }
+
+  .fe-about-feature-banner--{{ sid }} .fe-about-feature-banner__subscribe-embed {
+    width: 100%;
+    max-width: 560px;
+  }
+
+  .fe-about-feature-banner--{{ sid }} .fe-about-feature-banner__subscribe-placeholder {
+    margin: 0;
+    padding: 12px 14px;
+    border: 1px dashed rgba(255, 255, 255, 0.45);
+    font-family: "Plus Jakarta Sans", sans-serif;
+    font-size: 13px;
+    line-height: 1.45;
+    opacity: 0.95;
+    max-width: 480px;
+  }
+
+  @media (max-width: 749px) {
+    .fe-about-feature-banner--{{ sid }} {
+      min-height: var(--fe-afb-h-mobile);
+    }
+
+    .fe-about-feature-banner--{{ sid }} .fe-about-feature-banner__img--desktop {
+      {% if section.settings.mobile_background_image != blank %}display: none;{% endif %}
+    }
+
+    .fe-about-feature-banner--{{ sid }} .fe-about-feature-banner__img--mobile {
+      {% if section.settings.mobile_background_image != blank %}display: block;{% endif %}
+    }
+
+    .fe-about-feature-banner--{{ sid }} .fe-about-feature-banner__subscribe-fields {
+      flex-direction: column;
+      align-items: stretch;
+    }
+
+    .fe-about-feature-banner--{{ sid }} .fe-about-feature-banner__subscribe-field {
+      flex: 1 1 auto;
+      width: 100%;
+    }
+
+    .fe-about-feature-banner--{{ sid }} .fe-about-feature-banner__subscribe-submit {
+      width: 100%;
+      align-self: stretch;
+    }
+  }
+</style>
+
+<script>
+  (function () {
+    var roots = document.querySelectorAll('.fe-about-feature-banner--{{ sid }}');
+    if (!roots.length) return;
+
+    roots.forEach(function (root) {
+      var form = root.querySelector('form[data-fe-afb-static-newsletter]');
+      if (!form || form.getAttribute('data-fe-afb-nw-done') === '1') return;
+      form.setAttribute('data-fe-afb-nw-done', '1');
+
+      var MSG_REQ = 'This field is required';
+      var MSG_EMAIL = 'Please enter a valid email address';
+
+      function emailOk(v) {
+        return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(v || '').trim());
+      }
+
+      function setFieldErr(wrapper, span, ok, msg) {
+        var input = wrapper && wrapper.querySelector('input');
+        if (!span) return;
+        if (ok) {
+          span.textContent = '';
+          if (wrapper) wrapper.classList.remove('is-invalid');
+          if (input) input.removeAttribute('aria-invalid');
+        } else {
+          span.textContent = msg || MSG_REQ;
+          if (wrapper) wrapper.classList.add('is-invalid');
+          if (input) input.setAttribute('aria-invalid', 'true');
+        }
+      }
+
+      form.addEventListener('submit', function (e) {
+        e.preventDefault();
+        var nameEl = form.querySelector('#fe-afb-sub-name-{{ sid }}');
+        var emailEl = form.querySelector('#fe-afb-sub-email-{{ sid }}');
+        var wrapName = nameEl ? nameEl.closest('[data-fe-afb-nw-field]') : null;
+        var wrapEmail = emailEl ? emailEl.closest('[data-fe-afb-nw-field]') : null;
+        var errName = nameEl ? document.getElementById('fe-afb-sub-name-{{ sid }}-err') : null;
+        var errEmail = emailEl ? document.getElementById('fe-afb-sub-email-{{ sid }}-err') : null;
+
+        var okSubmit = true;
+        var nv = nameEl ? String(nameEl.value).trim() : '';
+        if (!nv) {
+          setFieldErr(wrapName, errName, false, MSG_REQ);
+          okSubmit = false;
+        } else {
+          setFieldErr(wrapName, errName, true);
+        }
+
+        var ev = emailEl ? String(emailEl.value).trim() : '';
+        if (!ev) {
+          setFieldErr(wrapEmail, errEmail, false, MSG_REQ);
+          okSubmit = false;
+        } else if (!emailOk(ev)) {
+          setFieldErr(wrapEmail, errEmail, false, MSG_EMAIL);
+          okSubmit = false;
+        } else {
+          setFieldErr(wrapEmail, errEmail, true);
+        }
+
+        if (!okSubmit) {
+          if (nameEl && !nv && typeof nameEl.focus === 'function') nameEl.focus();
+          else if (emailEl && typeof emailEl.focus === 'function') emailEl.focus();
+          return;
+        }
+
+        var fields = form.querySelector('[data-fe-afb-newsletter-fields]');
+        var successEl = form.querySelector('[data-fe-afb-newsletter-success]');
+        if (fields) fields.setAttribute('hidden', '');
+        if (successEl) successEl.removeAttribute('hidden');
+        form.dispatchEvent(new CustomEvent('fe-about-newsletter:static-submit', { bubbles: true }));
+      });
+
+      form.addEventListener('input', function (e) {
+        var t = e.target;
+        if (!t || t.tagName !== 'INPUT') return;
+        var wrap = t.closest('[data-fe-afb-nw-field]');
+        var errEl = wrap ? wrap.querySelector('.fe-about-feature-banner__subscribe-error') : null;
+        if (t.type === 'email') {
+          var v = String(t.value).trim();
+          if (!v) {
+            setFieldErr(wrap, errEl, true);
+            return;
+          }
+          if (emailOk(v)) setFieldErr(wrap, errEl, true);
+          else setFieldErr(wrap, errEl, false, MSG_EMAIL);
+          return;
+        }
+        if (t.id === 'fe-afb-sub-name-{{ sid }}' && String(t.value).trim()) {
+          setFieldErr(wrap, errEl, true);
+        }
+      });
+    });
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "About Feature Banner",
+  "tag": "section",
+  "class": "fe-about-feature-banner-section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "section_id",
+      "label": "Section HTML id",
+      "default": "feature-banner"
+    },
+    {
+      "type": "image_picker",
+      "id": "background_image",
+      "label": "Background image"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_parallax",
+      "label": "Enable background parallax",
+      "default": false
+    },
+    {
+      "type": "image_picker",
+      "id": "mobile_background_image",
+      "label": "Mobile background image"
+    },
+    {
+      "type": "color",
+      "id": "background_color_fallback",
+      "label": "Background fallback color",
+      "default": "#2a241c"
+    },
+    {
+      "type": "color",
+      "id": "overlay_color",
+      "label": "Overlay color",
+      "default": "#000000"
+    },
+    {
+      "type": "range",
+      "id": "overlay_opacity",
+      "min": 0,
+      "max": 90,
+      "step": 5,
+      "unit": "%",
+      "label": "Overlay opacity",
+      "default": 40
+    },
+    {
+      "type": "select",
+      "id": "content_position",
+      "label": "Content column position",
+      "info": "Places the whole content box left, center, or right within the row.",
+      "default": "center",
+      "options": [
+        { "value": "left", "label": "Left" },
+        { "value": "center", "label": "Center" },
+        { "value": "right", "label": "Right" }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "text_alignment",
+      "label": "Text alignment (inside content box)",
+      "default": "center",
+      "options": [
+        { "value": "left", "label": "Left" },
+        { "value": "center", "label": "Center" },
+        { "value": "right", "label": "Right" }
+      ]
+    },
+    {
+      "type": "range",
+      "id": "row_max_width",
+      "min": 900,
+      "max": 1400,
+      "step": 10,
+      "unit": "px",
+      "label": "Row max width",
+      "default": 1110,
+      "info": "Outer container width for the banner content row."
+    },
+    {
+      "type": "range",
+      "id": "content_max_width",
+      "min": 320,
+      "max": 920,
+      "step": 10,
+      "unit": "px",
+      "label": "Content box max width",
+      "default": 560
+    },
+    {
+      "type": "text",
+      "id": "section_number",
+      "label": "Section number (optional)"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Feature headline"
+    },
+    {
+      "type": "richtext",
+      "id": "body",
+      "label": "Body text"
+    },
+    {
+      "type": "textarea",
+      "id": "quote",
+      "label": "Quote (optional)"
+    },
+    {
+      "type": "text",
+      "id": "quote_author",
+      "label": "Quote author / citation"
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "Button label"
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "Button link"
+    },
+    {
+      "type": "select",
+      "id": "button_style",
+      "label": "Button style",
+      "default": "outline",
+      "options": [
+        { "value": "outline", "label": "Outline" },
+        { "value": "dark", "label": "Solid dark" },
+        { "value": "light", "label": "Solid light" }
+      ]
+    },
+    {
+      "type": "header",
+      "content": "Subscribe box"
+    },
+    {
+      "type": "select",
+      "id": "subscribe_box_mode",
+      "label": "Subscribe box",
+      "default": "none",
+      "options": [
+        { "value": "none", "label": "Hidden" },
+        { "value": "static_form", "label": "Static form (name + email)" },
+        { "value": "klaviyo_embed", "label": "Klaviyo embed (Custom Liquid)" }
+      ],
+      "info": "Static form is for layout/testing only—it does not send data until you integrate e.g. Klaviyo embed or Shopify Customer API via app."
+    },
+    {
+      "type": "text",
+      "id": "subscribe_heading",
+      "label": "Subscribe heading (optional)",
+      "default": "Join our mailing list",
+      "info": "Displayed above the form or Klaviyo embed."
+    },
+    {
+      "type": "text",
+      "id": "subscribe_name_placeholder",
+      "label": "Name placeholder",
+      "default": "Name"
+    },
+    {
+      "type": "text",
+      "id": "subscribe_email_placeholder",
+      "label": "Email placeholder",
+      "default": "Email"
+    },
+    {
+      "type": "text",
+      "id": "subscribe_button_label",
+      "label": "Submit button label",
+      "default": "Subscribe"
+    },
+    {
+      "type": "textarea",
+      "id": "subscribe_success_message",
+      "label": "Static form success message",
+      "default": "Thanks — you are on the list."
+    },
+    {
+      "type": "liquid",
+      "id": "klaviyo_custom_liquid",
+      "label": "Klaviyo embed (Custom Liquid)",
+      "info": "Paste your Klaviyo form embed from Klaviyo admin, or other app embed code, when mode is Klaviyo."
+    },
+    {
+      "type": "color",
+      "id": "heading_color",
+      "label": "Heading & eyebrow color",
+      "default": "#32291a"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Body & quote text color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "header",
+      "content": "Button colors"
+    },
+    {
+      "type": "color",
+      "id": "button_background_color",
+      "label": "Button background",
+      "default": "#32291a"
+    },
+    {
+      "type": "color",
+      "id": "button_label_color",
+      "label": "Button text",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "button_border_color",
+      "label": "Button border",
+      "default": "#32291a",
+      "info": "Used for outline and solid buttons."
+    },
+    {
+      "type": "range",
+      "id": "height_desktop",
+      "min": 320,
+      "max": 900,
+      "step": 10,
+      "unit": "px",
+      "label": "Min height (desktop)",
+      "default": 520
+    },
+    {
+      "type": "range",
+      "id": "height_mobile",
+      "min": 280,
+      "max": 800,
+      "step": 10,
+      "unit": "px",
+      "label": "Min height (mobile)",
+      "default": 420
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 160,
+      "step": 4,
+      "unit": "px",
+      "label": "Padding top",
+      "default": 72
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 160,
+      "step": 4,
+      "unit": "px",
+      "label": "Padding bottom",
+      "default": 72
+    }
+  ],
+  "presets": [
+    {
+      "name": "About Feature Banner"
+    }
+  ]
+}
+{% endschema %}

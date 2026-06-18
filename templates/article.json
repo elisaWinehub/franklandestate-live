@@ -1,0 +1,29 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file may be updated by the Shopify admin theme editor.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "main": {
+      "type": "main-article",
+      "settings": {
+        "hero_desktop": 580,
+        "hero_mobile": 340,
+        "overlay_opacity": 35,
+        "background_color": "#E9E8E2",
+        "content_max_width": 900
+      }
+    }
+  },
+  "order": ["main"]
+}

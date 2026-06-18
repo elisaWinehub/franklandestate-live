@@ -1,0 +1,69 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "hero": {
+      "type": "page-hero-banner",
+      "settings": {
+        "heading": "",
+        "text_vertical_position": "lower-center",
+        "text_color": "#ffffff",
+        "image": "shopify://shop_images/ThirdEye-188_1_81038d10-97c1-40bf-8b67-0e28912deaa1.jpg",
+        "background_position": "center center",
+        "background_color": "#efeee9",
+        "desktop_height": 560,
+        "mobile_height": 360,
+        "overlay_opacity": 25
+      }
+    },
+    "alternating_content_form_Megkx4": {
+      "type": "alternating-content-form",
+      "name": "Alternating Content+Form",
+      "settings": {
+        "section_anchor_id": "",
+        "content_position": "content_left",
+        "form_mode": "static",
+        "heading": "Visit the cellar door",
+        "heading_font_size": 40,
+        "heading_font_family": "eidetic_neo",
+        "heading_font_weight": "400",
+        "body": "<p><br/>Experience an exclusive behind-the-scenes tasting tour at Frankland Estate, guided by one of our winemakers. Discover our history, organic farming practices, and winemaking process while tasting award-winning wines and barrel samples.<br/><br/><strong>AUD $25 · Approx. 1 hour</strong></p><p><strong>Terms and Conditions </strong><em>Tours must be booked 48 hours in advance. Minimum two people and suitable for groups of up to 6.  **Please note this experience is subject to availability of our Winemakers Hunter Smith, Brian Kent and Elizabeth Smith. We will confirm booking by email**</em></p>",
+        "content_font_size": 16,
+        "button_label": "",
+        "button_link": "",
+        "form_heading": "Book a tasting",
+        "experience_type_placeholder": "Please select",
+        "experience_type_options": "Standard tasting\nPremium tasting\nPrivate tour\nMasterclass",
+        "submit_button_label": "Send message",
+        "success_message": "Thank you — your message has been received.",
+        "custom_liquid": "",
+        "background_color": "#efeee9",
+        "text_color": "#302313",
+        "container_width": 1110,
+        "padding_top": 80,
+        "padding_bottom": 80,
+        "gap": 48,
+        "button_background_color": "#302313",
+        "button_text_color": "#ffffff",
+        "button_border_color": "#302313",
+        "input_border_color": "#c9c4be"
+      }
+    },
+    "main": {
+      "type": "main-page",
+      "settings": {}
+    }
+  },
+  "order": [
+    "hero",
+    "alternating_content_form_Megkx4",
+    "main"
+  ]
+}

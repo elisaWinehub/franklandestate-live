@@ -1,0 +1,90 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "type": "footer",
+  "name": "Footer",
+  "sections": {
+    "footer_m9NzUG": {
+      "type": "footer",
+      "blocks": {
+        "fe_footer_logo": {
+          "type": "logo",
+          "settings": {
+            "layout": "in_column",
+            "logo_svg": "",
+            "logo_width": 230,
+            "alignment": "center",
+            "column_number": "1"
+          }
+        },
+        "text_K9yC8M": {
+          "type": "text",
+          "settings": {
+            "heading": "",
+            "text": "<p>Frankland Estate has emerged as one of the great vineyards of Australia-Huon Hooke</p>",
+            "alignment": "center",
+            "column_number": "1"
+          }
+        },
+        "fe_footer_links_about": {
+          "type": "links",
+          "settings": {
+            "heading": "Quick Links",
+            "menu": "quick-links",
+            "alignment": "center",
+            "column_number": "2"
+          }
+        },
+        "text_nfQkH8": {
+          "type": "text",
+          "settings": {
+            "heading": "Visit Us",
+            "text": "<p>Fran­k­land Road, Frankland River, West­ern Aus­tralia 6396 Australia<br/><br/>Tel: + 61 (0)8 9855 1544<br/>Fax: + 61 (0)8 9855 1549<br/><br/>Monday to Friday 10:00 AM – 4:00 PM<br/><br/></p>",
+            "alignment": "center",
+            "column_number": "3"
+          }
+        }
+      },
+      "block_order": [
+        "fe_footer_logo",
+        "text_K9yC8M",
+        "fe_footer_links_about",
+        "text_nfQkH8"
+      ],
+      "name": "t:names.footer",
+      "settings": {
+        "footer_columns": "3",
+        "show_column_dividers": true,
+        "padding_top": 40,
+        "padding_bottom": 24,
+        "heading_font_size": 20,
+        "heading_font_family": "georgia",
+        "background_color": "#302313",
+        "overlay_color": "#000000",
+        "overlay_opacity": 0,
+        "footer_logo_width": 230,
+        "footer_menu_1": "footer-shop",
+        "footer_menu_2": "footer-about",
+        "footer_menu_3": "footer-contact",
+        "legal_menu": "tc-menu",
+        "social_facebook": "https://www.facebook.com/franklandestate",
+        "social_twitter": "",
+        "social_pinterest": "",
+        "social_instagram": "https://www.instagram.com/franklandestate/",
+        "responsible_drinking_text": "Enjoy our wines responsibly",
+        "liquor_license_text": "Liquor Licence number: 6180046243",
+        "copyright_text": "Build by Winehub"
+      }
+    }
+  },
+  "order": [
+    "footer_m9NzUG"
+  ]
+}

@@ -1,0 +1,200 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "hero": {
+      "type": "custom-hero-banner",
+      "settings": {
+        "title": "Frankland Estate has emerged as one of the great vineyards of Australia-Huon Hooke",
+        "subtitle": "",
+        "button_label": "",
+        "button_link": "",
+        "media_type": "video",
+        "video_source": "external_mp4",
+        "video_mp4_url": "https://cdn.shopify.com/videos/c/o/v/8c78b446b5854a11869e163787c405e7.mp4",
+        "youtube_url": "",
+        "video_embed": "",
+        "video_poster": "shopify://shop_images/ThirdEye-190.jpg",
+        "background_image": "shopify://shop_images/Frankland_Estate_Homepage_Banner_3.jpg",
+        "background_image_url": "https://www.franklandestate.com.au/dist/images/sitegates/content/background.jpg",
+        "background_position": "top center",
+        "full_screen": true,
+        "custom_height_unit": "vh",
+        "custom_height_vh": 80,
+        "custom_height_px": 720,
+        "overlay_opacity": 25
+      }
+    },
+    "alternating_content_Fabtfk": {
+      "type": "alternating-content",
+      "name": "Alternating Content",
+      "settings": {
+        "section_anchor_id": "",
+        "image": "shopify://shop_images/268_20260422_FRANKLAND_ESTATE_Winery_Portraits_Processing_Vineyard_1.jpg",
+        "heading": "Frankland Estate is a place, a family, our traits and values all bound up as one.",
+        "heading_font_size": 35,
+        "body": "<p>Isolation Ridge is the name of the vineyard that surrounds the winery.</p><p>Our family members reside on the fringe of the vines, living and breathing the pristine air and treading the organic-certified coffee-rock soils of the gentle slope. We grow vibrant, healthy fruit whose juice and skins bear the signature of the land and bring honest, abundant refreshment to those who taste the ensuing wines.</p><p>Come, take a moment to discover more about this special place.</p>",
+        "enable_read_more": false,
+        "read_more_label": "Read More",
+        "read_less_label": "Read Less",
+        "button_label": "Discover Our Place",
+        "button_link": "shopify://pages/about-us",
+        "image_position": "image_left",
+        "background_color": "#efeee9",
+        "padding_top": 80,
+        "padding_bottom": 40,
+        "show_border_top": false,
+        "show_border_bottom": false,
+        "border_color": "#d3d2cb",
+        "content_font_size": 15,
+        "divider_position": "none"
+      }
+    },
+    "products": {
+      "type": "collection-product-slider",
+      "settings": {
+        "heading": "Our Wines",
+        "collection": "",
+        "product_limit": 8,
+        "bottle_count": 6,
+        "button_label": "View all",
+        "background_color": "#efeee9",
+        "padding_top": 40,
+        "padding_bottom": 40
+      }
+    },
+    "cards": {
+      "type": "two-card-overlay-section",
+      "blocks": {
+        "card_left": {
+          "type": "card",
+          "settings": {
+            "image": "shopify://shop_images/ThirdEye-154_1.jpg",
+            "image_url": "https://www.franklandestate.com.au/dist/images/sitegates/content/background.jpg",
+            "title": "Join the Frankland Estate Wine Club",
+            "subtitle": "Family and friends only most.",
+            "link": "https://www.franklandestate.com.au/wine-club"
+          }
+        },
+        "card_right": {
+          "type": "card",
+          "settings": {
+            "image": "shopify://shop_images/ThirdEye-150_f86ef271-f4cb-4b61-be12-6a7d285dac16.jpg",
+            "image_url": "https://www.franklandestate.com.au/dist/images/sitegates/signup/background.jpg",
+            "title": "Shop Our Wines",
+            "subtitle": "Finesse and balance and an old-vine expression of cool-climate growing.",
+            "link": "shopify://collections/all-wines"
+          }
+        }
+      },
+      "block_order": [
+        "card_left",
+        "card_right"
+      ],
+      "settings": {
+        "section_anchor_id": "",
+        "section_heading": "",
+        "top_quote": "Frankland Estate is a superb, family-run, ecologically sensitive estate in a beautiful, extremely isolated location.",
+        "top_attribution": "Jancis Robinson MW",
+        "background_color": "#efeee9",
+        "padding_top": 40,
+        "padding_bottom": 80
+      }
+    },
+    "about_us_feature_banner_WTA4dY": {
+      "type": "about-us-feature-banner",
+      "name": "About Feature Banner",
+      "settings": {
+        "section_id": "feature-banner",
+        "background_image": "shopify://shop_images/ThirdEye-180.jpg",
+        "enable_parallax": false,
+        "background_color_fallback": "#2a241c",
+        "overlay_color": "#000000",
+        "overlay_opacity": 40,
+        "content_position": "center",
+        "text_alignment": "center",
+        "row_max_width": 1110,
+        "content_max_width": 560,
+        "section_number": "",
+        "heading": "Reserve Your Frankland Estate Experience",
+        "body": "",
+        "quote": "",
+        "quote_author": "",
+        "button_label": "Book A Tasting",
+        "button_link": "shopify://pages/visit-our-cellar-door",
+        "button_style": "outline",
+        "subscribe_box_mode": "none",
+        "subscribe_heading": "Join our mailing list",
+        "subscribe_name_placeholder": "Name",
+        "subscribe_email_placeholder": "Email",
+        "subscribe_button_label": "Subscribe",
+        "subscribe_success_message": "Thanks — you are on the list.",
+        "klaviyo_custom_liquid": "",
+        "heading_color": "#ffffff",
+        "text_color": "#ffffff",
+        "button_background_color": "#32291a",
+        "button_label_color": "#ffffff",
+        "button_border_color": "#ffffff",
+        "height_desktop": 520,
+        "height_mobile": 420,
+        "padding_top": 72,
+        "padding_bottom": 72
+      }
+    },
+    "about_us_feature_banner_PKU3m4": {
+      "type": "about-us-feature-banner",
+      "name": "About Feature Banner",
+      "settings": {
+        "section_id": "feature-banner",
+        "background_image": "shopify://shop_images/Alter_Weg_2021_landscape_1.jpg",
+        "enable_parallax": true,
+        "background_color_fallback": "#2a241c",
+        "overlay_color": "#000000",
+        "overlay_opacity": 40,
+        "content_position": "center",
+        "text_alignment": "center",
+        "row_max_width": 1110,
+        "content_max_width": 560,
+        "section_number": "",
+        "heading": "Join our mailing list",
+        "body": "",
+        "quote": "",
+        "quote_author": "",
+        "button_label": "",
+        "button_link": "",
+        "button_style": "outline",
+        "subscribe_box_mode": "static_form",
+        "subscribe_heading": "",
+        "subscribe_name_placeholder": "Name",
+        "subscribe_email_placeholder": "Email",
+        "subscribe_button_label": "Subscribe",
+        "subscribe_success_message": "Thanks — you are on the list.",
+        "klaviyo_custom_liquid": "",
+        "heading_color": "#ffffff",
+        "text_color": "#ffffff",
+        "button_background_color": "#32291a",
+        "button_label_color": "#ffffff",
+        "button_border_color": "#32291a",
+        "height_desktop": 340,
+        "height_mobile": 420,
+        "padding_top": 0,
+        "padding_bottom": 0
+      }
+    }
+  },
+  "order": [
+    "hero",
+    "alternating_content_Fabtfk",
+    "products",
+    "cards",
+    "about_us_feature_banner_WTA4dY",
+    "about_us_feature_banner_PKU3m4"
+  ]
+}

@@ -1,0 +1,575 @@
+{% liquid
+  assign current_product = product | default: closest.product
+  assign current_variant = current_product.selected_or_first_available_variant
+
+  assign award_entries = current_product.metafields.custom.award.value
+  assign review_entries = current_product.metafields.custom.reviews.value
+
+  assign award_count = 0
+  if award_entries != blank
+    assign award_count = award_entries.size
+    if award_count == 0
+      assign award_count = 1
+    endif
+  endif
+
+  assign review_count = 0
+  if review_entries != blank
+    assign review_count = review_entries.size
+    if review_count == 0
+      assign review_count = 1
+    endif
+  endif
+
+  assign accolades_label = ''
+  assign accolades_total = award_count | plus: review_count
+  if accolades_total > 0
+    assign accolades_label = accolades_total | append: ' Reviews & Awards'
+  endif
+
+  assign size_value = current_product.metafields.custom.size.value | default: current_product.metafields.custom.size
+  assign type_value = current_product.metafields.custom.type.value | default: current_product.metafields.custom.type
+  assign body_value = current_product.metafields.custom.body.value | default: current_product.metafields.custom.body
+  assign varietal_value = current_product.metafields.custom.varietal.value | default: current_product.metafields.custom.varietal
+  assign wine_type_value = current_product.metafields.custom.type.value | default: current_product.metafields.custom.type
+
+  assign size_value = size_value | strip_html | strip
+  assign type_value = type_value | strip_html | strip
+  assign body_value = body_value | strip_html | strip
+  assign varietal_value = varietal_value | strip_html | strip
+  assign wine_type_value = wine_type_value | strip_html | strip | downcase
+
+  assign wine_glass_fill = 'rgb(218, 200, 146)'
+  if wine_type_value contains 'red'
+    assign wine_glass_fill = 'rgb(117, 51, 82)'
+  elsif wine_type_value contains 'white'
+    assign wine_glass_fill = 'rgb(218, 200, 146)'
+  endif
+
+  assign tasting_note_url = ''
+  assign tasting_note_label = ''
+  assign tasting_note_drop = current_product.metafields.custom.tasting_notes
+  if tasting_note_drop != blank and tasting_note_drop.value != blank
+    assign tasting_note_file = tasting_note_drop.value
+    if tasting_note_file.url != blank
+      assign tasting_note_url = tasting_note_file.url
+
+      assign tasting_note_filename = tasting_note_file.filename
+      if tasting_note_filename == blank
+        assign tasting_note_filename = tasting_note_file.url | split: '/' | last | split: '?' | first
+      endif
+
+      assign tasting_note_base = tasting_note_filename | split: '.' | first
+      assign tasting_note_parts = tasting_note_base | split: '-'
+      assign tasting_note_parts_count = tasting_note_parts.size
+
+      assign tasting_note_clean_base = tasting_note_base
+      if tasting_note_parts_count > 5
+        assign tasting_note_idx_last = tasting_note_parts_count | minus: 1
+        assign tasting_note_idx_prev_1 = tasting_note_parts_count | minus: 2
+        assign tasting_note_idx_prev_2 = tasting_note_parts_count | minus: 3
+        assign tasting_note_idx_prev_3 = tasting_note_parts_count | minus: 4
+        assign tasting_note_idx_prev_4 = tasting_note_parts_count | minus: 5
+
+        assign tasting_note_last = tasting_note_parts[tasting_note_idx_last]
+        assign tasting_note_prev_1 = tasting_note_parts[tasting_note_idx_prev_1]
+        assign tasting_note_prev_2 = tasting_note_parts[tasting_note_idx_prev_2]
+        assign tasting_note_prev_3 = tasting_note_parts[tasting_note_idx_prev_3]
+        assign tasting_note_prev_4 = tasting_note_parts[tasting_note_idx_prev_4]
+
+        if tasting_note_last.size == 12 and tasting_note_prev_1.size == 4 and tasting_note_prev_2.size == 4 and tasting_note_prev_3.size == 4 and tasting_note_prev_4.size == 8
+          assign tasting_note_keep_count = tasting_note_parts_count | minus: 5
+          assign tasting_note_clean_base = ''
+          for part in tasting_note_parts limit: tasting_note_keep_count
+            if forloop.first
+              assign tasting_note_clean_base = part
+            else
+              assign tasting_note_clean_base = tasting_note_clean_base | append: '-' | append: part
+            endif
+          endfor
+        endif
+      endif
+
+      assign tasting_note_label = tasting_note_clean_base | replace: '_', ' ' | replace: '-', ' ' | strip
+    endif
+  endif
+%}
+
+<section
+  class="wine-product-main"
+  data-wine-product-main-section="{{ section.id }}"
+  style="
+    --wine-bg: {{ section.settings.background_color }};
+    --wine-pt: {{ section.settings.padding_top }}px;
+    --wine-pb: {{ section.settings.padding_bottom }}px;
+    --wine-container: {{ section.settings.container_width }}px;
+    --wine-image-max-h: {{ section.settings.image_max_height }}px;
+  "
+>
+  <div class="wine-product-container">
+    <div class="wine-product-layout">
+      <div class="wine-product-image">
+        {% if current_product.featured_image != blank %}
+          {{
+            current_product.featured_image
+            | image_url: width: 1800
+            | image_tag:
+              class: 'wine-product-image__img',
+              alt: current_product.featured_image.alt | default: current_product.title,
+              loading: 'eager'
+          }}
+        {% else %}
+          {{ 'product-apparel-1' | placeholder_svg_tag: 'wine-product-image__img wine-product-image__img--placeholder' }}
+        {% endif %}
+      </div>
+
+      <div class="wine-product-info">
+        {% if current_product.vendor != blank %}
+          <p class="wine-product-vendor">{{ current_product.vendor }}</p>
+        {% endif %}
+
+        <h1 class="wine-product-title">{{ current_product.title }}</h1>
+
+        {% if accolades_label != blank %}
+          <a class="accolades-highlight" href="#wine-product-tabs-reviews-awards">
+            <span class="icon" aria-hidden="true">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 77.386"><path d="M40.141,32.494h0c-.377-.288-.763-.565-1.154-.831a.618.618,0,0,1-.09-.061A24.649,24.649,0,0,0,30.518,28,25.211,25.211,0,0,0,19.48,28a24.673,24.673,0,0,0-8.448,3.654l0,0c-.4.266-.785.547-1.169.838a25,25,0,1,0,30.282,0ZM25,74.755a22.371,22.371,0,1,1,9.423-42.662.267.267,0,0,1,.046.02l.015.007.012.005.078.041h0l.213.108c.14.066.279.132.416.2.095.049.188.1.281.149.124.066.247.129.369.2.105.056.207.117.31.178s.223.125.33.191.22.134.33.2.2.122.3.188.225.149.335.225c.095.061.19.125.283.188.11.076.218.156.325.234s.189.132.281.2.184.142.277.213.212.161.315.244c.022.017.041.034.061.049.174.139.342.278.511.423l0,0A22.371,22.371,0,0,1,25,74.755Z"></path><path d="M31.11,25.381a27.2,27.2,0,0,1,7.877,3.107L49.42,0H31.779L26.431,14.609l3.882,10.6C30.579,25.264,30.846,25.32,31.11,25.381Z"></path><path d="M18.888,25.376A28.218,28.218,0,0,1,27.3,24.8L18.216,0H.573L11.011,28.488A27.41,27.41,0,0,1,18.888,25.376Z"></path><path d="M37.768,37.405a19.546,19.546,0,0,0-4.424-2.846c-.032-.014-.064-.031-.1-.048a19.69,19.69,0,1,0,4.52,2.894Zm-8.1,18.363.953,5.569-5-2.631a1.351,1.351,0,0,0-1.252,0l-5,2.631.956-5.569a1.355,1.355,0,0,0-.386-1.19l-4.048-3.945,5.6-.812a1.348,1.348,0,0,0,1.012-.735l2.5-5.07,2.5,5.07a1.346,1.346,0,0,0,1.012.735l5.592.812-4.047,3.945A1.343,1.343,0,0,0,29.67,55.768Z"></path></svg>
+            </span>
+            <span class="label">{{ accolades_label }}</span>
+          </a>
+          {% if award_count > 0 %}
+            <ul class="wine-product-awards__list" role="list">
+              {% for award in award_entries %}
+                {% assign award_title = award.title.value | default: award.name.value | default: award.award.value | default: award.label.value %}
+                {% assign award_detail = award.detail.value | default: award.description.value | default: award.review.value | default: award.result.value %}
+                {% if award_title != blank or award_detail != blank %}
+                  <li>
+                    {% if award_title != blank %}<strong>{{ award_title }}</strong>{% endif %}
+                    {% if award_detail != blank %}<span>{{ award_detail }}</span>{% endif %}
+                  </li>
+                {% endif %}
+              {% endfor %}
+            </ul>
+          {% endif %}
+        {% endif %}
+
+        {% if current_product.description != blank %}
+          <div class="wine-product-description rte">
+            {{ current_product.description }}
+          </div>
+        {% endif %}
+
+        {% if size_value != blank or type_value != blank or body_value != blank or varietal_value != blank %}
+          <div class="wine-product-meta">
+            {% if size_value != blank %}
+              <div class="wine-product-meta-item">
+                <div class="wine-meta-icon" aria-hidden="true">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100" class="icon"><path d="m38.835,48.5c-4.3-5.7-4.5-15.1-3.8-23.1l.6-.2c2-.8,3.9-1.7,7.5-1.7s5.5.8,7.5,1.6c2.1.9,4.3,1.8,8.3,1.8,2.7,0,4.6-.4,6-.9.8,7.8.4,17-3.7,22.5-2.5,3.3-6.3,5-11.2,5s-8.7-1.7-11.2-5Z" style="fill: {{ wine_glass_fill }}; stroke-width: 0px;"></path><path d="m62.866,49.7c9-11.9,1.7-37.9,1.4-39-.1-.4-.5-.7-1-.7h-26.6c-.4,0-.8.3-1,.7-.3,1.1-7.5,27,1.5,38.9,2.7,3.6,6.7,5.5,11.7,5.8v32.6h-9c-.6,0-1,.4-1,1s.4,1,1,1h20.1c.6,0,1-.4,1-1s-.4-1-1-1h-9v-32.5c5.2-.3,9.1-2.2,11.9-5.8ZM37.466,12h25c.4,1.7,1.6,6.4,2.2,12-1.4.5-3.1,1-5.8,1-3.6,0-5.5-.8-7.5-1.6-2.1-.9-4.3-1.8-8.3-1.8-3.7,0-5.8.8-7.8,1.6.8-5.3,1.8-9.6,2.2-11.2Zm1.4,36.5c-4.3-5.7-4.5-15.1-3.8-23.1l.6-.2c2-.8,3.9-1.7,7.5-1.7s5.5.8,7.5,1.6c2.1.9,4.3,1.8,8.3,1.8,2.7,0,4.6-.4,6-.9.8,7.8.4,17-3.7,22.5-2.5,3.3-6.3,5-11.2,5s-8.7-1.7-11.2-5Z" style="stroke-width: 0px;"></path></svg>
+                </div>
+                <div class="wine-meta-content">
+                  <div class="wine-product-meta-label">Size</div>
+                  <div class="wine-product-meta-value">{{ size_value }}</div>
+                </div>
+              </div>
+            {% endif %}
+            {% if body_value != blank %}
+              <div class="wine-product-meta-item">
+                <div class="wine-meta-icon" aria-hidden="true">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100" class="icon"><path d="m47.588,13.727v13.257c0,2.458-.604,4.878-1.759,7.048l-1.72,3.231c-.747,1.403-1.293,2.905-1.623,4.46h0c-.319,1.503-.479,3.035-.479,4.571v39.802c0,1.312,1.064,2.376,2.376,2.376h12.739c1.312,0,2.376-1.064,2.376-2.376v-39.802c0-1.536-.161-3.068-.479-4.571h0c-.33-1.555-.876-3.056-1.623-4.46l-1.72-3.231c-1.155-2.17-1.759-4.59-1.759-7.048v-13.257c0-.552-.448-1-1-1h-4.329c-.552,0-1,.448-1,1Z" style="fill: none; stroke: rgb(0, 0, 0); stroke-miterlimit: 10; stroke-width: 2px;"></path></svg>
+                </div>
+                <div class="wine-meta-content">
+                  <div class="wine-product-meta-label">Body</div>
+                  <div class="wine-product-meta-value">{{ body_value }}</div>
+                </div>
+              </div>
+            {% endif %}
+            {% if type_value != blank %}
+              <div class="wine-product-meta-item">
+                <div class="wine-meta-icon" aria-hidden="true">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100" class="icon"><path d="m38.835,48.5c-4.3-5.7-4.5-15.1-3.8-23.1l.6-.2c2-.8,3.9-1.7,7.5-1.7s5.5.8,7.5,1.6c2.1.9,4.3,1.8,8.3,1.8,2.7,0,4.6-.4,6-.9.8,7.8.4,17-3.7,22.5-2.5,3.3-6.3,5-11.2,5s-8.7-1.7-11.2-5Z" style="fill: {{ wine_glass_fill }}; stroke-width: 0px;"></path><path d="m62.866,49.7c9-11.9,1.7-37.9,1.4-39-.1-.4-.5-.7-1-.7h-26.6c-.4,0-.8.3-1,.7-.3,1.1-7.5,27,1.5,38.9,2.7,3.6,6.7,5.5,11.7,5.8v32.6h-9c-.6,0-1,.4-1,1s.4,1,1,1h20.1c.6,0,1-.4,1-1s-.4-1-1-1h-9v-32.5c5.2-.3,9.1-2.2,11.9-5.8ZM37.466,12h25c.4,1.7,1.6,6.4,2.2,12-1.4.5-3.1,1-5.8,1-3.6,0-5.5-.8-7.5-1.6-2.1-.9-4.3-1.8-8.3-1.8-3.7,0-5.8.8-7.8,1.6.8-5.3,1.8-9.6,2.2-11.2Zm1.4,36.5c-4.3-5.7-4.5-15.1-3.8-23.1l.6-.2c2-.8,3.9-1.7,7.5-1.7s5.5.8,7.5,1.6c2.1.9,4.3,1.8,8.3,1.8,2.7,0,4.6-.4,6-.9.8,7.8.4,17-3.7,22.5-2.5,3.3-6.3,5-11.2,5s-8.7-1.7-11.2-5Z" style="stroke-width: 0px;"></path></svg>
+                </div>
+                <div class="wine-meta-content">
+                  <div class="wine-product-meta-label">Type</div>
+                  <div class="wine-product-meta-value">{{ type_value }}</div>
+                </div>
+              </div>
+            {% endif %}
+            {% if varietal_value != blank %}
+              <div class="wine-product-meta-item">
+                <div class="wine-meta-icon" aria-hidden="true">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100" class="icon"><path d="m38.835,48.5c-4.3-5.7-4.5-15.1-3.8-23.1l.6-.2c2-.8,3.9-1.7,7.5-1.7s5.5.8,7.5,1.6c2.1.9,4.3,1.8,8.3,1.8,2.7,0,4.6-.4,6-.9.8,7.8.4,17-3.7,22.5-2.5,3.3-6.3,5-11.2,5s-8.7-1.7-11.2-5Z" style="fill: {{ wine_glass_fill }}; stroke-width: 0px;"></path><path d="m62.866,49.7c9-11.9,1.7-37.9,1.4-39-.1-.4-.5-.7-1-.7h-26.6c-.4,0-.8.3-1,.7-.3,1.1-7.5,27,1.5,38.9,2.7,3.6,6.7,5.5,11.7,5.8v32.6h-9c-.6,0-1,.4-1,1s.4,1,1,1h20.1c.6,0,1-.4,1-1s-.4-1-1-1h-9v-32.5c5.2-.3,9.1-2.2,11.9-5.8ZM37.466,12h25c.4,1.7,1.6,6.4,2.2,12-1.4.5-3.1,1-5.8,1-3.6,0-5.5-.8-7.5-1.6-2.1-.9-4.3-1.8-8.3-1.8-3.7,0-5.8.8-7.8,1.6.8-5.3,1.8-9.6,2.2-11.2Zm1.4,36.5c-4.3-5.7-4.5-15.1-3.8-23.1l.6-.2c2-.8,3.9-1.7,7.5-1.7s5.5.8,7.5,1.6c2.1.9,4.3,1.8,8.3,1.8,2.7,0,4.6-.4,6-.9.8,7.8.4,17-3.7,22.5-2.5,3.3-6.3,5-11.2,5s-8.7-1.7-11.2-5Z" style="stroke-width: 0px;"></path></svg>
+                </div>
+                <div class="wine-meta-content">
+                  <div class="wine-product-meta-label">Varietal</div>
+                  <div class="wine-product-meta-value">{{ varietal_value }}</div>
+                </div>
+              </div>
+            {% endif %}
+          </div>
+        {% endif %}
+
+        <div class="wine-product-cart-box">
+          <div class="wine-product-price-row">
+            <div class="wine-product-price-label">Item Price</div>
+            <div class="wine-product-price">
+              {% if current_variant != blank %}
+                {{ current_variant.price | money }}
+              {% endif %}
+            </div>
+          </div>
+
+          {% form 'product', current_product, class: 'wine-product-form js-wine-ajax-atc' %}
+            <input type="hidden" name="id" value="{{ current_variant.id }}">
+
+            <div class="wine-product-qty-row">
+              <label for="wine-qty-{{ section.id }}">Quantity</label>
+              <input
+                id="wine-qty-{{ section.id }}"
+                class="wine-product-qty-input"
+                type="number"
+                name="quantity"
+                min="{{ current_variant.quantity_rule.min | default: 1 }}"
+                value="{{ current_variant.quantity_rule.min | default: 1 }}"
+              >
+            </div>
+
+            <button
+              type="submit"
+              name="add"
+              class="wine-product-add-cart"
+              {% unless current_variant.available %}disabled{% endunless %}
+            >
+              {% if current_variant.available %}Add to Cart{% else %}Sold Out{% endif %}
+            </button>
+          {% endform %}
+        </div>
+
+        {% if tasting_note_url != blank %}
+          <a class="wine-product-tasting-note" href="{{ tasting_note_url }}" target="_blank" rel="noopener">
+            <span class="wine-product-tasting-note__text">
+              {% if tasting_note_label != blank %}{{ tasting_note_label }}{% else %}Download tasting Notes{% endif %}
+            </span>
+            <span class="wine-product-tasting-note__icon" aria-hidden="true">↓</span>
+          </a>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</section>
+
+{% stylesheet %}
+  .wine-product-main {
+    background: #ffffff;
+    padding-top: var(--wine-pt);
+    padding-bottom: var(--wine-pb);
+    padding-inline: 20px;
+    color: #1f1f1f;
+    font-family: "Plus Jakarta Sans", sans-serif;
+  }
+
+  .wine-product-container {
+    max-width: var(--wine-container);
+    margin: 0 auto;
+  }
+
+  .wine-product-layout {
+    display: grid;
+    grid-template-columns: 45% 55%;
+    gap: 40px;
+    align-items: flex-start;
+  }
+
+  .wine-product-image {
+    background: #ffffff;
+    min-height: 620px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 32px;
+  }
+
+  .wine-product-image__img {
+    max-width: 100%;
+    max-height: var(--wine-image-max-h);
+    width: auto;
+    height: auto;
+    object-fit: contain;
+    object-position: center center;
+    display: block;
+  }
+
+  .wine-product-vendor {
+    margin: 0 0 10px;
+    font-size: 18px;
+  }
+
+  .wine-product-title {
+    margin: 0 0 22px;
+    font-size: clamp(2rem, 4vw, 46px);
+    line-height: 1.1;
+    font-weight: 500;
+    font-family: eidetic-neo, serif;
+  }
+
+  .accolades-highlight {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin: 0 0 14px;
+    color: #32291a;
+    text-decoration: none;
+  }
+
+  .accolades-highlight .icon {
+    width: 22px;
+    flex: 0 0 22px;
+  }
+
+  .accolades-highlight .icon svg {
+    width: 100%;
+    height: auto;
+    display: block;
+    fill: #32291a;
+  }
+
+  .accolades-highlight .label {
+    font-weight: 700;
+    font-size: clamp(1.3rem, 2.6vw, 24px);
+    line-height: 1.2;
+  }
+
+  .wine-product-awards__list {
+    margin: 0 0 22px;
+    padding: 0;
+    list-style: none;
+    display: grid;
+    gap: 6px;
+  }
+
+  .wine-product-awards__list li {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    font-size: 14px;
+    line-height: 1.45;
+  }
+
+  .wine-product-description {
+    font-size: 16px;
+    line-height: 1.7;
+    margin-bottom: 28px;
+  }
+
+  .wine-product-meta {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 20px;
+    margin-bottom: 30px;
+  }
+
+  .wine-product-meta-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .wine-meta-icon {
+    width: 56px;
+    flex: 0 0 56px;
+    flex-shrink: 0;
+  }
+
+  .wine-meta-icon svg {
+    width: 56px;
+    height: 56px;
+    display: block;
+  }
+
+  .wine-product-meta-label {
+    font-weight: 600;
+    font-size: 14px;
+    margin-bottom: 4px;
+  }
+
+  .wine-product-meta-value {
+    font-size: 15px;
+  }
+
+  .wine-product-cart-box {
+    border: 1px solid #c9c1b4;
+    padding: 28px;
+    margin-bottom: 18px;
+  }
+
+  .wine-product-price-row {
+    border-bottom: 1px solid #c9c1b4;
+    padding-bottom: 18px;
+    margin-bottom: 20px;
+  }
+
+  .wine-product-price-label {
+    font-size: 14px;
+    margin-bottom: 8px;
+  }
+
+  .wine-product-price {
+    font-size: 34px;
+    font-weight: 500;
+  }
+
+  .wine-product-qty-row {
+    margin-bottom: 20px;
+  }
+
+  .wine-product-qty-row label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+  }
+
+  .wine-product-qty-input {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #c9c1b4;
+    background: transparent;
+  }
+
+  .wine-product-add-cart {
+    width: 100%;
+    background: #32291a;
+    color: #fff;
+    border: 0;
+    border-radius: 999px;
+    padding: 16px;
+    font-size: 15px;
+    text-transform: uppercase;
+    cursor: pointer;
+  }
+
+  .wine-product-add-cart:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+
+  .wine-product-tasting-note {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    width: 100%;
+    border: 1px solid #a97d3b;
+    border-radius: 4px;
+    padding: 22px 28px;
+    color: #a97d3b;
+    background: transparent;
+    text-decoration: none;
+    font-weight: 500;
+    text-align: center;
+    transition: background-color 0.2s ease, color 0.2s ease;
+  }
+
+  .wine-product-tasting-note__text {
+    line-height: 1.2;
+  }
+
+  .wine-product-tasting-note__icon {
+    font-size: 18px;
+    line-height: 1;
+  }
+
+  .wine-product-tasting-note:hover {
+    background: #a97d3b;
+    color: #000;
+  }
+
+  @media (max-width: 900px) {
+    .wine-product-main {
+      padding-top: var(--wine-pt);
+      padding-inline: 16px;
+    }
+
+    .wine-product-layout {
+      grid-template-columns: 1fr;
+      gap: 24px;
+    }
+
+    .wine-product-image {
+      min-height: 420px;
+      padding: 20px;
+    }
+
+    .wine-product-meta {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px;
+    }
+  }
+
+  @media (max-width: 560px) {
+    .wine-product-meta {
+      grid-template-columns: 1fr;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Wine Product Main",
+  "tag": "section",
+  "enabled_on": {
+    "templates": ["product"]
+  },
+  "settings": [
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background color",
+      "default": "#e9e9e2"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Top spacing",
+      "min": 0,
+      "max": 260,
+      "step": 10,
+      "unit": "px",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Bottom spacing",
+      "min": 20,
+      "max": 140,
+      "step": 10,
+      "unit": "px",
+      "default": 70
+    },
+    {
+      "type": "range",
+      "id": "container_width",
+      "label": "Container width",
+      "min": 960,
+      "max": 1400,
+      "step": 10,
+      "unit": "px",
+      "default": 1110
+    },
+    {
+      "type": "range",
+      "id": "image_max_height",
+      "label": "Image max height",
+      "min": 420,
+      "max": 900,
+      "step": 10,
+      "unit": "px",
+      "default": 720
+    }
+  ],
+  "presets": [
+    {
+      "name": "Wine Product Main"
+    }
+  ]
+}
+{% endschema %}
