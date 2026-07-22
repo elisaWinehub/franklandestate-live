@@ -688,7 +688,7 @@
   "platform_customizations": {
     "custom_css": [
       "#MainContent:has(> #winehub-customer-portal) {margin-top: 20px;}",
-      "#winehub-customer-portal {width: stretch;}"
+      "#winehub-customer-portal {width: stretch; max-width: 1400px;}"
     ]
   }
 }
