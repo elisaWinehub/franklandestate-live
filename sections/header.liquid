@@ -24,8 +24,12 @@
   assign overlay_contact_href = section.settings.overlay_contact_url | default: '/pages/contact'
   assign bar_top  = 0
   assign is_solid_header_page = false
+  assign is_winehub_page = false
   if request.page_type == 'product' or request.page_type == 'cart'
     assign is_solid_header_page = true
+  endif
+  if request.path contains '/apps/winehub'
+    assign is_winehub_page = true
   endif
   if show_bar
     assign bar_top = 48
@@ -68,7 +72,7 @@
   HEADER
 ────────────────────────────────────────────────{%- endcomment -%}
 <header
-  class="fe-hdr-{{ sid }} header{% if is_solid_header_page %} fe-hdr--product-page header--solid{% endif %}"
+  class="fe-hdr-{{ sid }} header{% if is_solid_header_page %} fe-hdr--product-page header--solid{% endif %}{% if is_winehub_page %} fe-hdr--winehub header--solid{% endif %}"
   id="fe-hdr-{{ sid }}"
   role="banner"
   style="
@@ -148,7 +152,7 @@
     {%- comment -%} Account {%- endcomment -%}
     {%- if shop.customer_accounts_enabled -%}
       <a
-        href="{%- if customer -%}{{ routes.account_url }}{%- else -%}{{ routes.account_login_url }}{%- endif -%}"
+        href="/customer_authentication/login?return_to={{ "/apps/winehub" | url_encode }}"
         class="fe-hdr__action-btn"
         aria-label="{%- if customer -%}My account{%- else -%}Log in{%- endif -%}"
       >
@@ -358,6 +362,18 @@
     opacity: 0;
   }
 
+  .fe-hdr-{{ sid }}.fe-hdr--winehub {
+    position: relative;
+    top: 0 !important;
+    background: #302313;
+    color: var(--fe-text-def, #ffffff);
+    box-shadow: none;
+  }
+
+  .fe-hdr-{{ sid }}.fe-hdr--winehub .fe-hdr__grad {
+    opacity: 0;
+  }
+
   .fe-hdr-{{ sid }} .fe-hdr__grad {
     position: absolute;
     inset: 0;
@@ -372,7 +388,7 @@
     z-index: 1;
   }
 
-  .fe-hdr-{{ sid }}:not(.fe-hdr--product-page).fe-scrolled {
+  .fe-hdr-{{ sid }}:not(.fe-hdr--product-page):not(.fe-hdr--winehub).fe-scrolled {
     position: fixed;
     top: 0 !important;
     background: #e9e9e2;
@@ -380,18 +396,18 @@
     box-shadow: 0 2px 18px rgba(0, 0, 0, 0.08);
   }
 
-  .fe-hdr-{{ sid }}:not(.fe-hdr--product-page).fe-scrolled .fe-hdr__grad {
+  .fe-hdr-{{ sid }}:not(.fe-hdr--product-page):not(.fe-hdr--winehub).fe-scrolled .fe-hdr__grad {
     opacity: 0;
   }
 
-  body.fe-menu-open .fe-hdr-{{ sid }}:not(.fe-hdr--product-page) {
+  body.fe-menu-open .fe-hdr-{{ sid }}:not(.fe-hdr--product-page):not(.fe-hdr--winehub) {
     position: fixed;
     background: #e9e9e2;
     color: var(--fe-text-alt, #534846);
     box-shadow: none;
   }
 
-  body.fe-menu-open .fe-hdr-{{ sid }}:not(.fe-hdr--product-page) .fe-hdr__grad {
+  body.fe-menu-open .fe-hdr-{{ sid }}:not(.fe-hdr--product-page):not(.fe-hdr--winehub) .fe-hdr__grad {
     opacity: 0;
   }
 
@@ -841,6 +857,8 @@
   var SID       = {{ section.id | json }};
   var THRESHOLD = 60;
   var FORCE_SOLID = {{ is_solid_header_page | json }};
+  var IS_WINEHUB = {{ is_winehub_page | json }};
+  var FORCE_LAYOUT = FORCE_SOLID || IS_WINEHUB;
 
   var bar     = document.getElementById('fe-bar-' + SID);
   var header  = document.getElementById('fe-hdr-'     + SID);
@@ -869,7 +887,7 @@
     document.documentElement.style.setProperty('--fe-bar-height', barHeight + 'px');
     document.documentElement.style.setProperty('--fe-header-height', headerHeight + 'px');
     if (!menuOpen) {
-      if (FORCE_SOLID) {
+      if (FORCE_LAYOUT) {
         header.style.top = '0px';
       } else {
         header.style.top = window.scrollY > THRESHOLD ? '0px' : (barHeight + 'px');
@@ -880,12 +898,13 @@
   /* ─── Scroll state ───────────────────────────────────── */
   function applyScrollState() {
     if (menuOpen) return;
-    if (FORCE_SOLID) {
+    if (FORCE_LAYOUT) {
       header.classList.remove('fe-scrolled');
-      setLogo(true);
+      /* WineHub keeps the light logo on the dark header */
+      setLogo(FORCE_SOLID && !IS_WINEHUB);
       return;
     }
-    var scrolled = FORCE_SOLID || window.scrollY > THRESHOLD;
+    var scrolled = window.scrollY > THRESHOLD;
     header.classList.toggle('fe-scrolled', scrolled);
     /* scrolled → logo-menu.svg, at top → logo.svg */
     setLogo(scrolled);
@@ -901,7 +920,7 @@
     menuOpen = true;
     overlay.removeAttribute('hidden');
     document.body.classList.add('fe-menu-open');
-    if (!FORCE_SOLID) {
+    if (!FORCE_LAYOUT) {
       header.classList.remove('fe-scrolled');
       header.style.top = window.scrollY > THRESHOLD ? '0px' : 'var(--fe-bar-height, 0px)';
     } else {
