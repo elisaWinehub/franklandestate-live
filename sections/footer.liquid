@@ -357,6 +357,11 @@
           {%- if section.settings.liquor_license_text != blank -%}
             <p class="fe-footer__licence">{{ section.settings.liquor_license_text }}</p>
           {%- endif -%}
+
+          <nav class="fe-footer__policy-links" aria-label="Policies">
+            <a href="/pages/terms-condition">Terms and Conditions</a>
+            <a href="/pages/privacy-policy">Privacy Policy</a>
+          </nav>
         </div>
       </div>
 
@@ -657,6 +662,24 @@
     margin-top: 2px;
   }
 
+  .fe-footer--{{ sid }} .fe-footer__policy-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px 18px;
+    margin-top: 10px;
+  }
+
+  .fe-footer--{{ sid }} .fe-footer__policy-links a {
+    color: rgba(255, 255, 255, 0.62);
+    text-decoration: none;
+    font-size: {{ footer_text_fs }}px;
+    transition: color 0.2s;
+  }
+
+  .fe-footer--{{ sid }} .fe-footer__policy-links a:hover {
+    color: #fff;
+  }
+
   .fe-footer--{{ sid }} .fe-footer__socials {
     display: flex;
     flex-wrap: wrap;
@@ -735,6 +758,9 @@
       width: 100%;
     }
     .fe-footer--{{ sid }} .fe-footer__legal-nav {
+      justify-content: center;
+    }
+    .fe-footer--{{ sid }} .fe-footer__policy-links {
       justify-content: center;
     }
     .fe-footer--{{ sid }} .fe-footer__socials {
