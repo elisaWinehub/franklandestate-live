@@ -1,21 +1,6 @@
 (function () {
-  var MODAL_ID = 'wine-atc-modal-global';
-
   /** @type {{ modal: HTMLElement, lastFocused: Element | null, dialog: Element | null } | null} */
   var activeModalState = null;
-
-  function getFocusableElements(container) {
-    if (!container) return [];
-    return Array.prototype.slice
-      .call(
-        container.querySelectorAll(
-          'a[href], button:not([disabled]), textarea:not([disabled]), input:not([disabled]), select:not([disabled]), [tabindex]:not([tabindex="-1"])'
-        )
-      )
-      .filter(function (element) {
-        return !element.hasAttribute('hidden');
-      });
-  }
 
   function updateCartCount(count) {
     var cartCountBadges = document.querySelectorAll('.fe-cart-count');
@@ -28,6 +13,45 @@
     genericCountBadges.forEach(function (badge) {
       badge.textContent = String(count);
     });
+  }
+
+  function getCartSectionIds() {
+    var ids = [];
+    document.querySelectorAll('cart-items-component[data-section-id]').forEach(function (el) {
+      if (el instanceof HTMLElement && el.dataset.sectionId) {
+        ids.push(el.dataset.sectionId);
+      }
+    });
+    return ids;
+  }
+
+  function openCartDrawer() {
+    var drawer = document.querySelector('cart-drawer-component');
+    if (!drawer) return;
+    if (typeof drawer.open === 'function') {
+      drawer.open();
+      return;
+    }
+    if (typeof drawer.showDialog === 'function') {
+      drawer.showDialog();
+    }
+  }
+
+  function dispatchCartUpdate(cart, sections) {
+    document.dispatchEvent(
+      new CustomEvent('cart:update', {
+        bubbles: true,
+        detail: {
+          resource: cart,
+          sourceId: 'wine-ajax-atc',
+          data: {
+            source: 'wine-ajax-atc',
+            itemCount: (cart && cart.item_count) || 0,
+            sections: sections || {}
+          }
+        }
+      })
+    );
   }
 
   function closeActiveModal() {
@@ -48,69 +72,11 @@
     }
   }
 
-  function trapFocus(event) {
-    if (!activeModalState || event.key !== 'Tab') return;
-    var dialog = activeModalState.dialog;
-    if (!dialog) return;
-
-    var focusables = getFocusableElements(dialog);
-    if (!focusables.length) return;
-
-    var first = focusables[0];
-    var last = focusables[focusables.length - 1];
-    var active = document.activeElement;
-
-    if (event.shiftKey && active === first) {
-      event.preventDefault();
-      last.focus();
-    } else if (!event.shiftKey && active === last) {
-      event.preventDefault();
-      first.focus();
-    }
-  }
-
   function onDocumentKeydown(event) {
     if (!activeModalState) return;
     if (event.key === 'Escape') {
       event.preventDefault();
       closeActiveModal();
-      return;
-    }
-    trapFocus(event);
-  }
-
-  function openWineModal(modal, productTitle, itemCount) {
-    closeActiveModal();
-
-    var productTitleEl = modal.querySelector('[data-modal-product-title]');
-    var countEl = modal.querySelector('[data-modal-count]');
-    var dialog = modal.querySelector('.wine-atc-modal__dialog');
-
-    if (productTitleEl) {
-      productTitleEl.textContent = productTitle || 'Product';
-    }
-
-    if (countEl) {
-      var label = itemCount === 1 ? 'item' : 'items';
-      countEl.textContent = 'There is ' + itemCount + ' ' + label + ' in your shopping cart.';
-    }
-
-    activeModalState = {
-      modal: modal,
-      lastFocused: document.activeElement,
-      dialog: dialog
-    };
-
-    modal.removeAttribute('hidden');
-    window.requestAnimationFrame(function () {
-      modal.classList.add('is-open');
-    });
-
-    document.addEventListener('keydown', onDocumentKeydown, true);
-
-    var focusables = getFocusableElements(dialog);
-    if (focusables.length) {
-      focusables[0].focus();
     }
   }
 
@@ -164,6 +130,12 @@
     if (qty === null || String(qty).trim() === '') {
       fd.set('quantity', '1');
     }
+
+    var sectionIds = getCartSectionIds();
+    if (sectionIds.length) {
+      fd.append('sections', sectionIds.join(','));
+    }
+
     return fd;
   }
 
@@ -173,9 +145,6 @@
       var form = event.target;
       if (!(form instanceof HTMLFormElement)) return;
       if (!isAjaxCartForm(form)) return;
-
-      var modal = document.getElementById(MODAL_ID);
-      if (!modal) return;
 
       var idInput = form.querySelector('input[name="id"]');
       if (!idInput || !String(idInput.value || '').trim()) {
@@ -193,7 +162,6 @@
       if (submitButton) submitButton.disabled = true;
 
       var formData = buildAjaxCartFormData(form);
-      var fallbackTitle = getFallbackProductTitle(form);
 
       fetch('/cart/add.js', {
         method: 'POST',
@@ -218,7 +186,8 @@
         })
         .then(function (result) {
           updateCartCount(result.cart.item_count || 0);
-          openWineModal(modal, result.addedItem.product_title || fallbackTitle, result.cart.item_count || 0);
+          dispatchCartUpdate(result.cart, result.addedItem.sections || {});
+          openCartDrawer();
         })
         .catch(function (error) {
           window.alert(error.message || 'Unable to add item to cart.');
