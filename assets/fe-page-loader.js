@@ -5,7 +5,8 @@
   if (!loader) return;
 
   var hideTimer = null;
-  var MIN_VISIBLE_MS = 180;
+  var MIN_VISIBLE_MS = 250;
+  var shownAt = Date.now();
 
   function showLoader() {
     if (hideTimer) {
@@ -14,18 +15,22 @@
     }
     loader.hidden = false;
     loader.setAttribute('aria-hidden', 'false');
-    // Force reflow so the transition runs when adding the class.
-    void loader.offsetWidth;
     loader.classList.add('is-visible');
+    shownAt = Date.now();
   }
 
   function hideLoader() {
-    loader.classList.remove('is-visible');
-    loader.setAttribute('aria-hidden', 'true');
+    var elapsed = Date.now() - shownAt;
+    var wait = Math.max(0, MIN_VISIBLE_MS - elapsed);
+
     hideTimer = window.setTimeout(function () {
-      loader.hidden = true;
+      loader.classList.remove('is-visible');
+      loader.setAttribute('aria-hidden', 'true');
+      window.setTimeout(function () {
+        loader.hidden = true;
+      }, 200);
       hideTimer = null;
-    }, 220);
+    }, wait);
   }
 
   function isModifiedClick(event) {
@@ -51,30 +56,24 @@
     if (url.pathname === window.location.pathname && url.search === window.location.search && url.hash) {
       return false;
     }
-
-    // Ignore in-page UI controls that use href="#" or javascript:
     if (url.protocol === 'javascript:') return false;
 
     return true;
   }
 
-  // Show briefly while the document finishes loading / reloading.
-  if (document.readyState === 'loading') {
-    showLoader();
-    document.addEventListener(
-      'DOMContentLoaded',
-      function () {
-        window.setTimeout(hideLoader, MIN_VISIBLE_MS);
-      },
-      { once: true }
-    );
-  } else {
-    hideLoader();
+  // Keep covering the page until styles/assets settle, then fade out.
+  function revealWhenReady() {
+    if (document.readyState === 'complete') {
+      hideLoader();
+      return;
+    }
+    window.addEventListener('load', hideLoader, { once: true });
   }
 
+  revealWhenReady();
+
   window.addEventListener('pageshow', function (event) {
-    // Always clear when coming back via bfcache or after navigation completes.
-    if (event.persisted || document.readyState === 'complete') {
+    if (event.persisted) {
       hideLoader();
     }
   });
@@ -107,7 +106,6 @@
       var form = event.target;
       if (!(form instanceof HTMLFormElement)) return;
 
-      // Skip AJAX cart forms handled elsewhere.
       if (
         form.classList.contains('js-wine-ajax-atc') ||
         form.classList.contains('product-card__collection-atc-form') ||
