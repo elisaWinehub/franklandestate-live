@@ -39,8 +39,12 @@
 >
   {% if cart.empty? or force_empty %}
     {%- if shop.customer_accounts_enabled and customer == null -%}
+      {%- liquid
+        assign winehub_return = '/apps/winehub' | url_encode
+        assign login_link = '/customer_authentication/login?return_to=' | append: winehub_return
+      -%}
       <p>
-        {{ 'actions.log_in_html' | t: link: "/customer_authentication/login?return_to={{ "/apps/winehub" | url_encode }}" }}
+        {{ 'actions.log_in_html' | t: link: login_link }}
       </p>
     {%- endif -%}
 
