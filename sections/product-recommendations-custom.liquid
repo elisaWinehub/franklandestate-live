@@ -107,12 +107,15 @@
     justify-content: center;
     background: #efeee9;
     aspect-ratio: 4 / 5;
-    padding: 24px 20px 20px;
+    padding: 28px 28px 22px;
     box-sizing: border-box;
     overflow: hidden;
   }
 
-  /* Match collection / home: force equal bottle height, bottom-aligned */
+  /*
+    After JS trims transparent padding, force every bottle to the same
+    visual height (bottom-aligned) regardless of source crop.
+  */
   .fe-product-recs--{{ sid }} .fe-product-recs__img {
     width: auto;
     height: 100%;
@@ -121,6 +124,13 @@
     object-fit: contain;
     object-position: bottom center;
     display: block;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+  }
+
+  .fe-product-recs--{{ sid }} .fe-product-recs__img.is-normalized,
+  .fe-product-recs--{{ sid }} .fe-product-recs__img.is-normalize-fallback {
+    opacity: 1;
   }
 
   .fe-product-recs--{{ sid }} .fe-product-recs__img--placeholder {
@@ -231,6 +241,9 @@
                           sizes="(max-width: 749px) 50vw, (max-width: 989px) 33vw, 25vw"
                           alt="{{ rec_product.featured_image.alt | escape | default: rec_product.title }}"
                           loading="lazy"
+                          decoding="async"
+                          crossorigin="anonymous"
+                          data-fe-normalize-bottle
                         >
                       {%- else -%}
                         {{ 'product-apparel-1' | placeholder_svg_tag: 'fe-product-recs__img fe-product-recs__img--placeholder' }}
@@ -258,6 +271,110 @@
   (function () {
     var roots = document.querySelectorAll('.fe-product-recs--{{ sid }}[data-fe-product-recs]');
     if (!roots.length) return;
+
+    var ALPHA_THRESHOLD = 10;
+
+    function findOpaqueBounds(imageData, width, height) {
+      var data = imageData.data;
+      var top = height;
+      var bottom = -1;
+      var left = width;
+      var right = -1;
+      var x;
+      var y;
+      var i;
+      var a;
+
+      for (y = 0; y < height; y++) {
+        for (x = 0; x < width; x++) {
+          a = data[(y * width + x) * 4 + 3];
+          if (a > ALPHA_THRESHOLD) {
+            if (y < top) top = y;
+            if (y > bottom) bottom = y;
+            if (x < left) left = x;
+            if (x > right) right = x;
+          }
+        }
+      }
+
+      if (bottom < top || right < left) return null;
+      return { top: top, right: right, bottom: bottom, left: left };
+    }
+
+    function normalizeBottleImage(img) {
+      if (!img || img.getAttribute('data-fe-normalized') === '1') return;
+      if (!img.naturalWidth || !img.naturalHeight) return;
+
+      var width = img.naturalWidth;
+      var height = img.naturalHeight;
+      var canvas = document.createElement('canvas');
+      canvas.width = width;
+      canvas.height = height;
+      var ctx = canvas.getContext('2d', { willReadFrequently: true });
+      if (!ctx) {
+        img.classList.add('is-normalize-fallback');
+        return;
+      }
+
+      try {
+        ctx.drawImage(img, 0, 0);
+        var imageData = ctx.getImageData(0, 0, width, height);
+        var bounds = findOpaqueBounds(imageData, width, height);
+        if (!bounds) {
+          img.classList.add('is-normalize-fallback');
+          return;
+        }
+
+        var cropW = bounds.right - bounds.left + 1;
+        var cropH = bounds.bottom - bounds.top + 1;
+        var cropped = document.createElement('canvas');
+        cropped.width = cropW;
+        cropped.height = cropH;
+        cropped.getContext('2d').drawImage(
+          canvas,
+          bounds.left,
+          bounds.top,
+          cropW,
+          cropH,
+          0,
+          0,
+          cropW,
+          cropH
+        );
+
+        img.removeAttribute('srcset');
+        img.removeAttribute('sizes');
+        img.setAttribute('data-fe-normalized', '1');
+        img.src = cropped.toDataURL('image/png');
+        img.classList.add('is-normalized');
+      } catch (err) {
+        img.classList.add('is-normalize-fallback');
+      }
+    }
+
+    function normalizeBottles(scope) {
+      var imgs = scope.querySelectorAll('img[data-fe-normalize-bottle]');
+      Array.prototype.forEach.call(imgs, function (img) {
+        if (img.getAttribute('data-fe-normalized') === '1') return;
+
+        var run = function () {
+          normalizeBottleImage(img);
+        };
+
+        if (img.complete && img.naturalWidth) {
+          run();
+        } else {
+          img.addEventListener('load', run, { once: true });
+          img.addEventListener(
+            'error',
+            function () {
+              img.classList.add('is-normalize-fallback');
+            },
+            { once: true }
+          );
+        }
+      });
+    }
 
     roots.forEach(function (root) {
       if (root.getAttribute('data-fe-recs-init') === '1') return;
@@ -317,6 +434,7 @@
       function initCarousel() {
         index = Math.min(index, maxIndex());
         update();
+        normalizeBottles(track);
       }
 
       if (prevBtn) {
