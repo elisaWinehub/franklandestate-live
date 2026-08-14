@@ -102,18 +102,32 @@
   }
 
   .fe-product-recs--{{ sid }} .fe-product-recs__img-link {
-    display: block;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
     background: #efeee9;
     aspect-ratio: 4 / 5;
-    padding: 20px;
+    padding: 24px 20px 20px;
     box-sizing: border-box;
+    overflow: hidden;
   }
 
+  /* Match collection / home: force equal bottle height, bottom-aligned */
   .fe-product-recs--{{ sid }} .fe-product-recs__img {
-    width: 100%;
+    width: auto;
     height: 100%;
+    max-width: 100%;
+    max-height: 100%;
     object-fit: contain;
+    object-position: bottom center;
     display: block;
+  }
+
+  .fe-product-recs--{{ sid }} .fe-product-recs__img--placeholder {
+    width: 58%;
+    height: 58%;
+    margin: auto;
+    opacity: 0.35;
   }
 
   .fe-product-recs--{{ sid }} .fe-product-recs__meta {
