@@ -112,10 +112,6 @@
     overflow: hidden;
   }
 
-  /*
-    After JS trims transparent padding, force every bottle to the same
-    visual height (bottom-aligned) regardless of source crop.
-  */
   .fe-product-recs--{{ sid }} .fe-product-recs__img {
     width: auto;
     height: 100%;
@@ -124,13 +120,6 @@
     object-fit: contain;
     object-position: bottom center;
     display: block;
-    opacity: 0;
-    transition: opacity 0.2s ease;
-  }
-
-  .fe-product-recs--{{ sid }} .fe-product-recs__img.is-normalized,
-  .fe-product-recs--{{ sid }} .fe-product-recs__img.is-normalize-fallback {
-    opacity: 1;
   }
 
   .fe-product-recs--{{ sid }} .fe-product-recs__img--placeholder {
@@ -242,7 +231,6 @@
                           alt="{{ rec_product.featured_image.alt | escape | default: rec_product.title }}"
                           loading="lazy"
                           decoding="async"
-                          crossorigin="anonymous"
                           data-fe-normalize-bottle
                         >
                       {%- else -%}
@@ -303,53 +291,74 @@
 
     function normalizeBottleImage(img) {
       if (!img || img.getAttribute('data-fe-normalized') === '1') return;
-      if (!img.naturalWidth || !img.naturalHeight) return;
 
-      var width = img.naturalWidth;
-      var height = img.naturalHeight;
-      var canvas = document.createElement('canvas');
-      canvas.width = width;
-      canvas.height = height;
-      var ctx = canvas.getContext('2d', { willReadFrequently: true });
-      if (!ctx) {
-        img.classList.add('is-normalize-fallback');
-        return;
-      }
+      var src = img.currentSrc || img.src;
+      if (!src || src.indexOf('data:') === 0) return;
 
-      try {
-        ctx.drawImage(img, 0, 0);
-        var imageData = ctx.getImageData(0, 0, width, height);
-        var bounds = findOpaqueBounds(imageData, width, height);
-        if (!bounds) {
-          img.classList.add('is-normalize-fallback');
-          return;
-        }
+      fetch(src, { mode: 'cors', credentials: 'omit' })
+        .then(function (response) {
+          if (!response.ok) throw new Error('image fetch failed');
+          return response.blob();
+        })
+        .then(function (blob) {
+          if (typeof createImageBitmap === 'function') {
+            return createImageBitmap(blob);
+          }
 
-        var cropW = bounds.right - bounds.left + 1;
-        var cropH = bounds.bottom - bounds.top + 1;
-        var cropped = document.createElement('canvas');
-        cropped.width = cropW;
-        cropped.height = cropH;
-        cropped.getContext('2d').drawImage(
-          canvas,
-          bounds.left,
-          bounds.top,
-          cropW,
-          cropH,
-          0,
-          0,
-          cropW,
-          cropH
-        );
+          return new Promise(function (resolve, reject) {
+            var url = URL.createObjectURL(blob);
+            var temp = new Image();
+            temp.onload = function () {
+              URL.revokeObjectURL(url);
+              resolve(temp);
+            };
+            temp.onerror = function () {
+              URL.revokeObjectURL(url);
+              reject(new Error('image decode failed'));
+            };
+            temp.src = url;
+          });
+        })
+        .then(function (bitmap) {
+          var width = bitmap.width;
+          var height = bitmap.height;
+          var canvas = document.createElement('canvas');
+          canvas.width = width;
+          canvas.height = height;
+          var ctx = canvas.getContext('2d', { willReadFrequently: true });
+          if (!ctx) return;
 
-        img.removeAttribute('srcset');
-        img.removeAttribute('sizes');
-        img.setAttribute('data-fe-normalized', '1');
-        img.src = cropped.toDataURL('image/png');
-        img.classList.add('is-normalized');
-      } catch (err) {
-        img.classList.add('is-normalize-fallback');
-      }
+          ctx.drawImage(bitmap, 0, 0);
+          if (typeof bitmap.close === 'function') bitmap.close();
+
+          var bounds = findOpaqueBounds(ctx.getImageData(0, 0, width, height), width, height);
+          if (!bounds) return;
+
+          var cropW = bounds.right - bounds.left + 1;
+          var cropH = bounds.bottom - bounds.top + 1;
+          var cropped = document.createElement('canvas');
+          cropped.width = cropW;
+          cropped.height = cropH;
+          cropped.getContext('2d').drawImage(
+            canvas,
+            bounds.left,
+            bounds.top,
+            cropW,
+            cropH,
+            0,
+            0,
+            cropW,
+            cropH
+          );
+
+          img.removeAttribute('srcset');
+          img.removeAttribute('sizes');
+          img.setAttribute('data-fe-normalized', '1');
+          img.src = cropped.toDataURL('image/png');
+        })
+        .catch(function () {
+          /* Keep the original image visible if trim fails */
+        });
     }
 
     function normalizeBottles(scope) {
@@ -365,13 +374,6 @@
           run();
         } else {
           img.addEventListener('load', run, { once: true });
-          img.addEventListener(
-            'error',
-            function () {
-              img.classList.add('is-normalize-fallback');
-            },
-            { once: true }
-          );
         }
       });
     }
