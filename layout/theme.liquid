@@ -131,6 +131,9 @@
 
     {% render 'search-modal' %}
 
+    {% render 'fe-page-loader' %}
+    <script src="{{ 'fe-page-loader.js' | asset_url }}" defer></script>
+
     {% if settings.quick_add or settings.mobile_quick_add %}
       {% render 'quick-add-modal' %}
     {% endif %}

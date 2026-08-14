@@ -1,0 +1,81 @@
+{% comment %}
+  Global page navigation / reload spinner.
+{% endcomment %}
+<div
+  id="fe-page-loader"
+  class="fe-page-loader"
+  hidden
+  aria-hidden="true"
+  role="status"
+  aria-live="polite"
+  aria-label="Loading"
+>
+  <div class="fe-page-loader__panel">
+    <span class="fe-page-loader__spinner" aria-hidden="true"></span>
+    <span class="fe-page-loader__text">Loading</span>
+  </div>
+</div>
+
+<style>
+  .fe-page-loader {
+    position: fixed;
+    inset: 0;
+    z-index: 99999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(48, 35, 19, 0.42);
+    backdrop-filter: blur(2px);
+    -webkit-backdrop-filter: blur(2px);
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition: opacity 0.2s ease, visibility 0.2s ease;
+  }
+
+  .fe-page-loader.is-visible {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+  }
+
+  .fe-page-loader__panel {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 14px;
+    padding: 22px 26px;
+    border-radius: 16px;
+    background: #302313;
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.28);
+  }
+
+  .fe-page-loader__spinner {
+    width: 36px;
+    height: 36px;
+    border: 3px solid rgba(255, 255, 255, 0.22);
+    border-top-color: #ffffff;
+    border-radius: 50%;
+    animation: fe-page-loader-spin 0.7s linear infinite;
+  }
+
+  .fe-page-loader__text {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 13px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.9);
+  }
+
+  @keyframes fe-page-loader-spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .fe-page-loader__spinner {
+      animation-duration: 1.4s;
+    }
+  }
+</style>
