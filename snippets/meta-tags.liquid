@@ -13,13 +13,15 @@
   name="viewport"
   content="width=device-width,initial-scale=1"
 >
-<meta
-  name="view-transition"
-  content="same-origin"
->
+{%- if settings.page_transition_enabled or settings.transition_to_main_product -%}
+  <meta
+    name="view-transition"
+    content="same-origin"
+  >
+{%- endif -%}
 <meta
   name="theme-color"
-  content=""
+  content="#ffffff"
 >
 
 {%- liquid

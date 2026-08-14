@@ -5,32 +5,76 @@
   if (!loader) return;
 
   var hideTimer = null;
-  var MIN_VISIBLE_MS = 250;
-  var shownAt = Date.now();
+  var safetyTimer = null;
+  var MIN_VISIBLE_MS = 120;
+  var MAX_WAIT_MS = 1200;
+  var FADE_MS = 180;
+  var shownAt = performance.now();
+  var isHidden = false;
+  var prefetched = Object.create(null);
 
   function showLoader() {
     if (hideTimer) {
       window.clearTimeout(hideTimer);
       hideTimer = null;
     }
+    if (safetyTimer) {
+      window.clearTimeout(safetyTimer);
+      safetyTimer = null;
+    }
+
+    isHidden = false;
     loader.hidden = false;
+    loader.removeAttribute('hidden');
     loader.setAttribute('aria-hidden', 'false');
     loader.classList.add('is-visible');
-    shownAt = Date.now();
+    shownAt = performance.now();
   }
 
   function hideLoader() {
-    var elapsed = Date.now() - shownAt;
+    if (isHidden) return;
+
+    var elapsed = performance.now() - shownAt;
     var wait = Math.max(0, MIN_VISIBLE_MS - elapsed);
 
+    if (hideTimer) window.clearTimeout(hideTimer);
+    if (safetyTimer) {
+      window.clearTimeout(safetyTimer);
+      safetyTimer = null;
+    }
+
     hideTimer = window.setTimeout(function () {
+      isHidden = true;
       loader.classList.remove('is-visible');
       loader.setAttribute('aria-hidden', 'true');
       window.setTimeout(function () {
         loader.hidden = true;
-      }, 200);
+      }, FADE_MS);
       hideTimer = null;
     }, wait);
+  }
+
+  function revealWhenReady() {
+    function done() {
+      hideLoader();
+    }
+
+    // Prefer first paint of DOM over waiting for every image/font (window.load).
+    if (document.readyState === 'interactive' || document.readyState === 'complete') {
+      // Let the browser paint once, then lift the cover.
+      window.requestAnimationFrame(function () {
+        window.requestAnimationFrame(done);
+      });
+    } else {
+      document.addEventListener('DOMContentLoaded', function () {
+        window.requestAnimationFrame(function () {
+          window.requestAnimationFrame(done);
+        });
+      }, { once: true });
+    }
+
+    // Hard cap so a slow third-party script can't leave the spinner forever.
+    safetyTimer = window.setTimeout(done, MAX_WAIT_MS);
   }
 
   function isModifiedClick(event) {
@@ -41,6 +85,7 @@
     if (!anchor || !anchor.href) return false;
     if (anchor.hasAttribute('download')) return false;
     if (anchor.target && anchor.target !== '_self') return false;
+    if (anchor.hasAttribute('data-no-loader')) return false;
 
     var rel = (anchor.getAttribute('rel') || '').toLowerCase();
     if (rel.indexOf('external') !== -1) return false;
@@ -53,33 +98,33 @@
     }
 
     if (url.origin !== window.location.origin) return false;
-    if (url.pathname === window.location.pathname && url.search === window.location.search && url.hash) {
+    if (url.pathname === window.location.pathname && url.search === window.location.search) {
       return false;
     }
-    if (url.protocol === 'javascript:') return false;
+    if (url.protocol === 'javascript:' || url.protocol === 'mailto:' || url.protocol === 'tel:') {
+      return false;
+    }
 
     return true;
   }
 
-  // Keep covering the page until styles/assets settle, then fade out.
-  function revealWhenReady() {
-    if (document.readyState === 'complete') {
-      hideLoader();
-      return;
+  function prefetchLink(href) {
+    if (!href || prefetched[href]) return;
+    if (!('connection' in navigator) || !navigator.connection || !navigator.connection.saveData) {
+      prefetched[href] = true;
+      var link = document.createElement('link');
+      link.rel = 'prefetch';
+      link.href = href;
+      link.as = 'document';
+      document.head.appendChild(link);
     }
-    window.addEventListener('load', hideLoader, { once: true });
   }
 
   revealWhenReady();
 
-  window.addEventListener('pageshow', function (event) {
-    if (event.persisted) {
-      hideLoader();
-    }
-  });
-
-  window.addEventListener('pagehide', function () {
-    showLoader();
+  // Back/forward cache: never re-show a stuck loader.
+  window.addEventListener('pageshow', function () {
+    hideLoader();
   });
 
   document.addEventListener(
@@ -97,6 +142,18 @@
       showLoader();
     },
     true
+  );
+
+  document.addEventListener(
+    'pointerover',
+    function (event) {
+      var target = event.target;
+      if (!(target instanceof Element)) return;
+      var anchor = target.closest('a[href]');
+      if (!shouldHandleLink(anchor)) return;
+      prefetchLink(anchor.href);
+    },
+    { capture: true, passive: true }
   );
 
   document.addEventListener(

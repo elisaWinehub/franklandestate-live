@@ -223,12 +223,8 @@ p:empty {
   margin-block-end: 0;
 }
 
-/* view transitions */
+/* view transitions — cross-document nav is controlled in theme.liquid (disabled while custom page loader is used) */
 @media (prefers-reduced-motion: no-preference) {
-  @view-transition {
-    navigation: auto;
-  }
-
   /* Keep page interactive while view transitions are running */
   :root {
     view-transition-name: none;

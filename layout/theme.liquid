@@ -40,8 +40,15 @@
     {{ content_for_header }}
     {% # theme-check-enable RemoteAsset %}
 
-    {%- comment -%} Critical page-loader styles: cover FOUC before section CSS arrives {%- endcomment -%}
+    {%- comment -%} Critical page-loader: white cover, no competing cross-doc view transition {%- endcomment -%}
     <style id="fe-page-loader-critical">
+      @view-transition {
+        navigation: none;
+      }
+      html,
+      body {
+        background-color: #ffffff;
+      }
       #fe-page-loader {
         position: fixed;
         inset: 0;
@@ -49,11 +56,11 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        background: #302313;
+        background: #ffffff;
         opacity: 1;
         visibility: visible;
         pointer-events: auto;
-        transition: opacity 0.2s ease, visibility 0.2s ease;
+        transition: opacity 0.18s ease, visibility 0.18s ease;
       }
       #fe-page-loader:not(.is-visible) {
         opacity: 0;
@@ -67,30 +74,36 @@
         display: flex;
         flex-direction: column;
         align-items: center;
-        gap: 14px;
-        padding: 22px 26px;
-        border-radius: 16px;
-        background: rgba(0, 0, 0, 0.22);
+        gap: 12px;
+        padding: 0;
+        background: transparent;
       }
       #fe-page-loader .fe-page-loader__spinner {
-        width: 36px;
-        height: 36px;
-        border: 3px solid rgba(255, 255, 255, 0.22);
-        border-top-color: #ffffff;
+        width: 34px;
+        height: 34px;
+        border: 3px solid rgba(48, 35, 19, 0.15);
+        border-top-color: #302313;
         border-radius: 50%;
-        animation: fe-page-loader-spin 0.7s linear infinite;
+        animation: fe-page-loader-spin 0.65s linear infinite;
       }
       #fe-page-loader .fe-page-loader__text {
-        font-family: Arial, Helvetica, sans-serif;
-        font-size: 13px;
-        letter-spacing: 0.04em;
+        font-family: "Plus Jakarta Sans", Arial, Helvetica, sans-serif;
+        font-size: 12px;
+        letter-spacing: 0.06em;
         text-transform: uppercase;
-        color: rgba(255, 255, 255, 0.9);
+        color: #302313;
       }
       @keyframes fe-page-loader-spin {
         to { transform: rotate(360deg); }
       }
     </style>
+    {%- if settings.page_transition_enabled or settings.transition_to_main_product -%}
+      <style id="fe-view-transition-nav">
+        @view-transition {
+          navigation: auto;
+        }
+      </style>
+    {%- endif -%}
   </head>
 
   <body class="page-width-{{ settings.page_width }} card-hover-effect-{{ settings.card_hover_effect }}">
