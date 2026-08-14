@@ -140,14 +140,7 @@
   <div class="fe-hdr__actions">
 
     {%- comment -%} Cart {%- endcomment -%}
-    <a href="{{ routes.cart_url }}" class="fe-hdr__action-btn" aria-label="Cart ({{ cart.item_count }} {{ cart.item_count | pluralize: 'item', 'items' }})">
-      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
-        <path d="M6 2 3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/>
-      </svg>
-      {%- if cart.item_count > 0 -%}
-        <span class="fe-cart-count" aria-hidden="true">{{ cart.item_count }}</span>
-      {%- endif -%}
-    </a>
+    {% render 'fe-cart-drawer', section_id: section.id %}
 
     {%- comment -%} Account {%- endcomment -%}
     {%- if shop.customer_accounts_enabled -%}
@@ -591,6 +584,15 @@
     align-items: center;
     justify-content: center;
     line-height: 1;
+  }
+
+  .fe-cart-count--empty,
+  .fe-cart-count:empty {
+    display: none;
+  }
+
+  .fe-hdr-{{ sid }} .fe-hdr-cart-drawer {
+    display: contents;
   }
 
   .fe-hdr-{{ sid }}.fe-scrolled .fe-cart-count,
