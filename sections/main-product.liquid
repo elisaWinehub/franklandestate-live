@@ -236,14 +236,17 @@
     margin-top: 12px;
   }
 
-  .fe-main-product--{{ sid }} .fe-main-product__description .fe-main-product__description-short,
-  .fe-main-product--{{ sid }} .fe-main-product__description .fe-main-product__description-full {
+  .fe-main-product--{{ sid }} .fe-main-product__description-short {
     display: inline;
   }
 
-  .fe-main-product--{{ sid }} .fe-main-product__description .fe-main-product__description-full[hidden],
-  .fe-main-product--{{ sid }} .fe-main-product__description .fe-main-product__description-short[hidden] {
-    display: none;
+  .fe-main-product--{{ sid }} .fe-main-product__description-full {
+    display: block;
+  }
+
+  .fe-main-product--{{ sid }} .fe-main-product__description-short[hidden],
+  .fe-main-product--{{ sid }} .fe-main-product__description-full[hidden] {
+    display: none !important;
   }
 
   .fe-main-product--{{ sid }} .fe-main-product__description-toggle {
@@ -859,12 +862,16 @@
               {%- when 'description' -%}
                 {%- if current_product.description != blank -%}
                   {%- liquid
-                    assign desc_plain = current_product.description | strip_html | replace: '&nbsp;', ' ' | strip
-                    assign desc_short = desc_plain
-                    assign desc_needs_toggle = false
-                    assign sentence_parts = desc_plain | split: '. '
-                    assign sentence_count = 0
+                    assign desc_work = current_product.description | replace: '</p>', '. ' | replace: '<br />', '. ' | replace: '<br/>', '. ' | replace: '<br>', '. '
+                    assign desc_plain = desc_work | strip_html | replace: '&nbsp;', ' ' | strip
+                    assign desc_plain = desc_plain | replace: '..', '.' | replace: '. .', '. '
+                    assign desc_plain = desc_plain | replace: '  ', ' ' | strip
+
                     assign desc_short = ''
+                    assign desc_needs_toggle = false
+                    assign sentence_count = 0
+                    assign sentence_parts = desc_plain | split: '. '
+
                     for part in sentence_parts
                       assign trimmed_part = part | strip
                       if trimmed_part != blank
@@ -878,14 +885,17 @@
                         endif
                       endif
                     endfor
+
                     if sentence_count > 2
                       assign desc_needs_toggle = true
                       assign short_last = desc_short | slice: -1, 1
-                      if short_last != '.'
+                      unless short_last == '.'
                         assign desc_short = desc_short | append: '.'
-                      endif
-                    else
-                      assign desc_short = desc_plain
+                      endunless
+                    elsif desc_plain.size > 180
+                      assign desc_needs_toggle = true
+                      assign desc_short = desc_plain | truncate: 180, ''
+                      assign desc_short = desc_short | append: '…'
                     endif
                   -%}
                   <div
