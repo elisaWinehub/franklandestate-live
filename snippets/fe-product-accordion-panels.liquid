@@ -63,9 +63,22 @@
     assign has_technical = true
   endif
 
-  assign awards_entries = current_product.metafields.winehub.product_awards.value
-  if awards_entries == blank
+  assign awards_entries = blank
+  assign awards_source = ''
+
+  if current_product.metafields.custom.fe_product_awards.value != blank
+    assign awards_entries = current_product.metafields.custom.fe_product_awards.value
+    assign awards_source = 'json'
+  endif
+
+  if awards_entries == blank and current_product.metafields.winehub.product_awards.value != blank
+    assign awards_entries = current_product.metafields.winehub.product_awards.value
+    assign awards_source = 'winehub'
+  endif
+
+  if awards_entries == blank and current_product.metafields.custom.awards.value != blank
     assign awards_entries = current_product.metafields.custom.awards.value
+    assign awards_source = 'custom'
   endif
 
   assign reviews_entries = blank
@@ -347,14 +360,101 @@
       </summary>
       <div class="fe-product-accordion__panel">
         <div class="fe-product-accordion__panel-inner">
-        <div class="fe-product-accordion__stack">
-          {%- for award in awards_entries -%}
-            {%- assign award_info = award.award_info.value | default: award.award_info | strip_html | strip -%}
-            {%- if award_info != blank -%}
-              <article class="fe-product-accordion__field"><p class="fe-product-accordion__field-value">{{ award_info }}</p></article>
-            {%- endif -%}
-          {%- endfor -%}
-        </div>
+        {%- if awards_count > 0 -%}
+          <div class="fe-product-accordion__stack">
+            {%- for award in awards_entries -%}
+              {%- liquid
+                assign award_name = ''
+                assign award_text = ''
+                assign award_url = ''
+                assign award_image = blank
+
+                if awards_source == 'winehub'
+                  assign award_name = award.title.value | default: award.title | default: award.name.value | default: award.name | strip_html | strip
+                  assign award_text = award.description.value | default: award.description | default: award.award_info.value | default: award.award_info | strip_html | strip
+                  assign award_url = award.url.value | default: award.url | default: award.link.value | default: award.link | strip_html | strip
+                  assign award_image = award.image.value | default: award.image
+                elsif awards_source == 'json'
+                  assign award_name = award.title | default: award.name | strip_html | strip
+                  assign award_text = award.description | default: award.award_info | strip_html | strip
+                  assign award_url = award.url | default: award.link | strip_html | strip
+                  assign award_image = award.image
+                else
+                  assign award_name = award.title.value | default: award.title | default: award.name.value | default: award.name | strip_html | strip
+                  assign award_text = award.award_info.value | default: award.award_info | default: award.description.value | default: award.description | strip_html | strip
+                endif
+
+                if award_text != blank
+                  assign award_text = award_text | replace: '"', '' | strip
+                endif
+
+                assign award_short = award_text
+                assign award_needs_toggle = false
+                if award_text != blank
+                  assign sentence_parts = award_text | split: '. '
+                  assign sentence_count = 0
+                  assign award_short = ''
+                  for part in sentence_parts
+                    assign trimmed_part = part | strip
+                    if trimmed_part != blank
+                      assign sentence_count = sentence_count | plus: 1
+                      if sentence_count <= 2
+                        if award_short == blank
+                          assign award_short = trimmed_part
+                        else
+                          assign award_short = award_short | append: '. ' | append: trimmed_part
+                        endif
+                      endif
+                    endif
+                  endfor
+
+                  if sentence_count > 2
+                    assign award_needs_toggle = true
+                    assign short_last = award_short | slice: -1, 1
+                    if short_last != '.'
+                      assign award_short = award_short | append: '.'
+                    endif
+                  else
+                    assign award_short = award_text
+                  endif
+                endif
+              -%}
+              {%- if award_name != blank or award_text != blank -%}
+                <article class="fe-product-accordion__review fe-product-accordion__award">
+                  {%- if award_image != blank -%}
+                    <div class="fe-product-accordion__review-image">
+                      {%- if award_image.url != blank -%}
+                        {{ award_image | image_url: width: 160 | image_tag: loading: 'lazy', alt: award_name }}
+                      {%- elsif award_image contains 'http' -%}
+                        <img src="{{ award_image | escape }}" alt="{{ award_name | escape }}" loading="lazy" width="80" height="80">
+                      {%- endif -%}
+                    </div>
+                  {%- endif -%}
+                  {%- if award_name != blank -%}
+                    <h4 class="fe-product-accordion__review-name">
+                      {%- if award_url != blank -%}
+                        <a href="{{ award_url }}" target="_blank" rel="noopener">{{ award_name }}</a>
+                      {%- else -%}
+                        {{ award_name }}
+                      {%- endif -%}
+                    </h4>
+                  {%- endif -%}
+                  {%- if award_text != blank -%}
+                    {%- if award_needs_toggle -%}
+                      <p class="fe-product-accordion__review-copy">
+                        <span class="fe-product-accordion__review-short">{{ award_short }}</span>
+                        <span class="fe-product-accordion__review-full" hidden>{{ award_text }}</span>
+                        <button type="button" class="fe-product-accordion__read-toggle" aria-expanded="false" data-fe-read-toggle>Read More</button>
+                      </p>
+                    {%- else -%}
+                      <p class="fe-product-accordion__review-copy">{{ award_text }}</p>
+                    {%- endif -%}
+                  {%- endif -%}
+                </article>
+              {%- endif -%}
+            {%- endfor -%}
+          </div>
+        {%- endif -%}
         </div>
       </div>
     </details>
