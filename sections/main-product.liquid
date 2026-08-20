@@ -228,19 +228,49 @@
     opacity: 0.92;
   }
 
-  .fe-main-product--{{ sid }} .fe-main-product__description--truncate {
-    display: -webkit-box;
-    -webkit-line-clamp: var(--fe-mp-desc-lines, 4);
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-  }
-
   .fe-main-product--{{ sid }} .fe-main-product__description p {
     margin: 0;
   }
 
   .fe-main-product--{{ sid }} .fe-main-product__description p + p {
     margin-top: 12px;
+  }
+
+  .fe-main-product--{{ sid }} .fe-main-product__description .fe-main-product__description-short,
+  .fe-main-product--{{ sid }} .fe-main-product__description .fe-main-product__description-full {
+    display: inline;
+  }
+
+  .fe-main-product--{{ sid }} .fe-main-product__description .fe-main-product__description-full[hidden],
+  .fe-main-product--{{ sid }} .fe-main-product__description .fe-main-product__description-short[hidden] {
+    display: none;
+  }
+
+  .fe-main-product--{{ sid }} .fe-main-product__description-toggle {
+    appearance: none;
+    display: inline;
+    border: none;
+    background: none;
+    background-color: transparent;
+    color: #b3833d;
+    font-family: inherit;
+    font-size: inherit;
+    font-weight: inherit;
+    line-height: inherit;
+    cursor: pointer;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+    padding: 0;
+    margin: 0 0 0 4px;
+    vertical-align: baseline;
+    box-shadow: none;
+  }
+
+  .fe-main-product--{{ sid }} .fe-main-product__description-toggle:hover,
+  .fe-main-product--{{ sid }} .fe-main-product__description-toggle:focus-visible {
+    color: #b3833d;
+    background: none;
+    border: none;
   }
 
   .fe-main-product--{{ sid }} .fe-main-product__variants {
@@ -828,12 +858,55 @@
 
               {%- when 'description' -%}
                 {%- if current_product.description != blank -%}
+                  {%- liquid
+                    assign desc_plain = current_product.description | strip_html | replace: '&nbsp;', ' ' | strip
+                    assign desc_short = desc_plain
+                    assign desc_needs_toggle = false
+                    assign sentence_parts = desc_plain | split: '. '
+                    assign sentence_count = 0
+                    assign desc_short = ''
+                    for part in sentence_parts
+                      assign trimmed_part = part | strip
+                      if trimmed_part != blank
+                        assign sentence_count = sentence_count | plus: 1
+                        if sentence_count <= 2
+                          if desc_short == blank
+                            assign desc_short = trimmed_part
+                          else
+                            assign desc_short = desc_short | append: '. ' | append: trimmed_part
+                          endif
+                        endif
+                      endif
+                    endfor
+                    if sentence_count > 2
+                      assign desc_needs_toggle = true
+                      assign short_last = desc_short | slice: -1, 1
+                      if short_last != '.'
+                        assign desc_short = desc_short | append: '.'
+                      endif
+                    else
+                      assign desc_short = desc_plain
+                    endif
+                  -%}
                   <div
-                    class="fe-main-product__description rte{% if block.settings.truncate %} fe-main-product__description--truncate{% endif %}"
-                    {% if block.settings.truncate %}style="--fe-mp-desc-lines: {{ block.settings.truncate_lines }};"{% endif %}
+                    class="fe-main-product__description rte"
+                    data-fe-read-copy
                     {{ block.shopify_attributes }}
                   >
-                    {{ current_product.description }}
+                    {%- if desc_needs_toggle -%}
+                      <span class="fe-main-product__description-short">{{ desc_short | escape }}</span>
+                      <div class="fe-main-product__description-full" hidden>{{ current_product.description }}</div>
+                      <button
+                        type="button"
+                        class="fe-main-product__description-toggle"
+                        aria-expanded="false"
+                        data-fe-read-toggle
+                      >
+                        Read More
+                      </button>
+                    {%- else -%}
+                      {{ current_product.description }}
+                    {%- endif -%}
                   </div>
                 {%- endif -%}
 
@@ -1418,10 +1491,16 @@
 
     root.querySelectorAll('[data-fe-read-toggle]').forEach(function (toggle) {
       toggle.addEventListener('click', function () {
-        var copy = toggle.closest('.fe-product-accordion__review-copy');
+        var copy =
+          toggle.closest('[data-fe-read-copy]') ||
+          toggle.closest('.fe-product-accordion__review-copy');
         if (!copy) return;
-        var shortEl = copy.querySelector('.fe-product-accordion__review-short');
-        var fullEl = copy.querySelector('.fe-product-accordion__review-full');
+        var shortEl =
+          copy.querySelector('.fe-main-product__description-short') ||
+          copy.querySelector('.fe-product-accordion__review-short');
+        var fullEl =
+          copy.querySelector('.fe-main-product__description-full') ||
+          copy.querySelector('.fe-product-accordion__review-full');
         var expanded = toggle.getAttribute('aria-expanded') === 'true';
         if (expanded) {
           if (shortEl) shortEl.hidden = false;
