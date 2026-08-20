@@ -61,7 +61,7 @@
       "type": "collection-product-slider",
       "settings": {
         "heading": "Our Wines",
-        "collection": "",
+        "collection": "all-wines",
         "product_limit": 8,
         "bottle_count": 6,
         "button_label": "View all",

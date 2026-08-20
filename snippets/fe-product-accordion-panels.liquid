@@ -63,21 +63,36 @@
     assign has_technical = true
   endif
 
-  assign awards_entries = current_product.metafields.custom.awards.value
-  assign reviews_entries = current_product.metafields.custom.reviews.value
+  assign awards_entries = current_product.metafields.winehub.product_awards.value
+  if awards_entries == blank
+    assign awards_entries = current_product.metafields.custom.awards.value
+  endif
+
+  assign reviews_entries = blank
+  assign reviews_source = ''
+
+  if current_product.metafields.custom.fe_product_reviews.value != blank
+    assign reviews_entries = current_product.metafields.custom.fe_product_reviews.value
+    assign reviews_source = 'json'
+  endif
+
+  if reviews_entries == blank and current_product.metafields.winehub.product_reviews.value != blank
+    assign reviews_entries = current_product.metafields.winehub.product_reviews.value
+    assign reviews_source = 'winehub'
+  endif
+
+  if reviews_entries == blank and current_product.metafields.custom.reviews.value != blank
+    assign reviews_entries = current_product.metafields.custom.reviews.value
+    assign reviews_source = 'custom'
+  endif
+
   assign awards_count = 0
   if awards_entries != blank
     assign awards_count = awards_entries.size
-    if awards_count == 0
-      assign awards_count = 1
-    endif
   endif
   assign reviews_count = 0
   if reviews_entries != blank
     assign reviews_count = reviews_entries.size
-    if reviews_count == 0
-      assign reviews_count = 1
-    endif
   endif
   assign has_awards = false
   if awards_count > 0
@@ -355,7 +370,7 @@
     -%}
     <details class="fe-product-accordion__item{% if panel_open %} fe-product-accordion__item--expanded{% endif %}"{% if panel_open %} open{% endif %} data-fe-accordion-item>
       <summary class="fe-product-accordion__trigger">
-        <span>Reviews</span>
+        <span>Product Review</span>
         <svg class="fe-product-accordion__chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></svg>
       </summary>
       <div class="fe-product-accordion__panel">
@@ -364,19 +379,90 @@
           <div class="fe-product-accordion__stack">
               {%- for review in reviews_entries -%}
                 {%- liquid
-                  assign review_name = review.name.value | default: review.name | strip_html | strip
-                  assign review_subject = review.subject.value | default: review.subject | strip_html | strip
-                  assign review_text = review.review.value | default: review.review | strip_html | strip
-                  assign review_rating = review.rating.value | default: review.rating | strip_html | strip
+                  assign review_name = ''
+                  assign review_subject = ''
+                  assign review_text = ''
+                  assign review_rating = ''
+                  assign review_url = ''
+                  assign review_image = blank
+
+                  if reviews_source == 'winehub'
+                    assign review_name = review.title.value | default: review.title | strip_html | strip
+                    assign review_text = review.description.value | default: review.description | strip_html | strip
+                    assign review_url = review.url.value | default: review.url | strip_html | strip
+                    assign review_image = review.image.value | default: review.image
+                  elsif reviews_source == 'json'
+                    assign review_name = review.title | strip_html | strip
+                    assign review_text = review.description | strip_html | strip
+                    assign review_url = review.url | strip_html | strip
+                    assign review_image = review.image
+                  else
+                    assign review_name = review.name.value | default: review.name | strip_html | strip
+                    assign review_subject = review.subject.value | default: review.subject | strip_html | strip
+                    assign review_text = review.review.value | default: review.review | strip_html | strip
+                    assign review_rating = review.rating.value | default: review.rating | strip_html | strip
+                  endif
+
+                  if review_text != blank
+                    assign review_text = review_text | replace: '"', '' | strip
+                  endif
+
+                  assign review_short = review_text
+                  assign review_needs_toggle = false
+                  if review_text != blank
+                    assign sentence_parts = review_text | split: '. '
+                    assign sentence_count = 0
+                    assign review_short = ''
+                    for part in sentence_parts
+                      assign trimmed_part = part | strip
+                      if trimmed_part != blank
+                        assign sentence_count = sentence_count | plus: 1
+                        if sentence_count <= 2
+                          if review_short == blank
+                            assign review_short = trimmed_part
+                          else
+                            assign review_short = review_short | append: '. ' | append: trimmed_part
+                          endif
+                        endif
+                      endif
+                    endfor
+
+                    if sentence_count > 2
+                      assign review_needs_toggle = true
+                      assign short_last = review_short | slice: -1, 1
+                      if short_last != '.'
+                        assign review_short = review_short | append: '.'
+                      endif
+                    else
+                      assign review_short = review_text
+                    endif
+                  endif
                 -%}
                 {%- if review_name != blank or review_subject != blank or review_text != blank or review_rating != blank -%}
                   <article class="fe-product-accordion__review{% if forloop.index > initial_reviews %} is-hidden-review{% endif %}"{% if forloop.index > initial_reviews %} hidden{% endif %}>
-                    {%- if review_name != blank -%}<h4 class="fe-product-accordion__review-name">{{ review_name }}</h4>{%- endif -%}
+                    {%- if review_image != blank -%}
+                      <div class="fe-product-accordion__review-image">
+                        {%- if review_image.url != blank -%}
+                          {{ review_image | image_url: width: 160 | image_tag: loading: 'lazy', alt: review_name }}
+                        {%- elsif review_image contains 'http' -%}
+                          <img src="{{ review_image | escape }}" alt="{{ review_name | escape }}" loading="lazy" width="80" height="80">
+                        {%- endif -%}
+                      </div>
+                    {%- endif -%}
+                    {%- if review_name != blank -%}
+                      <h4 class="fe-product-accordion__review-name">
+                        {%- if review_url != blank -%}
+                          <a href="{{ review_url }}" target="_blank" rel="noopener">{{ review_name }}</a>
+                        {%- else -%}
+                          {{ review_name }}
+                        {%- endif -%}
+                      </h4>
+                    {%- endif -%}
                     {%- if review_subject != blank -%}<p class="fe-product-accordion__review-subject">{{ review_subject }}</p>{%- endif -%}
                     {%- if review_text != blank -%}
-                      {%- if review_text.size > 150 -%}
+                      {%- if review_needs_toggle -%}
                         <p class="fe-product-accordion__review-copy">
-                          <span class="fe-product-accordion__review-short">{{ review_text | truncate: 150, '' }}&hellip;</span>
+                          <span class="fe-product-accordion__review-short">{{ review_short }}</span>
                           <span class="fe-product-accordion__review-full" hidden>{{ review_text }}</span>
                           <button type="button" class="fe-product-accordion__read-toggle" aria-expanded="false" data-fe-read-toggle>Read More</button>
                         </p>
