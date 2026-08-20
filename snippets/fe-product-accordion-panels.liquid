@@ -506,37 +506,6 @@
                   if review_text != blank
                     assign review_text = review_text | replace: '"', '' | strip
                   endif
-
-                  assign review_short = review_text
-                  assign review_needs_toggle = false
-                  if review_text != blank
-                    assign sentence_parts = review_text | split: '. '
-                    assign sentence_count = 0
-                    assign review_short = ''
-                    for part in sentence_parts
-                      assign trimmed_part = part | strip
-                      if trimmed_part != blank
-                        assign sentence_count = sentence_count | plus: 1
-                        if sentence_count <= 2
-                          if review_short == blank
-                            assign review_short = trimmed_part
-                          else
-                            assign review_short = review_short | append: '. ' | append: trimmed_part
-                          endif
-                        endif
-                      endif
-                    endfor
-
-                    if sentence_count > 2
-                      assign review_needs_toggle = true
-                      assign short_last = review_short | slice: -1, 1
-                      if short_last != '.'
-                        assign review_short = review_short | append: '.'
-                      endif
-                    else
-                      assign review_short = review_text
-                    endif
-                  endif
                 -%}
                 {%- if review_name != blank or review_subject != blank or review_text != blank or review_rating != blank -%}
                   <article class="fe-product-accordion__review{% if forloop.index > initial_reviews %} is-hidden-review{% endif %}"{% if forloop.index > initial_reviews %} hidden{% endif %}>
@@ -560,15 +529,7 @@
                     {%- endif -%}
                     {%- if review_subject != blank -%}<p class="fe-product-accordion__review-subject">{{ review_subject }}</p>{%- endif -%}
                     {%- if review_text != blank -%}
-                      {%- if review_needs_toggle -%}
-                        <p class="fe-product-accordion__review-copy">
-                          <span class="fe-product-accordion__review-short">{{ review_short }}</span>
-                          <span class="fe-product-accordion__review-full" hidden>{{ review_text }}</span>
-                          <button type="button" class="fe-product-accordion__read-toggle" aria-expanded="false" data-fe-read-toggle>Read More</button>
-                        </p>
-                      {%- else -%}
-                        <p class="fe-product-accordion__review-copy">{{ review_text }}</p>
-                      {%- endif -%}
+                      <p class="fe-product-accordion__review-copy">{{ review_text }}</p>
                     {%- endif -%}
                     {%- if review_rating != blank -%}<p class="fe-product-accordion__review-rating">Rating: {{ review_rating }}</p>{%- endif -%}
                   </article>
