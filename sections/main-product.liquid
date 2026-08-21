@@ -236,17 +236,20 @@
     margin-top: 12px;
   }
 
+  .fe-main-product--{{ sid }} .fe-main-product__description.is-collapsed .fe-main-product__description-full {
+    display: none !important;
+  }
+
+  .fe-main-product--{{ sid }} .fe-main-product__description.is-expanded .fe-main-product__description-short {
+    display: none !important;
+  }
+
   .fe-main-product--{{ sid }} .fe-main-product__description-short {
     display: inline;
   }
 
   .fe-main-product--{{ sid }} .fe-main-product__description-full {
     display: block;
-  }
-
-  .fe-main-product--{{ sid }} .fe-main-product__description-short[hidden],
-  .fe-main-product--{{ sid }} .fe-main-product__description-full[hidden] {
-    display: none !important;
   }
 
   .fe-main-product--{{ sid }} .fe-main-product__description-toggle {
@@ -267,6 +270,11 @@
     margin: 0 0 0 4px;
     vertical-align: baseline;
     box-shadow: none;
+  }
+
+  .fe-main-product--{{ sid }} .fe-main-product__description.is-expanded .fe-main-product__description-toggle {
+    display: inline-block;
+    margin: 10px 0 0;
   }
 
   .fe-main-product--{{ sid }} .fe-main-product__description-toggle:hover,
@@ -899,18 +907,18 @@
                     endif
                   -%}
                   <div
-                    class="fe-main-product__description rte"
-                    data-fe-read-copy
+                    class="fe-main-product__description rte{% if desc_needs_toggle %} is-collapsed{% endif %}"
+                    {% if desc_needs_toggle %}data-fe-desc-toggle{% endif %}
                     {{ block.shopify_attributes }}
                   >
                     {%- if desc_needs_toggle -%}
                       <span class="fe-main-product__description-short">{{ desc_short | escape }}</span>
-                      <div class="fe-main-product__description-full" hidden>{{ current_product.description }}</div>
+                      <div class="fe-main-product__description-full">{{ current_product.description }}</div>
                       <button
                         type="button"
                         class="fe-main-product__description-toggle"
                         aria-expanded="false"
-                        data-fe-read-toggle
+                        data-fe-desc-toggle-btn
                       >
                         Read More
                       </button>
@@ -1499,18 +1507,31 @@
       });
     });
 
+    root.querySelectorAll('[data-fe-desc-toggle-btn]').forEach(function (toggle) {
+      toggle.addEventListener('click', function () {
+        var wrap = toggle.closest('[data-fe-desc-toggle]');
+        if (!wrap) return;
+        var expanded = wrap.classList.contains('is-expanded');
+        if (expanded) {
+          wrap.classList.remove('is-expanded');
+          wrap.classList.add('is-collapsed');
+          toggle.textContent = 'Read More';
+          toggle.setAttribute('aria-expanded', 'false');
+        } else {
+          wrap.classList.remove('is-collapsed');
+          wrap.classList.add('is-expanded');
+          toggle.textContent = 'Read Less';
+          toggle.setAttribute('aria-expanded', 'true');
+        }
+      });
+    });
+
     root.querySelectorAll('[data-fe-read-toggle]').forEach(function (toggle) {
       toggle.addEventListener('click', function () {
-        var copy =
-          toggle.closest('[data-fe-read-copy]') ||
-          toggle.closest('.fe-product-accordion__review-copy');
+        var copy = toggle.closest('.fe-product-accordion__review-copy');
         if (!copy) return;
-        var shortEl =
-          copy.querySelector('.fe-main-product__description-short') ||
-          copy.querySelector('.fe-product-accordion__review-short');
-        var fullEl =
-          copy.querySelector('.fe-main-product__description-full') ||
-          copy.querySelector('.fe-product-accordion__review-full');
+        var shortEl = copy.querySelector('.fe-product-accordion__review-short');
+        var fullEl = copy.querySelector('.fe-product-accordion__review-full');
         var expanded = toggle.getAttribute('aria-expanded') === 'true';
         if (expanded) {
           if (shortEl) shortEl.hidden = false;
